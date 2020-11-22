@@ -25,13 +25,13 @@
     ],
     "autoload": {
         "psr-4": {
-            "Miladimos\\Package\\": "src/"
+            "Miladimos\\FileManager\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-              "PackageServiceProvider"
+              "FileManagerServiceProvider"
             ]
         }
     },

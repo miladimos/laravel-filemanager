@@ -10,7 +10,7 @@ class PackageServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . "/../../config/config.php", 'package');
+        $this->mergeConfigFrom(__DIR__ . "/../../config/config.php", 'file-manager');
 
     }
 
@@ -32,7 +32,7 @@ class PackageServiceProvider extends ServiceProvider
     private function registerPublishes()
     {
         $this->publishes([
-            __DIR__ . '/../../config/config.php' => config_path('package.php')
+            __DIR__ . '/../../config/config.php' => config_path('file-manager.php')
         ], 'package-config');
 
     }
