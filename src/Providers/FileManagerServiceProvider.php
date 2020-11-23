@@ -3,7 +3,7 @@
 namespace Miladimos\FileManager\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Miladimos\FileManager;
+use Miladimos\FileManager\FileManager;
 
 
 class FileManagerServiceProvider extends ServiceProvider

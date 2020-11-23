@@ -1,5 +1,5 @@
 <?php
-namespace Miladimos\Social;
+namespace Miladimos\FileManager;
 
 class FileManager
 {
