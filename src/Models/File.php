@@ -1,11 +1,54 @@
 <?php
 
-namespace App\Models;
+namespace Miladimos\FileManager\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class File extends Model
 {
+    protected $fillable = ['name'];
+
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'my_flights';
+
+
+//    public function getPublicUrl($key = null)
+//    {
+//        $storageDisk =  Storage::disk(config('upload.disk'));
+//        $url =  $storageDisk->url('uploads/' . $this->uuid . '/' . $this->file_name);
+//        if (config('upload.files.' . $key)) {
+//            list($key, $resize, $size) = explode('.', $key);
+//            $extension = pathinfo($this->file_name, PATHINFO_EXTENSION);
+//            $name = str_replace('.'.$extension,'', $this->file_name);
+//            $url = $storageDisk->url('cache/' . $this->uuid . '/' . $name . '-' . $size . '.' . $extension);
+//        }
+//
+//        return $url;
+//    }
+//
+//    public function getPrivateUrl()
+//    {
+//
+//    }
+//
+//    public function getAllPublicUrl($key = null)
+//    {
+//        $urls = [];
+//        foreach (config('upload.files.'.$key.'.resize', []) as $keys => $value) {
+//            if (array_get($value,'create_on_upload')) {
+//                $urls[$keys] = $this->getPublicUrl($key.'.resize.'.$keys);
+//            }
+//        }
+//
+//        return $urls;
+//    }
+
+
 //    public static function getUserQuotaUsed($userid) {
 //        $user = User::find($userid);
 //

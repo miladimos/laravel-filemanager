@@ -29,8 +29,14 @@ class FileManagerServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->registerPublishes();
-            $this->registerMigrations();
+            $this->registerPublishesMigrations();
         }
+
+//        if (config('lfm.use_package_routes')) {
+//            Route::group(['prefix' => 'filemanager', 'middleware' => ['web', 'auth']], function () {
+//                \UniSharp\LaravelFilemanager\Lfm::routes();
+//            });
+//        }
     }
 
     private function registerPublishes()
@@ -40,7 +46,7 @@ class FileManagerServiceProvider extends ServiceProvider
         ], 'file-manager-config');
     }
 
-    private function registerMigrations() {
+    private function registerPublishesMigrations() {
 
         if (! class_exists('CreateFilesTable')) {
             $this->publishes([
@@ -66,6 +72,5 @@ class FileManagerServiceProvider extends ServiceProvider
                 // you can add any number of migrations here
             ], 'migrations');
         }
-
     }
 }

@@ -31,6 +31,16 @@ class CreateFilesTable extends Migration
             $table->bigInteger('file_size');
             $table->string('file_hash');
 
+            $table->string('uuid')->uniuqe();
+            $table->string('title')->nullable();
+            $table->string('file_field')->nullable();
+            $table->string('file_name')->nullable();
+            $table->enum('file_type', ['image', 'document','video', 'audio'])->nullable();
+            $table->string('mime_type')->nullable();
+            $table->double('size', 15, 2)->nullable();
+            $table->boolean('private')->default(false);
+            $table->boolean('has_reference')->default(false);
+
 
             $table->timestamps();
         });
