@@ -1,7 +1,7 @@
 <?php
 namespace Miladimos\Social;
 
-class Social
+class FileManager
 {
 
 }

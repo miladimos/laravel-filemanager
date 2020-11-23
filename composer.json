@@ -31,8 +31,11 @@
     "extra": {
         "laravel": {
             "providers": [
-              "FileManagerServiceProvider"
-            ]
+                "Miladimos\\FileManager\\Providers\\FileManagerServiceProvider"
+            ],
+            "aliases": {
+                "FileManager": "Miladimos\\FileManager\\Facades\\FileManagerFacade"
+            }
         }
     },
     "require": {},

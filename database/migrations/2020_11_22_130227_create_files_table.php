@@ -23,6 +23,15 @@ class CreateFilesTable extends Migration
             $table->string('file_size');
             $table->string('file_path');
             $table->timestamp('upload_time');
+
+            $table->integer('user_id');
+            $table->integer('folder_id');
+            $table->string('file_name');
+            $table->string('file_extension');
+            $table->bigInteger('file_size');
+            $table->string('file_hash');
+
+
             $table->timestamps();
         });
     }

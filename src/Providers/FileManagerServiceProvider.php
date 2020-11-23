@@ -1,8 +1,9 @@
 <?php
 
-namespace Miladimos\Package\Providers;
+namespace Miladimos\FileManager\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Miladimos\FileManager;
 
 
 class FileManagerServiceProvider extends ServiceProvider
@@ -11,6 +12,10 @@ class FileManagerServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . "/../../config/config.php", 'file-manager');
+
+        $this->app->bind('filemanager', function($app) {
+            return new FileManager();
+        });
 
     }
 

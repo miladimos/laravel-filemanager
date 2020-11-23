@@ -4,7 +4,7 @@ namespace Miladimos\Social\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class RepositoryFacade extends Facade
+class FileManagerFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
