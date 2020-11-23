@@ -5,7 +5,7 @@ namespace Miladimos\Package\Providers;
 use Illuminate\Support\ServiceProvider;
 
 
-class PackageServiceProvider extends ServiceProvider
+class FileManagerServiceProvider extends ServiceProvider
 {
 
     public function register()
@@ -23,9 +23,7 @@ class PackageServiceProvider extends ServiceProvider
     {
 
         if ($this->app->runningInConsole()) {
-
             $this->registerPublishes();
-
         }
     }
 
@@ -33,7 +31,7 @@ class PackageServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__ . '/../../config/config.php' => config_path('file-manager.php')
-        ], 'package-config');
+        ], 'file-manager-config');
 
     }
 }
