@@ -28,7 +28,7 @@ class FileManagerServiceProvider extends ServiceProvider
     {
 
         if ($this->app->runningInConsole()) {
-            $this->registerPublishes();
+            $this->registerConfig();
             $this->registerPublishesMigrations();
         }
 
@@ -39,7 +39,7 @@ class FileManagerServiceProvider extends ServiceProvider
 //        }
     }
 
-    private function registerPublishes()
+    private function registerConfig()
     {
         $this->publishes([
             __DIR__ . '/../../config/config.php' => config_path('file-manager.php')
