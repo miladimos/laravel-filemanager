@@ -3,12 +3,16 @@
 
 return [
 
-    /**
-     * route configs that you want to use default work package
-     * (from config/file-manager.php)
-     *
-     * prefix result return  =>  yourdomain.test/API_PREFIX/API_VERSION/FILE_MANAGER_API_PREFIX/
-     */
+
+    /*
+    |--------------------------------------------------------------------------
+    | route configs that you want to use default work package
+    |--------------------------------------------------------------------------
+    |
+    | The default group settings for the elFinder routes.
+    prefix result return  =>  yourdomain.test/API_PREFIX/API_VERSION/FILE_MANAGER_API_PREFIX/
+    |
+    */
     'routes' => [
         'api_prefix' => env('API_PREFIX', 'api'),
         'api_version' => env('API_VERSION', 'v1'),
@@ -24,14 +28,24 @@ return [
     'uses' => 'api',
 
     /**
-     * List of disk names that you want to use
-     * (from config/filesystems)
+     * List of disk names that you want to use for upload
+     *
+     * public, ftp, storage
+     *
      */
-    'disks' => [
-        'public',
-        'ftp'
-    ],
+    'disk' => env('UPLOAD_DISK', 'public'),
 
+    /*
+    * The maximum file size of an item in bytes.
+    * Adding a larger file will result in an exception.
+    */
+    'max_file_size' => 1024 * 1024 * 10,
+
+
+
+    /**
+     * List of allowed for upload
+     */
     'mimes' => [
         'image/gif',
         'image/jpeg',
@@ -185,7 +199,6 @@ return [
     */
     'default_uploads_folder' => env('DEFAULT_UPLOADS_FOLDER', \Vmorozov\FileUploads\FilesSaver::DEFAULT_UPLOADS_FOLDER),
 
-    'disk' => env('UPLOAD_DISK', 'public'),
 
     'files' => [
         'logo' => [
@@ -272,15 +285,6 @@ return [
         //...
     ],
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | Routes group config
-    |--------------------------------------------------------------------------
-    |
-    | The default group settings for the elFinder routes.
-    |
-    */
 ];
 
 

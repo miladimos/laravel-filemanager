@@ -14,6 +14,11 @@ class FileGroupController extends Controller
         $this->fileGroupService = $fileGroupService;
     }
 
+    public function index()
+    {
+        //
+    }
+
 
 //"php": ">=7.2",
 //        "illuminate/filesystem": "5.0.*",

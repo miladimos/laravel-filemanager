@@ -12,9 +12,9 @@ class FileManagerServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . "/../../config/config.php", 'filemanager');
+        $this->mergeConfigFrom(__DIR__ . "/../../config/config.php", 'file-manager');
 
-        $this->app->bind('filemanager', function($app) {
+        $this->app->bind('file-manager', function($app) {
             return new FileManager();
         });
 
@@ -33,7 +33,7 @@ class FileManagerServiceProvider extends ServiceProvider
             $this->registerPublishesMigrations();
         }
 
-        if(config('filemanager.uses') == 'api') {
+        if(config('file-manager.uses') == 'api') {
             $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         }
 
