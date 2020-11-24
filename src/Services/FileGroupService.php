@@ -8,6 +8,11 @@ use App\Models\FileGroup;
 
 class FileGroupService
 {
+    public function allFileGroups()
+    {
+        return FileGroup::all();
+    }
+
     public function createFileGroup($tile, $description)
     {
         $fileGroup = FileGroup::create([
@@ -15,6 +20,29 @@ class FileGroupService
             'description' => $description,
         ]);
 
+        if(!$fileGroup)
+            return false;
         return true;
+    }
+
+
+    public function updateFileGroup($id,$tile, $description)
+    {
+        $fileGroup = FileGroup::findOrFail($id)->update([
+            'title' => $tile,
+            'description' => $description,
+        ]);
+        if(!$fileGroup)
+            return false;
+
+        return true;
+    }
+
+    public function deleteFileGroup($id)
+    {
+        if($fileGroup = FileGroup::findOrFail($id)->delete())
+            return true;
+
+        return false;
     }
 }
