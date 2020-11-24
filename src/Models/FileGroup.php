@@ -3,15 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Miladimos\FileManager\Models\File;
 
 class FileGroup extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['title', 'description'];
 
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'my_flights';
+    protected $table = 'file_groups';
+
+    public function files()
+    {
+        return $this->hasMany(File::class);
+    }
 }

@@ -2,11 +2,12 @@
 
 namespace Miladimos\FileManager\Models;
 
+use App\Models\FileGroup;
 use Illuminate\Database\Eloquent\Model;
 
 class File extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['group_id'];
 
 
     /**
@@ -14,8 +15,12 @@ class File extends Model
      *
      * @var string
      */
-    protected $table = 'my_flights';
+    protected $table = 'files';
 
+    public function group()
+    {
+        return $this->belongsTo(FileGroup::class);
+    }
 
 //    public function getPublicUrl($key = null)
 //    {

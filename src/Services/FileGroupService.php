@@ -22,7 +22,7 @@ class FileGroupService
 
         if(!$fileGroup)
             return false;
-        return true;
+        return $fileGroup;
     }
 
 
@@ -35,13 +35,13 @@ class FileGroupService
         if(!$fileGroup)
             return false;
 
-        return true;
+        return $fileGroup;
     }
 
     public function deleteFileGroup($id)
     {
         if($fileGroup = FileGroup::findOrFail($id)->delete())
-            return true;
+            return $fileGroup;
 
         return false;
     }
