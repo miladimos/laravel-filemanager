@@ -17,6 +17,12 @@ return [
         'ftp'
     ],
 
+    'mimes'=> [
+        'image/gif',
+        'image/jpeg',
+        'image/png',
+    ],
+
     /**
      * Image cache ( Intervention Image Cache )
      *
