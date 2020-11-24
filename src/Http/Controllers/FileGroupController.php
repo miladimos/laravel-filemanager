@@ -16,8 +16,16 @@ class FileGroupController extends Controller
 
     public function index()
     {
-        //
+        $fileGroups = $this->fileGroupService->allFileGroups();
+        return $this->responseSuccess($fileGroups);
     }
+
+    public function delete($id)
+    {
+        $fileGroups = $this->fileGroupService->deleteFileGroup($id);
+        return $this->responseSuccess($fileGroups);
+    }
+
 
 
 //"php": ">=7.2",
