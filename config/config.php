@@ -3,61 +3,19 @@
 
 return [
 
-    /**
-     * Set Config repository
-     *
-     * Default - DefaultConfigRepository get config from this file
-     */
-    'configRepository' => DefaultConfigRepository::class,
-
-    /**
-     * ACL rules repository
-     *
-     * Default - ConfigACLRepository (see rules in - aclRules)
-     */
-    'aclRepository' => ConfigACLRepository::class,
-
-    //********* Default configuration for DefaultConfigRepository **************
-
-    /**
-     * LFM Route prefix
-     * !!! WARNING - if you change it, you should compile frontend with new prefix(baseUrl) !!!
-     */
-    'routePrefix' => 'file-manager',
+    'routes' => [
+        'prefix' => 'file-manager',
+        'middleware' => array('web', 'auth'), //Set to null to disable middleware filter
+    ],
 
     /**
      * List of disk names that you want to use
      * (from config/filesystems)
      */
-    'diskList' => ['public'],
-
-    /**
-     * Default disk for left manager
-     *
-     * null - auto select the first disk in the disk list
-     */
-    'leftDisk' => null,
-
-    /**
-     * Default disk for right manager
-     *
-     * null - auto select the first disk in the disk list
-     */
-    'rightDisk' => null,
-
-    /**
-     * Default path for left manager
-     *
-     * null - root directory
-     */
-    'leftPath' => null,
-
-    /**
-     * Default path for right manager
-     *
-     * null - root directory
-     */
-    'rightPath' => null,
+    'disks' => [
+        'public',
+        'ftp'
+    ],
 
     /**
      * Image cache ( Intervention Image Cache )
@@ -88,20 +46,15 @@ return [
      *
      * [] - no restrictions
      */
-    'allowFileTypes' => [],
+    'allowFileTypes' => [
+
+    ],
 
     /**
      * Show / Hide system files and folders
      */
     'hiddenFiles' => true,
 
-    /***************************************************************************
-     * Middleware
-     *
-     * Add your middleware name to array -> ['web', 'auth', 'admin']
-     * !!!! RESTRICT ACCESS FOR NON ADMIN USERS !!!!
-     */
-    'middleware' => ['web'],
 
     /***************************************************************************
      * ACL mechanism ON/OFF
@@ -132,8 +85,6 @@ return [
      * null or value in minutes
      */
     'aclRulesCache' => null,
-
-    //********* Default configuration for DefaultConfigRepository END **********
 
 
     /***************************************************************************
@@ -293,4 +244,16 @@ return [
 
         //...
     ],
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Routes group config
+    |--------------------------------------------------------------------------
+    |
+    | The default group settings for the elFinder routes.
+    |
+    */
+
+
 ];

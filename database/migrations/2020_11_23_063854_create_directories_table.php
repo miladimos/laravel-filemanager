@@ -15,12 +15,12 @@ class CreateDirectoriesTable extends Migration
     {
         Schema::create('directories', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id')->nullable();
             $table->integer('parent_id')->default(0);
+            $table->integer('group_id')->nullable();
+            $table->integer('user_id')->nullable();
             $table->string('title')->unique();
             $table->string('icon')->nullable();
             $table->string('description');
-            $table->integer('group_id')->nullable();
             $table->timestamps();
         });
     }

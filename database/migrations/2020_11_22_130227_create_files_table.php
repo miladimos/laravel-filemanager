@@ -26,10 +26,9 @@ class CreateFilesTable extends Migration
             $table->string('file_size');
             $table->timestamp('upload_time');
             $table->string('file_hash');
-            $table->enum('file_type', ['image', 'document','video', 'audio'])->nullable();
+            $table->enum('file_type', \Miladimos\FileManager\Enums\FileTypeEnum::getConstants())->nullable();
             $table->string('mime_type')->nullable();
             $table->boolean('is_private')->default(false);
-            $table->boolean('has_reference')->default(false);
             $table->timestamps();
         });
     }
