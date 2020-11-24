@@ -2,6 +2,7 @@
 
 namespace Miladimos\FileManager\Providers;
 
+use Illuminate\Routing\Route;
 use Illuminate\Support\ServiceProvider;
 use Miladimos\FileManager\FileManager;
 
@@ -31,6 +32,9 @@ class FileManagerServiceProvider extends ServiceProvider
             $this->registerConfig();
             $this->registerPublishesMigrations();
         }
+
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+
 
 //        if (config('lfm.use_package_routes')) {
 //            Route::group(['prefix' => 'filemanager', 'middleware' => ['web', 'auth']], function () {
@@ -72,5 +76,19 @@ class FileManagerServiceProvider extends ServiceProvider
                 // you can add any number of migrations here
             ], 'migrations');
         }
+    }
+    protected function registerRoutes()
+    {
+        Route::group($this->routeConfiguration(), function () {
+            $this->loadRoutesFrom(__DIR__.'/../routes/filemanager-api.php');
+        });
+    }
+
+    protected function routeConfiguration()
+    {
+        return [
+            'prefix' => config('file-manager.api_prefix') . config('file-manager.api_version') . config('file-manager.prefix'),
+            'middleware' => config('file-manager.middleware'),
+        ];
     }
 }
