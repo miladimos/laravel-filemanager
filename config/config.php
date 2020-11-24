@@ -38,6 +38,12 @@ return [
         'image/png',
     ],
 
+    'database' => [
+        'files_table' => 'files',
+        'file_group_table' => 'file_groups',
+        'directories' => 'directories',
+    ],
+
     /**
      * Image cache ( Intervention Image Cache )
      *
