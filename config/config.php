@@ -3,6 +3,12 @@
 
 return [
 
+    /*
+    * FQCN of the model to use for media
+    *
+    * Should extend `Plank\Mediable\Media`
+    */
+    'model' => \Miladimos\FileManager\Models\File::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -19,6 +25,12 @@ return [
         'prefix' => env('FILE_MANAGER_API_PREFIX', 'file-manager'),
         'middleware' => ['api'], //Set to null to disable middleware filter
     ],
+
+    /*
+     * Configure the Access Mode of the uploaded files.
+     * By default S3 uploads are private, we're setting them to public here.
+     */
+    'access' => env('MEDIA_MANAGER_ACCESS', 'public'),
 
     /**
      * web - api
@@ -40,8 +52,44 @@ return [
     * Adding a larger file will result in an exception.
     */
     'max_file_size' => 1024 * 1024 * 10,
+    /**
+     * An array of key value pairs for valid image
+     * extensions and their associated MIME types.
+     *
+     * @var array
+     */
+     $imageMimes = [
+    'bmp' => 'image/bmp',
+    'gif' => 'image/gif',
+    'jpeg' => ['image/jpeg', 'image/pjpeg'],
+    'jpg' => ['image/jpeg', 'image/pjpeg'],
+    'jpe' => ['image/jpeg', 'image/pjpeg'],
+    'png' => 'image/png',
+    'tiff' => 'image/tiff',
+    'tif' => 'image/tiff',
+],
 
-
+//      /**
+//       * Method for determining whether the uploaded file is
+//       * an image type.
+//       *
+//       * @return bool
+//       */
+//    public function isImage()
+//{
+//    $mime = $this->getMimeType();
+//
+//    // The $imageMimes property contains an array of file extensions and
+//    // their associated MIME types. We will loop through them and look for
+//    // the MIME type of the current SymfonyUploadedFile.
+//    foreach ($this->imageMimes as $imageMime) {
+//        if (in_array($mime, (array) $imageMime)) {
+//            return true;
+//        }
+//    }
+//
+//    return false;
+//}
 
     /**
      * List of allowed for upload

@@ -5,9 +5,35 @@ namespace Miladimos\FileManager\Services;
 
 
 use App\Models\FileGroup;
+use Illuminate\Support\Facades\Storage;
 
 class FileGroupService
 {
+
+
+    protected $disk;
+
+
+    protected $access;
+
+
+    protected $mimeDetect;
+
+
+    private $errors = [];
+
+    private $diskName;
+
+
+    public function __construct()
+    {
+        $this->diskName = config('media-manager.disk');
+        $this->access = config('media-manager.access');
+        $this->breadcrumbRootLabel = config('media-manager.breadcrumb.root');
+        $this->disk = Storage::disk($this->diskName);
+    }
+
+
     public function allFileGroups()
     {
         return FileGroup::all();

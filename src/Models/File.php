@@ -4,6 +4,7 @@ namespace Miladimos\FileManager\Models;
 
 use App\Models\FileGroup;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class File extends Model
 {
@@ -17,10 +18,41 @@ class File extends Model
      */
     protected $table = 'files';
 
+    protected $casts = [
+        'size' => 'int',
+    ];
+
     public function group()
     {
         return $this->belongsTo(FileGroup::class);
     }
+
+    /**
+     * Retrieve all associated models of given class.
+     * @param  string $class FQCN
+     * @return MorphToMany
+     */
+    public function models(string $class): MorphToMany
+    {
+        return $this
+            ->morphedByMany(
+                $class,
+                'mediable',
+                config('mediable.mediables_table', 'mediables')
+            )
+            ->withPivot('tag', 'order');
+    }
+
+
+    /**
+     * Retrieve the file extension.
+     * @return string
+     */
+    public function getBasenameAttribute(): string
+    {
+        return $this->filename . '.' . $this->extension;
+    }
+
 
 //    public function getPublicUrl($key = null)
 //    {

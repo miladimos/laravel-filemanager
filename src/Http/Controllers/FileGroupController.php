@@ -9,6 +9,7 @@ use Miladimos\FileManager\Services\FileGroupService;
 class FileGroupController extends Controller
 {
     protected $fileGroupService = null;
+
     public function __construct(FileGroupService $fileGroupService)
     {
         $this->fileGroupService = $fileGroupService;
