@@ -4,6 +4,7 @@ namespace Miladimos\FileManager\Providers;
 
 use Illuminate\Routing\Route;
 use Illuminate\Support\ServiceProvider;
+use Miladimos\FileManager\Console\Commands\InstallPackageCommand;
 use Miladimos\FileManager\FileManager;
 
 
@@ -31,6 +32,7 @@ class FileManagerServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->registerConfig();
             $this->registerPublishesMigrations();
+            $this->registerCommands();
         }
 
         if(config('file-manager.uses') == 'api') {
@@ -51,6 +53,12 @@ class FileManagerServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../../config/config.php' => config_path('file_manager.php')
         ], 'file-manager-config');
+    }
+
+    private function registerCommands() {
+        $this->commands([
+            InstallPackageCommand::class,
+        ]);
     }
 
     private function registerPublishesMigrations() {

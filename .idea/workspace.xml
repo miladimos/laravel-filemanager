@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8edeb7e8-e8f4-4fd3-a89b-7ca57085468a" name="Default Changelist" comment="" />
+    <list default="true" id="8edeb7e8-e8f4-4fd3-a89b-7ca57085468a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/laravel-filemanager.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/laravel-filemanager.iml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration">
+    <include_path>
+      <path value="$PROJECT_DIR$/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/psr7" />
+      <path value="$PROJECT_DIR$/vendor/intervention/image" />
+      <path value="$PROJECT_DIR$/vendor/ralouphie/getallheaders" />
+      <path value="$PROJECT_DIR$/vendor/composer" />
+    </include_path>
   </component>
   <component name="ProjectId" id="1keAJ7wpIhlJeN2kei1eUEBPzSW" />
   <component name="ProjectViewState">
@@ -34,6 +45,7 @@
       <option name="presentableId" value="Default" />
       <updated>1606050610027</updated>
       <workItem from="1606050611243" duration="109000" />
+      <workItem from="1606542969899" duration="609000" />
     </task>
     <servers />
   </component>
