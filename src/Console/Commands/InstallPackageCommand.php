@@ -14,14 +14,24 @@ class InstallPackageCommand extends Command
 
     public function handle()
     {
-        $this->info('Installing FileManager Package Started...');
+        $this->line("\t... Welcome To File Manager Package Installer ...");
 
-        $this->info('Publishing configuration...');
+        $uses = $this->choice('What type do you use this package?', ['api', 'web']);
 
-        $this->call('vendor:publish', [
-            '--provider' => "Miladimos\FileManager\Providers\FileManagerServiceProvider",
-            '--tag' => "config"
-        ]);
+
+        if ($uses == 'web')
+            $this->info('web');
+        else if ($uses == 'api')
+             $this->info('api');
+
+//        $this->info('Installing FileManager Package Started...');
+
+//        $this->info('Publishing configuration...');
+
+//        $this->call('vendor:publish', [
+//            '--provider' => "Miladimos\FileManager\Providers\FileManagerServiceProvider",
+//            '--tag' => "config"
+//        ]);
 
         $this->info('Installed BlogPackage');
     }

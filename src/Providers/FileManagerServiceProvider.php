@@ -2,7 +2,7 @@
 
 namespace Miladimos\FileManager\Providers;
 
-use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Miladimos\FileManager\Console\Commands\InstallPackageCommand;
 use Miladimos\FileManager\FileManager;
@@ -35,9 +35,11 @@ class FileManagerServiceProvider extends ServiceProvider
             $this->registerCommands();
         }
 
-        if(config('file-manager.uses') == 'api') {
-            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
-        }
+        $this->registerRoutes();
+
+//        if(config('file-manager.uses') == 'api') {
+//            $this->loadRoutesFrom(__DIR__.'/../../routes/web.php');
+//        }
 
 
 
@@ -90,16 +92,20 @@ class FileManagerServiceProvider extends ServiceProvider
     }
     protected function registerRoutes()
     {
+
+//        dd($this->routeConfiguration());
         Route::group($this->routeConfiguration(), function () {
-            $this->loadRoutesFrom(__DIR__.'/../routes/filemanager-api.php');
+            $this->loadRoutesFrom(__DIR__.'\..\..\routes\filemanger-api.php');
         });
+
+
     }
 
     protected function routeConfiguration()
     {
         return [
-            'prefix' => config('file-manager.api_prefix') . config('file-manager.api_version') . config('file-manager.prefix'),
-            'middleware' => config('file-manager.middleware'),
+            'prefix' => config('file-manager.routes.api_prefix') . '/' . config('file-manager.routes.api_version') . '/' . config('file-manager.routes.prefix'),
+            'middleware' => config('file-manager.routes.middleware'),
         ];
     }
 }

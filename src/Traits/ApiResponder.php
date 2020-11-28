@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Traits;
+namespace Miladimos\FileManager\Traits;
 
 
 trait ApiResponder

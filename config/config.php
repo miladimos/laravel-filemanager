@@ -217,7 +217,7 @@ return [
    | 2. To store in s3 storage FilesSaver::STORAGE_AMAZON_S3
    |
    */
-    'files_upload_storage' => env('FILES_UPLOAD', \Vmorozov\FileUploads\FilesSaver::STORAGE_LOCAL),
+//    'files_upload_storage' => env('FILES_UPLOAD', \Vmorozov\FileUploads\FilesSaver::STORAGE_LOCAL),
 
     /*
     |--------------------------------------------------------------------------
@@ -226,7 +226,7 @@ return [
     | Possible values are from 1 to 100
     |
     */
-    'image_quality' => env('IMAGE_QUALITY', \Vmorozov\FileUploads\FilesSaver::DEFAULT_IMAGE_QUALITY),
+//    'image_quality' => env('IMAGE_QUALITY', \Vmorozov\FileUploads\FilesSaver::DEFAULT_IMAGE_QUALITY),
 
 
     /*
@@ -236,7 +236,7 @@ return [
     | Possible values are from 1 to 100
     |
     */
-    'image_extension' => env('IMAGE_EXTENSION', \Vmorozov\FileUploads\FilesSaver::DEFAULT_IMAGE_EXTENSION),
+//    'image_extension' => env('IMAGE_EXTENSION', \Vmorozov\FileUploads\FilesSaver::DEFAULT_IMAGE_EXTENSION),
 
     /*
     |--------------------------------------------------------------------------
@@ -245,7 +245,7 @@ return [
     | Possible values are from 1 to 100
     |
     */
-    'default_uploads_folder' => env('DEFAULT_UPLOADS_FOLDER', \Vmorozov\FileUploads\FilesSaver::DEFAULT_UPLOADS_FOLDER),
+//    'default_uploads_folder' => env('DEFAULT_UPLOADS_FOLDER', \Vmorozov\FileUploads\FilesSaver::DEFAULT_UPLOADS_FOLDER),
 
 
     'files' => [
