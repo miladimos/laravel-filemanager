@@ -27,6 +27,16 @@ return [
     ],
 
     /*
+        g1 => [
+        size => 512,
+
+    ]
+    */
+    'server_config_level' => [
+
+    ],
+
+    /*
      * Configure the Access Mode of the uploaded files.
      * By default S3 uploads are private, we're setting them to public here.
      */

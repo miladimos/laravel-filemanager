@@ -9,7 +9,9 @@ Route::get('/file-group/{id}', [FileGroupController::class, 'show']);
 Route::put('/file-group', [FileGroupController::class, 'update']);
 Route::delete('/file-group/{id}', [FileGroupController::class, 'delete']);
 
-//Route::group(['prefix' => config('media-manager.routes.prefix')], function () {
+
+
+
 //    Route::get('browser/index', '\TalvBansal\MediaManager\Http\Controllers\MediaController@ls');
 //
 //    Route::post('browser/file', '\TalvBansal\MediaManager\Http\Controllers\MediaController@uploadFiles');
@@ -20,5 +22,5 @@ Route::delete('/file-group/{id}', [FileGroupController::class, 'delete']);
 //    Route::post('browser/rename', '\TalvBansal\MediaManager\Http\Controllers\MediaController@rename');
 //    Route::get('browser/directories', '\TalvBansal\MediaManager\Http\Controllers\MediaController@allDirectories');
 //    Route::post('browser/move', '\TalvBansal\MediaManager\Http\Controllers\MediaController@move');
-//});
+
 
