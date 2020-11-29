@@ -33,6 +33,7 @@ class InstallPackageCommand extends Command
 //            '--tag' => "config"
 //        ]);
 
-        $this->info('Installed BlogPackage');
+        $this->info("FileManager Package Successfully Installed.\n");
+        $this->info("\t\tGood Luck.");
     }
 }
