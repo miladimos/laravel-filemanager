@@ -51,6 +51,8 @@ class FileGroupService
         return $fileGroup;
     }
 
+    if (! file_exists(public_path().'/uploads')) { File::makeDirectory(public_path().'/uploads',0777, true);}
+
 
     public function updateFileGroup($id,$tile, $description)
     {

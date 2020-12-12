@@ -43,6 +43,19 @@ class File extends Model
             ->withPivot('tag', 'order');
     }
 
+    protected $fillable = ['imageable_id', 'imageable_type', 'url'];
+
+    protected $uploads = '/images/';
+
+    public function getUrlAttribute($image)
+    {
+        return $this->uploads . $image;
+    }
+
+    public function imageable()
+    {
+        return $this->morphTo();
+    }
 
     /**
      * Retrieve the file extension.
