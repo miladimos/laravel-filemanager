@@ -16,7 +16,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | The default group settings for the elFinder routes.
-    prefix result return  =>  yourdomain.test/API_PREFIX/API_VERSION/FILE_MANAGER_API_PREFIX/
+      prefix result return  =>  yourdomain.test/API_PREFIX/API_VERSION/FILE_MANAGER_API_PREFIX/
     |
     */
     'routes' => [
@@ -26,10 +26,16 @@ return [
         'middleware' => ['api'], //Set to null to disable middleware filter
     ],
 
+    /**
+     * web - api
+     * api : if you want use this package for Apis
+     * web : if you want use this package for web with blade
+     */
+    'uses' => 'api',
+
     /*
         g1 => [
         size => 512,
-
     ]
     */
     'server_config_level' => [
@@ -41,13 +47,6 @@ return [
      * By default S3 uploads are private, we're setting them to public here.
      */
     'access' => env('MEDIA_MANAGER_ACCESS', 'public'),
-
-    /**
-     * web - api
-     * api : if you want use this package for Apis
-     * web : if you want use this package for web with blade
-     */
-    'uses' => 'api',
 
     /**
      * List of disk names that you want to use for upload
@@ -62,6 +61,7 @@ return [
     * Adding a larger file will result in an exception.
     */
     'max_file_size' => 1024 * 1024 * 10,
+
     /**
      * An array of key value pairs for valid image
      * extensions and their associated MIME types.
@@ -69,15 +69,15 @@ return [
      * @var array
      */
      $imageMimes = [
-    'bmp' => 'image/bmp',
-    'gif' => 'image/gif',
-    'jpeg' => ['image/jpeg', 'image/pjpeg'],
-    'jpg' => ['image/jpeg', 'image/pjpeg'],
-    'jpe' => ['image/jpeg', 'image/pjpeg'],
-    'png' => 'image/png',
-    'tiff' => 'image/tiff',
-    'tif' => 'image/tiff',
-],
+        'bmp' => 'image/bmp',
+        'gif' => 'image/gif',
+        'jpeg' => ['image/jpeg', 'image/pjpeg'],
+        'jpg' => ['image/jpeg', 'image/pjpeg'],
+        'jpe' => ['image/jpeg', 'image/pjpeg'],
+        'png' => 'image/png',
+        'tiff' => 'image/tiff',
+        'tif' => 'image/tiff',
+    ],
 
 //      /**
 //       * Method for determining whether the uploaded file is
@@ -257,8 +257,6 @@ return [
     */
 //    'default_uploads_folder' => env('DEFAULT_UPLOADS_FOLDER', \Vmorozov\FileUploads\FilesSaver::DEFAULT_UPLOADS_FOLDER),
 
-   * Local Storage Path.
-     */
     'rootPath' => 'images',
 
     /*
@@ -293,17 +291,17 @@ return [
     /*
      * Thumbnail size in pixel
      */
-    'thumbnail' => [
-        /*
-         * Path are relative to rootPath.
-         * Suppose rootPath is photos and thumbnail path is thumbnails.
-         * Then your thumbnail full path will be photos/thumbnails
-         */
-        'path' => 'thumbnails',
-        'height' => 250,
-        'width' => 250,
+        'thumbnail' => [
+            /*
+            * Path are relative to rootPath.
+            * Suppose rootPath is photos and thumbnail path is thumbnails.
+            * Then your thumbnail full path will be photos/thumbnails
+            */
+            'path' => 'thumbnails',
+            'height' => 250,
+            'width' => 250,
+        ],
     ],
-],
 
     'files' => [
         'logo' => [
@@ -325,12 +323,6 @@ return [
             //'keep_original_file' => true //keep the original image Note: this might take time if the image file is uploaded to cloud
         ],
     ],
-
-
-    /*
-    * Base uri for $response->url
-    */
-    'base_uri' => null,
 
     'strategies' => [
         /*
