@@ -33,6 +33,12 @@ return [
      */
     'uses' => 'api',
 
+    'middleware'      => ['web', 'auth'],
+    'allow_format'    => 'jpeg,jpg,png,gif,webp',
+    'max_size'        => 500,
+    'max_image_width' => 1024,
+    'image_quality'   => 80,
+
     /*
         g1 => [
         size => 512,

@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class File extends Model
 {
-    protected $fillable = ['group_id'];
-
 
     /**
      * The table associated with the model.
@@ -66,7 +64,15 @@ class File extends Model
         return $this->filename . '.' . $this->extension;
     }
 
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->diffForHumans();
+    }
 
+    public function getUpdatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->diffForHumans();
+    }
 //    public function getPublicUrl($key = null)
 //    {
 //        $storageDisk =  Storage::disk(config('upload.disk'));
