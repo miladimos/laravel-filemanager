@@ -31,6 +31,13 @@ class CreateFilesTable extends Migration
             $table->boolean('is_private')->default(false);
             $table->timestamps();
 
+            $table->string('alt')->nullable();
+            $table->string('by_user')->nullable();
+            $table->string('original_name')->nullable();
+            $table->string('width')->nullable();
+            $table->string('height')->nullable();
+            $table->string('mime_type')->nullable();
+
             $table->morphs('model');
             $table->uuid('uuid')->nullable()->unique();
             $table->string('collection_name');

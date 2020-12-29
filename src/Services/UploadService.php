@@ -16,36 +16,6 @@ class UploadService
 {
 
 
-//    public function uploadImage(Request $request, Filesystem $filesystem)
-//    {
-//        $this->validate($request, [
-//            'filename' => 'required"mimes:jpeg,bmp,png|max:1024'
-//        ]);
-//        $file = $request->file('filename');
-//
-//        $year = Carbon::now()->year;
-//        $month = Carbon::now()->month;
-//        $day = Carbon::now()->day;
-//
-//        $destinationPath = "/upload/images/{$year}/{$month}/{$day}";
-//        $filename = $file->getClientOriginalName();
-//
-//        if($filesystem->exists(public_path("{$destinationPath}/{$filename}"))) {
-//            $filename = Carbon::now()->timestamp . "-{$filename}";
-//        }
-//
-//        $file->move(public_path($destinationPath), $filename);
-//
-//        return response([
-//            'data' =>[
-//                'image-url' => url("{$destinationPath}/{$filename}")
-//            ],
-//            'status' => 'success'
-//        ]);
-//    }
-
-
-
 
 //public function resizeImagePost(Request $request)
 //{
@@ -73,16 +43,6 @@ class UploadService
 //        ->with('imageName',$input['imagename']);
 //}
 
-
-
-
-
-
-
-
-
-
-    private $imageMimes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
 
     public function uploadFile(UploadedFile $uploadedFile, string $file)
     {
@@ -364,4 +324,7 @@ class UploadService
         }
 
     }
+
+
+
 }

@@ -95,7 +95,7 @@ class FileManagerServiceProvider extends ServiceProvider
 
 //        dd($this->routeConfiguration());
         Route::group($this->routeConfiguration(), function () {
-            $this->loadRoutesFrom(__DIR__.'\..\..\routes\filemanger-api.php');
+            $this->loadRoutesFrom(__DIR__ . '\..\..\routes\filemanger-api.php');
         });
 
 

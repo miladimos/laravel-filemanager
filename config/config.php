@@ -27,6 +27,14 @@ return [
     ],
 
     /**
+     * List of disk names that you want to use for upload
+     *
+     * public, ftp, storage
+     *
+     */
+    'disk' => env('UPLOAD_DISK', 'public'),
+
+    /**
      * web - api
      * api : if you want use this package for Apis
      * web : if you want use this package for web with blade
@@ -38,6 +46,74 @@ return [
     'max_size'        => 500,
     'max_image_width' => 1024,
     'image_quality'   => 80,
+
+    "type" => "default",
+
+    "types" => [
+        "default" => [
+            "provider"                => \AliGhale\FileManager\Types\File::class,
+            "path"                    => "default_files/test/",
+            "private"                 => false,
+            "date_time_prefix"        => true,
+            "use_file_name_to_upload" => false,
+            "secret"                  => "ashkdsjka#sdkdjfsj22188455$$#$%dsDFsdf",
+            "download_link_expire"    => 160, // minutes
+        ],
+
+        "image"   => [
+            "provider" => \AliGhale\FileManager\Types\Image::class,
+            "path"     => "images/upload/documents/",
+            "sizes"    => ["16", "24", "32", "64", "128", "320"],
+            "thumb"    => "320"
+        ],
+        "profile" => [
+            "parent"           => "image",
+            "path"             => "images/upload/profiles/",
+            "date_time_prefix" => false,
+        ],
+    ],
+
+        /*
+     * How many size of your image you want.
+     */
+    'strategies' => [
+        /*
+        * Thumbnail size in pixel
+        */
+        'thumbnail' => [
+            /*
+            * Path are relative to rootPath.
+            * Suppose rootPath is photos and thumbnail path is thumbnails.
+            * Then your thumbnail full path will be photos/thumbnails
+            */
+            'path' => 'thumbnails',
+            'height' => 250,
+            'width' => 250,
+            'fit' => 'stretch', // ['stretch', 'crop', 'contain', 'max', 'fill']
+            'crop' => [
+                'x' => 100,
+                'y' => 100
+            ],
+            'validation' => 'required|mimes:jpeg,png,gif',
+            'mimes' => ['image/jpeg', 'image/png', 'image/bmp', 'image/gif'],
+            'max_size' => '2m',
+            'disk' => env('FILESYSTEM_DRIVER', 'public'),
+            /*
+             * Default directory template.
+             * Variables:
+             *  - `Y`   Year, example: 2019
+             *  - `m`   Month, example: 04
+             *  - `d`   Date, example: 08
+             *  - `H`   Hour, example: 12
+             *  - `i`   Minute, example: 03
+             *  - `s`   Second, example: 12
+             */
+            'directory' => 'uploads/{Y}/{m}/{d}',
+        ],
+
+
+    ],
+
 
     /*
         g1 => [
@@ -53,14 +129,6 @@ return [
      * By default S3 uploads are private, we're setting them to public here.
      */
     'access' => env('MEDIA_MANAGER_ACCESS', 'public'),
-
-    /**
-     * List of disk names that you want to use for upload
-     *
-     * public, ftp, storage
-     *
-     */
-    'disk' => env('UPLOAD_DISK', 'public'),
 
     /*
     * The maximum file size of an item in bytes.
@@ -85,27 +153,6 @@ return [
         'tif' => 'image/tiff',
     ],
 
-//      /**
-//       * Method for determining whether the uploaded file is
-//       * an image type.
-//       *
-//       * @return bool
-//       */
-//    public function isImage()
-//{
-//    $mime = $this->getMimeType();
-//
-//    // The $imageMimes property contains an array of file extensions and
-//    // their associated MIME types. We will loop through them and look for
-//    // the MIME type of the current SymfonyUploadedFile.
-//    foreach ($this->imageMimes as $imageMime) {
-//        if (in_array($mime, (array) $imageMime)) {
-//            return true;
-//        }
-//    }
-//
-//    return false;
-//}
 
     /**
      * List of allowed for upload
@@ -223,170 +270,7 @@ return [
     'use_package_routes' => '',
 
 
-    /*
-   |--------------------------------------------------------------------------
-   | This is the storage to upload files by default
-   |--------------------------------------------------------------------------
-   |
-   | Now you have two options here:
-   | 1. To store locally FilesSaver::STORAGE_LOCAL (this is the default option)
-   | 2. To store in s3 storage FilesSaver::STORAGE_AMAZON_S3
-   |
-   */
-//    'files_upload_storage' => env('FILES_UPLOAD', \Vmorozov\FileUploads\FilesSaver::STORAGE_LOCAL),
 
-    /*
-    |--------------------------------------------------------------------------
-    | This is the default level of quality for the stored images
-    |--------------------------------------------------------------------------
-    | Possible values are from 1 to 100
-    |
-    */
-//    'image_quality' => env('IMAGE_QUALITY', \Vmorozov\FileUploads\FilesSaver::DEFAULT_IMAGE_QUALITY),
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | This is the default level of quality for the stored images
-    |--------------------------------------------------------------------------
-    | Possible values are from 1 to 100
-    |
-    */
-//    'image_extension' => env('IMAGE_EXTENSION', \Vmorozov\FileUploads\FilesSaver::DEFAULT_IMAGE_EXTENSION),
-
-    /*
-    |--------------------------------------------------------------------------
-    | This is the default level of quality for the stored images
-    |--------------------------------------------------------------------------
-    | Possible values are from 1 to 100
-    |
-    */
-//    'default_uploads_folder' => env('DEFAULT_UPLOADS_FOLDER', \Vmorozov\FileUploads\FilesSaver::DEFAULT_UPLOADS_FOLDER),
-
-    'rootPath' => 'images',
-
-    /*
-     * either disk or cloud
-     */
-    'filesystem' => 'disk',
-
-    /*
-     * Do you like to reduce image size?
-     */
-    'compressSize' => true,
-
-    /*
-     * Exif Data
-     */
-    'exif' => true,
-
-    /*
-     * Maximum weight of image. Leave blank or false if you do not like shrink your images
-     */
-    'maxWidth' => env('PHOTO_IMAGE_MAX_WIDTH', 800),
-
-    /*
-     * Maximum height of image. Leave blank or false if you do not like shrink your images
-     */
-    'maxHeight' => env('PHOTO_IMAGE_MAX_HEIGHT', 450),
-
-    /*
-     * How many size of your image you want.
-     */
-    'sizes' => [
-    /*
-     * Thumbnail size in pixel
-     */
-        'thumbnail' => [
-            /*
-            * Path are relative to rootPath.
-            * Suppose rootPath is photos and thumbnail path is thumbnails.
-            * Then your thumbnail full path will be photos/thumbnails
-            */
-            'path' => 'thumbnails',
-            'height' => 250,
-            'width' => 250,
-        ],
-    ],
-
-    'files' => [
-        'logo' => [
-            'resize' => [
-                'thumb' => [
-                    'height' => 100,
-                    'width' => 100,
-                    'fit' => 'stretch', // ['stretch', 'crop', 'contain', 'max', 'fill']
-                    'crop' => [
-                        'x' => 100,
-                        'y' => 100
-                    ],
-                    'create_on_upload' => true
-                ]
-            ],
-            'validation' => 'required|mimes:jpeg,png,gif',
-            //optional:
-            //'optimize' => true, //optimize image on upload
-            //'keep_original_file' => true //keep the original image Note: this might take time if the image file is uploaded to cloud
-        ],
-    ],
-
-    'strategies' => [
-        /*
-         * default strategy.
-         */
-        'default' => [
-            /*
-             * The form name for file.
-             */
-            'name' => 'file',
-
-            /*
-             * Allowed MIME types.
-             */
-            'mimes' => ['image/jpeg', 'image/png', 'image/bmp', 'image/gif'],
-
-            /*
-             * The disk name to store file, the value is key of `disks` in `config/filesystems.php`
-             */
-            'disk' => env('FILESYSTEM_DRIVER', 'public'),
-
-            /*
-             * Default directory template.
-             * Variables:
-             *  - `Y`   Year, example: 2019
-             *  - `m`   Month, example: 04
-             *  - `d`   Date, example: 08
-             *  - `H`   Hour, example: 12
-             *  - `i`   Minute, example: 03
-             *  - `s`   Second, example: 12
-             */
-            'directory' => 'uploads/{Y}/{m}/{d}',
-
-            /*
-             * File size limit
-             */
-            'max_size' => '2m',
-
-            /*
-             * Strategy of filename.
-             *
-             * Available:
-             *  - `random` Use random string as filename.
-             *  - `md5_file` Use md5 of file as filename.
-             *  - `original` Use the origin client file name.
-             */
-            'filename_type' => 'md5_file',
-        ],
-
-        /*
-         * You can create custom strategy to override the default strategy.
-         */
-        'avatar' => [
-            'directory' => 'avatars/{Y}/{m}/{d}',
-        ],
-
-        //...
-    ],
 
 ];
 
