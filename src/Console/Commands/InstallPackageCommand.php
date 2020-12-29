@@ -5,6 +5,7 @@ namespace Miladimos\FileManager\Console\Commands;
 
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Config;
 
 class InstallPackageCommand extends Command
 {
@@ -18,28 +19,29 @@ class InstallPackageCommand extends Command
 
         $uses = $this->choice('What type do you use this package?', ['api', 'web']);
 
-
-        if ($uses == 'web')
+        if ($uses == 'web') {
             $this->info('web');
-        else if ($uses == 'api')
+            Config::set('file_manager.uses', 'web');
+        } else if ($uses == 'api') {
             $this->info('api');
+            Config::set('file_manager.uses', 'api');
+        }
 
 
-        // config(['app.timezone' => 'America/Chicago']);
+
+
+
+
+        $this->warn(Config::get('file_manager.uses'));
+
         //        $this->info('Installing FileManager Package Started...');
 
         //        $this->info('Publishing configuration...');
 
-        //        $this->call('vendor:publish', [
-        //            '--provider' => "Miladimos\FileManager\Providers\FileManagerServiceProvider",
-        //            '--tag' => "config"
-        //        ]);
 
         $this->info("FileManager Package Successfully Installed.\n");
         $this->info("\t\tGood Luck.");
     }
-
-
 
     //       //config
     //       if (File::exists(config_path('filemanager.php'))) {
@@ -89,7 +91,7 @@ class InstallPackageCommand extends Command
     // private function publishConfig()
     // {
     //     $this->call('vendor:publish', [
-    //         '--provider' => "Haruncpi\LaravelSimpleFilemanager\ServiceProvider",
+    //         '--provider' => "Miladimos\FileManager\Providers\FileManagerServiceProvider",
     //         '--tag'      => 'config',
     //         '--force'    => true
     //     ]);
@@ -98,7 +100,7 @@ class InstallPackageCommand extends Command
     // private function publishMigration()
     // {
     //     $this->call('vendor:publish', [
-    //         '--provider' => "Haruncpi\LaravelSimpleFilemanager\ServiceProvider",
+    //         '--provider' => "Miladimos\FileManager\Providers\FileManagerServiceProvider",
     //         '--tag'      => 'migrations',
     //         '--force'    => true
     //     ]);
@@ -107,9 +109,10 @@ class InstallPackageCommand extends Command
     // private function publishAssets()
     // {
     //     $this->call('vendor:publish', [
-    //         '--provider' => "Haruncpi\LaravelSimpleFilemanager\ServiceProvider",
+    //         '--provider' => "Miladimos\FileManager\Providers\FileManagerServiceProvider",
     //         '--tag'      => 'assets',
     //         '--force'    => true
     //     ]);
     // }
+
 }

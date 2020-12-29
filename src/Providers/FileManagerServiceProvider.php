@@ -13,12 +13,11 @@ class FileManagerServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . "/../../config/config.php", 'file-manager');
+        $this->mergeConfigFrom(__DIR__ . "/../../config/config.php", 'file_manager');
 
-        $this->app->bind('file-manager', function($app) {
+        $this->app->bind('file-manager', function ($app) {
             return new FileManager();
         });
-
     }
 
     /**
@@ -31,23 +30,20 @@ class FileManagerServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->registerConfig();
-            $this->registerPublishesMigrations();
+            // $this->registerPublishesMigrations();
             $this->registerCommands();
+            // $this->registerTranslations();
+            $this->registerRoutes();
         }
+    }
 
-        $this->registerRoutes();
+    private function registerTranslations()
+    {
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'courier');
 
-//        if(config('file-manager.uses') == 'api') {
-//            $this->loadRoutesFrom(__DIR__.'/../../routes/web.php');
-//        }
-
-
-
-//        if (config('lfm.use_package_routes')) {
-//            Route::group(['prefix' => 'filemanager', 'middleware' => ['web', 'auth']], function () {
-//                \UniSharp\LaravelFilemanager\Lfm::routes();
-//            });
-//        }
+        $this->publishes([
+            __DIR__ . '/../resources/lang' => resource_path('lang/vendor/courier'),
+        ]);
     }
 
     private function registerConfig()
@@ -57,55 +53,68 @@ class FileManagerServiceProvider extends ServiceProvider
         ], 'file-manager-config');
     }
 
-    private function registerCommands() {
+    private function registerCommands()
+    {
         $this->commands([
             InstallPackageCommand::class,
         ]);
     }
 
-    private function registerPublishesMigrations() {
+    private function registerPublishesMigrations()
+    {
 
-        if (! class_exists('CreateFilesTable')) {
+        if (!class_exists('CreateFilesTable')) {
             $this->publishes([
                 __DIR__ . '/../database/migrations/create_files_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_files_table.php'),
                 // you can add any number of migrations here
             ], 'migrations');
         }
-        if (! class_exists('CreateFileGroupsTable')) {
+        if (!class_exists('CreateFileGroupsTable')) {
             $this->publishes([
                 __DIR__ . '/../database/migrations/create_file_groups_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_file_groups_table.php'),
                 // you can add any number of migrations here
             ], 'migrations');
         }
-        if (! class_exists('CreateFileGroupPivotTable')) {
+        if (!class_exists('CreateFileGroupPivotTable')) {
             $this->publishes([
                 __DIR__ . '/../database/migrations/create_file_group_pivot_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_file_group_pivot_table.php'),
                 // you can add any number of migrations here
             ], 'migrations');
         }
-        if (! class_exists('CreateDirectoriesTable')) {
+        if (!class_exists('CreateDirectoriesTable')) {
             $this->publishes([
                 __DIR__ . '/../database/migrations/create_directories_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_directories_table.php'),
                 // you can add any number of migrations here
             ], 'migrations');
         }
     }
-    protected function registerRoutes()
+    private function registerRoutes()
     {
-
-//        dd($this->routeConfiguration());
-        Route::group($this->routeConfiguration(), function () {
-            $this->loadRoutesFrom(__DIR__ . '\..\..\routes\filemanger-api.php');
-        });
-
-
+        if (config('file_manager.uses') == 'web') {
+            Route::group($this->routeConfiguration('web'), function () {
+                $this->loadRoutesFrom(__DIR__ . '\..\..\routes\web.php', 'filemanager-routes');
+            });
+        } else  if (config('file_manager.uses') == 'api') {
+            Route::group($this->routeConfiguration('api'), function () {
+                $this->loadRoutesFrom(__DIR__ . '\..\..\routes\filemanger-api.php', 'filemanager-routes');
+            });
+        }
     }
 
-    protected function routeConfiguration()
+    private function routeConfiguration($uses = 'api')
     {
-        return [
-            'prefix' => config('file-manager.routes.api_prefix') . '/' . config('file-manager.routes.api_version') . '/' . config('file-manager.routes.prefix'),
-            'middleware' => config('file-manager.routes.middleware'),
-        ];
+        if ($uses == 'api') {
+            return [
+                'prefix' => config('file-manager.routes.api.api_prefix') . '/' . config('file-manager.routes.api.api_version') . '/' . config('file-manager.routes.prefix'),
+                'middleware' => config('file-manager.routes.api.middleware'),
+            ];
+        } else if ($uses == 'web') {
+            return [
+                'prefix' => config('file-manager.routes.prefix'),
+                'middleware' => config('file-manager.routes.web.middleware'),
+            ];
+        }
+
+        return [];
     }
 }

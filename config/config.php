@@ -20,10 +20,15 @@ return [
     |
     */
     'routes' => [
-        'api_prefix' => env('API_PREFIX', 'api'),
-        'api_version' => env('API_VERSION', 'v1'),
+        'web' => [
+            'middleware' => ['web', 'auth'], //Set to null to disable middleware filter
+        ],
+        'api' => [
+            'api_prefix' => env('API_PREFIX', 'api'),
+            'api_version' => env('API_VERSION', 'v1'),
+            'middleware' => ['api'], //Set to null to disable middleware filter
+        ],
         'prefix' => env('FILE_MANAGER_API_PREFIX', 'file-manager'),
-        'middleware' => ['api'], //Set to null to disable middleware filter
     ],
 
     /**
@@ -168,7 +173,8 @@ return [
         'file_group_table' => 'file_groups',
         'directories' => 'directories',
     ],
-
+    'pagination_results_folders' => 12, //2 rows
+    'pagination_results_files' => 15, //3 rows
     /**
      * Image cache ( Intervention Image Cache )
      *
@@ -176,6 +182,14 @@ return [
      * if you want use cache - set the number of minutes for which the value should be cached
      */
     'cache' => null,
+
+    /**
+     *
+     * Default Locale
+     * avable locale : en - fa - tr - ar
+     *
+    */
+    'locale' => 'fa',
 
     /**
      * File manager modules configuration
