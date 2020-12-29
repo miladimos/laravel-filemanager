@@ -25,7 +25,7 @@ class InstallPackageCommand extends Command
             $this->info('api');
 
 
-
+        // config(['app.timezone' => 'America/Chicago']);
         //        $this->info('Installing FileManager Package Started...');
 
         //        $this->info('Publishing configuration...');

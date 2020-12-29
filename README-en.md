@@ -19,9 +19,9 @@ composer require miladimos/laravel-filemanager
 Miladimos\FileManager\Providers\FileManagerServiceProvider::class
 ```
 
-3. Run the command below to publish the package config file config/file_uploads.php:
+3. Run the command below to install:
 ```
-php artisan vendor:publish
+php artisan filemanager:install
 ```
 
 
