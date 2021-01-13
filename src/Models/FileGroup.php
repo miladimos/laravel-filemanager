@@ -20,4 +20,9 @@ class FileGroup extends Model
     {
         return $this->hasMany(File::class);
     }
+
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
 }

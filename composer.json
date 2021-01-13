@@ -38,7 +38,8 @@
         }
     },
     "require": {
-
+        "ramsey/uuid": "^4.1",
+        "webpatser/laravel-uuid": "^3.0"
     },
     "license": "MIT",
     "minimum-stability": "stable"

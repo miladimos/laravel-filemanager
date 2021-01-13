@@ -15,4 +15,9 @@ class Directory extends Model
      * @var string
      */
     protected $table = 'my_flights';
+
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
 }

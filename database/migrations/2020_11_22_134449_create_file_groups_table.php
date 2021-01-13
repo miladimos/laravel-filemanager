@@ -15,6 +15,8 @@ class CreateFileGroupsTable extends Migration
     {
         Schema::create('file_groups', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->uniuqe();
+
             $table->string('title')->unique();
             $table->string('description')->unique();
             $table->timestamps();

@@ -15,7 +15,7 @@ class CreateFilesTable extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->uniuqe();
+            $table->uuid('uuid')->uniuqe();
             $table->foreignId('group_id');
             $table->integer('directory_id');
             $table->integer('user_id');

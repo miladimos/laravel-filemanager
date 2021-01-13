@@ -28,10 +28,6 @@ class InstallPackageCommand extends Command
         }
 
 
-
-
-
-
         $this->warn(Config::get('file_manager.uses'));
 
         //        $this->info('Installing FileManager Package Started...');
