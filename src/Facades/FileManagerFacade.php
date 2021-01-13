@@ -8,6 +8,6 @@ class FileManagerFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'file-manager';
+        return 'file_manager';
     }
 }

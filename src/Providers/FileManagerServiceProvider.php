@@ -13,7 +13,7 @@ class FileManagerServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . "/../../config/config.php", 'file_manager');
+        $this->mergeConfigFrom(__DIR__ . "/../../config/file_manager.php", 'file_manager');
 
         $this->registerFacades();
 
@@ -38,7 +38,7 @@ class FileManagerServiceProvider extends ServiceProvider
 
     private function registerFacades()
     {
-        $this->app->bind('file-manager', function ($app) {
+        $this->app->bind('file_manager', function ($app) {
             return new FileManager();
         });
     }
@@ -56,7 +56,7 @@ class FileManagerServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__ . '/../../config/config.php' => config_path('file_manager.php')
-        ], 'file-manager-config');
+        ], 'file_manager_config');
     }
 
     private function registerCommands()
@@ -111,13 +111,13 @@ class FileManagerServiceProvider extends ServiceProvider
     {
         if ($uses == 'api') {
             return [
-                'prefix' => config('file-manager.routes.api.api_prefix') . '/' . config('file-manager.routes.api.api_version') . '/' . config('file-manager.routes.prefix'),
-                'middleware' => config('file-manager.routes.api.middleware'),
+                'prefix' => config('file_manager.routes.api.api_prefix') . '/' . config('file_manager.routes.api.api_version') . '/' . config('file_manager.routes.prefix'),
+                'middleware' => config('file_manager.routes.api.middleware'),
             ];
         } else if ($uses == 'web') {
             return [
-                'prefix' => config('file-manager.routes.prefix'),
-                'middleware' => config('file-manager.routes.web.middleware'),
+                'prefix' => config('file_manager.routes.prefix'),
+                'middleware' => config('file_manager.routes.web.middleware'),
             ];
         }
 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFileGroupPivotTable extends Migration
+class CreateFileGroupsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateFileGroupPivotTable extends Migration
      */
     public function up()
     {
-        Schema::create('file_group_pivot', function (Blueprint $table) {
+        Schema::create('file_groups', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('file_id');
-            $table->foreignId('group_id');
+            $table->uuid('uuid')->uniuqe();
+            $table->string('title')->unique();
+            $table->string('description')->unique()->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateFileGroupPivotTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('file_group_pivot');
+        Schema::dropIfExists('file_groups');
     }
 }

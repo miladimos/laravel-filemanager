@@ -3,7 +3,7 @@
 namespace Miladimos\FileManager\Traits;
 use Miladimos\FileManager\Models\File;
 
-trait HasFile
+trait hasFile
 {
     public function files()
     {

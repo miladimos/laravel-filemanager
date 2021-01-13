@@ -2,19 +2,31 @@
 
 namespace App\Models;
 
+use App\Traits\hasUUID;
 use Illuminate\Database\Eloquent\Model;
 
 class Directory extends Model
 {
-    protected $fillable = ['name'];
-
+    use hasUUID;
 
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'my_flights';
+    protected $table = 'directories';
+
+    // protected $fillable = ['name'];
+
+    protected $guarded = [];
+
+
+    public function parent()
+    {
+        return $this->belongsTo(Directory::class, 'parent_id', 'id')
+    }
+
+
 
     public function getRouteKeyName()
     {

@@ -21,7 +21,9 @@ class CreateDirectoriesTable extends Migration
             $table->foreignID('user_id')->nullable();
             $table->string('title')->unique();
             $table->string('icon')->nullable();
-            $table->string('description');
+            $table->string('description')->nullable();
+            $table->enum('status', ['active', 'disabled', 'hide'])->nullable();
+            $table->boolean('active')->default(1);
             $table->timestamps();
         });
     }
@@ -36,3 +38,4 @@ class CreateDirectoriesTable extends Migration
         Schema::dropIfExists('directories');
     }
 }
+

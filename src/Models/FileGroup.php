@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Traits\hasUUID;
 use Miladimos\FileManager\Models\File;
+use Illuminate\Database\Eloquent\Model;
 
 class FileGroup extends Model
 {
-    protected $fillable = ['title', 'description'];
+    use hasUUID;
 
     /**
      * The table associated with the model.
@@ -16,9 +17,13 @@ class FileGroup extends Model
      */
     protected $table = 'file_groups';
 
+
+    protected $fillable = ['title', 'description', 'uuid'];
+
+
     public function files()
     {
-        return $this->hasMany(File::class);
+        return $this->belongsToMany(File::class, 'file_group_pivot');
     }
 
     public function getRouteKeyName()
