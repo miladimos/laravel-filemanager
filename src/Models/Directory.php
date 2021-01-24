@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use App\Traits\hasUUID;
+use App\Traits\HasUUID;
 use Illuminate\Database\Eloquent\Model;
 
 class Directory extends Model
 {
-    use hasUUID;
+    use HasUUID;
 
     /**
      * The table associated with the model.
@@ -16,16 +16,15 @@ class Directory extends Model
      */
     protected $table = 'directories';
 
-    // protected $fillable = ['name'];
+    // protected $fillable = ['name', 'uuid'];
 
     protected $guarded = [];
 
 
     public function parent()
     {
-        return $this->belongsTo(Directory::class, 'parent_id', 'id')
+        return $this->belongsTo(Directory::class, 'parent_id', 'id');
     }
-
 
 
     public function getRouteKeyName()

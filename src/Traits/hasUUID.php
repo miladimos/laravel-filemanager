@@ -3,7 +3,7 @@
 use Webpatser\Uuid\Uuid;
 
 
-trait hasUUID
+trait HasUUID
 {
     protected static function boot()
     {

@@ -3,14 +3,14 @@
 namespace Miladimos\FileManager\Models;
 
 use Carbon\Carbon;
-use App\Traits\hasUUID;
+use App\Traits\HasUUID;
 use App\Models\FileGroup;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class File extends Model
 {
-    use hasUUID;
+    use HasUUID;
 
     /**
      * The table associated with the model.

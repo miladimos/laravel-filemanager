@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use App\Traits\hasUUID;
+use App\Traits\HasUUID;
 use Miladimos\FileManager\Models\File;
 use Illuminate\Database\Eloquent\Model;
 
 class FileGroup extends Model
 {
-    use hasUUID;
+    use HasUUID;
 
     /**
      * The table associated with the model.
@@ -18,7 +18,9 @@ class FileGroup extends Model
     protected $table = 'file_groups';
 
 
-    protected $fillable = ['title', 'description', 'uuid'];
+    // protected $fillable = ['title', 'description', 'uuid'];
+
+    protected $guarded = [];
 
 
     public function files()
