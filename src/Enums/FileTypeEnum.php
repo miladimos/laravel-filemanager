@@ -4,10 +4,12 @@
 namespace Miladimos\FileManager\Enums;
 
 
-use ReflectionClass;
+use App\Traits\GetConstantsEnum;
 
 class FileTypeEnum
 {
+
+    use GetConstantsEnum;
 
     const  AUDIO = 1;
     const  IMAGE = 2;
@@ -27,10 +29,6 @@ class FileTypeEnum
     const TYPE_ALL = 'all';
 
 
-    static function getConstants() {
-        $oClass = new ReflectionClass(__CLASS__);
-        return $oClass->getConstants();
-    }
 
 
     static function getConstantsValue()
