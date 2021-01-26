@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Traits;
+namespace Miladimos\FileManager\Traits;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-trait hasAuthor
+trait HasAuthor
 {
     public function author(): User
     {

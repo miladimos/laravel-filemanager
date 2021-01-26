@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Traits;
+namespace Miladimos\FileManager\Traits;
 
 use ReflectionClass;
 

@@ -1,4 +1,7 @@
-<?php namespace App\Traits;
+<?php
+
+namespace Miladimos\FileManager\Traits;
+
 
 use Webpatser\Uuid\Uuid;
 
@@ -12,7 +15,5 @@ trait HasUUID
         self::creating(function ($model) {
             $model->uuid = (string) Uuid::generate(4);
         });
-
     }
-
 }
