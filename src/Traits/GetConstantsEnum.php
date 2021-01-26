@@ -11,5 +11,4 @@ trait GetConstantsEnum
         $reflectionClass = new ReflectionClass(static::class); // __CLASS__
         return $reflectionClass->getConstants();
     }
-
 }

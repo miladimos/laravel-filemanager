@@ -46,7 +46,7 @@ class FileGroupService
             'description' => $description,
         ]);
 
-        if(!$fileGroup)
+        if (!$fileGroup)
             return false;
         return $fileGroup;
     }
@@ -54,21 +54,21 @@ class FileGroupService
     // if (! file_exists(public_path().'/uploads')) { File::makeDirectory(public_path().'/uploads',0777, true);}
 
 
-    public function updateFileGroup($id,$tile, $description)
+    public function updateFileGroup(FileGroup $fileGroup, $tile, $description)
     {
-        $fileGroup = FileGroup::findOrFail($id)->update([
+        $fileGroup = $fileGroup->update([
             'title' => $tile,
             'description' => $description,
         ]);
-        if(!$fileGroup)
+        if (!$fileGroup)
             return false;
 
         return $fileGroup;
     }
 
-    public function deleteFileGroup($id)
+    public function deleteFileGroup(FileGroup $fileGroup)
     {
-        if($fileGroup = FileGroup::findOrFail($id)->delete())
+        if ($fileGroup = $fileGroup->delete())
             return $fileGroup;
 
         return false;

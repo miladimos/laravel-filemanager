@@ -2,9 +2,7 @@
 
 namespace Miladimos\FileManager\Traits;
 
-
 use Webpatser\Uuid\Uuid;
-
 
 trait HasUUID
 {

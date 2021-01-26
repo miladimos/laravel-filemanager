@@ -4,10 +4,10 @@
 return [
 
     /*
-    * FQCN of the model to use for media
-    *
-    * Should extend `Plank\Mediable\Media`
-    */
+                 * FQCN of the model to use for media
+                *
+                * Should extend `Plank\Mediable\Media`
+           */
     'model' => \Miladimos\FileManager\Models\File::class,
 
     /*
@@ -18,7 +18,7 @@ return [
     | The default group settings for the elFinder routes.
       prefix result return  =>  yourdomain.test/API_PREFIX/API_VERSION/FILE_MANAGER_API_PREFIX/
     |
-    */
+     */
     'routes' => [
         'web' => [
             'middleware' => ['web', 'auth'], //Set to null to disable middleware filter
@@ -47,10 +47,16 @@ return [
     'uses' => 'api',
 
     'middleware'      => ['web', 'auth'],
+
     'allow_format'    => 'jpeg,jpg,png,gif,webp',
+
     'max_size'        => 500,
+
     'max_image_width' => 1024,
+
     'image_quality'   => 80,
+
+    "access" => "public",
 
     "type" => "default",
 
@@ -78,7 +84,7 @@ return [
         ],
     ],
 
-        /*
+    /*
      * How many size of your image you want.
      */
     'strategies' => [
@@ -86,11 +92,6 @@ return [
         * Thumbnail size in pixel
         */
         'thumbnail' => [
-            /*
-            * Path are relative to rootPath.
-            * Suppose rootPath is photos and thumbnail path is thumbnails.
-            * Then your thumbnail full path will be photos/thumbnails
-            */
             'path' => 'thumbnails',
             'height' => 250,
             'width' => 250,
@@ -116,17 +117,6 @@ return [
             'directory' => 'uploads/{Y}/{m}/{d}',
         ],
 
-
-    ],
-
-
-    /*
-        g1 => [
-        size => 512,
-    ]
-    */
-    'server_config_level' => [
-
     ],
 
     /*
@@ -141,31 +131,13 @@ return [
     */
     'max_file_size' => 1024 * 1024 * 10,
 
-    /**
-     * An array of key value pairs for valid image
-     * extensions and their associated MIME types.
-     *
-     * @var array
-     */
-     $imageMimes = [
-        'bmp' => 'image/bmp',
-        'gif' => 'image/gif',
-        'jpeg' => ['image/jpeg', 'image/pjpeg'],
-        'jpg' => ['image/jpeg', 'image/pjpeg'],
-        'jpe' => ['image/jpeg', 'image/pjpeg'],
-        'png' => 'image/png',
-        'tiff' => 'image/tiff',
-        'tif' => 'image/tiff',
-    ],
-
-
-    /**
-     * List of allowed for upload
-     */
-    'mimes' => [
+    'allowed_mimes' => [
         'image/gif',
         'image/jpeg',
         'image/png',
+        'image/bmp',
+        'image/png',
+        'image/tiff',
     ],
 
     'database' => [
@@ -173,8 +145,11 @@ return [
         'file_group_table' => 'file_groups',
         'directories' => 'directories',
     ],
+
+
     'pagination_results_folders' => 12, //2 rows
     'pagination_results_files' => 15, //3 rows
+
     /**
      * Image cache ( Intervention Image Cache )
      *
@@ -186,19 +161,10 @@ return [
     /**
      *
      * Default Locale
-     * avable locale : en - fa - tr - ar
+     * available locale : en - fa - tr - ar
      *
     */
     'locale' => 'fa',
-
-    /**
-     * File manager modules configuration
-     *
-     * 1 - only one file manager window
-     * 2 - one file manager window with directories tree module
-     * 3 - two file manager windows
-     */
-    'windowsConfig' => 2,
 
     /**
      * File upload - Max file size in KB
@@ -206,15 +172,6 @@ return [
      * null - no restrictions
      */
     'maxUploadFileSize' => null,
-
-    /**
-     * File upload - Allow these file types
-     *
-     * [] - no restrictions
-     */
-    'allowFileTypes' => [
-
-    ],
 
     /**
      * Show / Hide system files and folders
@@ -235,22 +192,6 @@ return [
      * ACL access level = 0
      */
     'aclHideFromFM' => true,
-
-    /**
-     * ACL strategy
-     *
-     * blacklist - Allow everything(access - 2 - r/w) that is not forbidden by the ACL rules list
-     *
-     * whitelist - Deny anything(access - 0 - deny), that not allowed by the ACL rules list
-     */
-    'aclStrategy' => 'blacklist',
-
-    /**
-     * ACL Rules cache
-     *
-     * null or value in minutes
-     */
-    'aclRulesCache' => null,
 
 
     /***************************************************************************
@@ -281,11 +222,4 @@ return [
         ],
     ],
 
-    'use_package_routes' => '',
-
-
-
-
 ];
-
-
