@@ -5,10 +5,12 @@ namespace App\Models;
 use Miladimos\FileManager\Traits\HasUUID;
 use Miladimos\FileManager\Models\File;
 use Illuminate\Database\Eloquent\Model;
+use Miladimos\FileManager\Traits\RouteKeyNameUUID;
 
 class FileGroup extends Model
 {
-    use HasUUID;
+    use HasUUID,
+        RouteKeyNameUUID;
 
     /**
      * The table associated with the model.
@@ -26,10 +28,5 @@ class FileGroup extends Model
     public function files()
     {
         return $this->belongsToMany(File::class, 'file_group_pivot');
-    }
-
-    public function getRouteKeyName()
-    {
-        return 'uuid';
     }
 }
