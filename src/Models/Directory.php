@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Traits\HasUUID;
+use Miladimos\FileManager\Traits\HasUUID;
 use Illuminate\Database\Eloquent\Model;
 
 class Directory extends Model

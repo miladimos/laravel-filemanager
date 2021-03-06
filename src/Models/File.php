@@ -3,7 +3,7 @@
 namespace Miladimos\FileManager\Models;
 
 use Carbon\Carbon;
-use App\Traits\HasUUID;
+use Miladimos\FileManager\Traits\HasUUID;
 use App\Models\FileGroup;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
