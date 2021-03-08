@@ -1,9 +1,11 @@
 <?php
 
+namespace Miladimos\FileManager\Http\Controllers;
 
 class FileController extends Controller
 {
-    public function uploadFile(Request $request) {
+    public function uploadFile(Request $request)
+    {
         if ($request->hasFile('file')) {
 
             $path = $request->file('file')->store('uploads');
@@ -43,12 +45,13 @@ class FileController extends Controller
         }
     }
 
-    public function getUserFiles(Request $request) {
+    public function getUserFiles(Request $request)
+    {
         $folder = $request->input('folder');
 
         // un-foldered files
         if ($folder == 0) {
-            $files = File::where('folder_id' ,'0')->where('user_id', Auth::id())->orderBy('file_name', 'asc')->get();
+            $files = File::where('folder_id', '0')->where('user_id', Auth::id())->orderBy('file_name', 'asc')->get();
         } else {
             $files = File::where('folder_id', $folder)->where('user_id', Auth::id())->orderBy('file_name', 'asc')->get();
         }
@@ -56,13 +59,15 @@ class FileController extends Controller
         return $files->toJson();
     }
 
-    public function downloadFile($id) {
+    public function downloadFile($id)
+    {
         $file = File::where('id', $id)->first();
 
         return response()->download(storage_path("app/uploads/") . $file->file_hash, $file->file_name);
     }
 
-    public function deleteFile($id) {
+    public function deleteFile($id)
+    {
         try {
             $file = File::where('id', $id)->first();
 
@@ -76,7 +81,8 @@ class FileController extends Controller
         }
     }
 
-    public function renameFile(Request $request) {
+    public function renameFile(Request $request)
+    {
         $id = $request->input('fileId');
         $name = $request->input('fileName');
 
@@ -91,7 +97,8 @@ class FileController extends Controller
         return response()->json(['msg' => 'File renamed.', 'status' => '200'], 200);
     }
 
-    public function moveFile(Request $request) {
+    public function moveFile(Request $request)
+    {
         $folderId = $request->input('folderId');
         $fileId = $request->input('fileId');
 

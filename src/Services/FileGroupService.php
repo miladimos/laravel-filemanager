@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Miladimos\FileManager\Services;
 
 
@@ -10,20 +9,15 @@ use Illuminate\Support\Facades\Storage;
 class FileGroupService
 {
 
-
     protected $disk;
-
 
     protected $access;
 
-
     protected $mimeDetect;
-
 
     private $errors = [];
 
     private $diskName;
-
 
     public function __construct()
     {
@@ -32,7 +26,6 @@ class FileGroupService
         $this->breadcrumbRootLabel = config('media-manager.breadcrumb.root');
         $this->disk = Storage::disk($this->diskName);
     }
-
 
     public function allFileGroups()
     {

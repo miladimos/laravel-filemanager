@@ -1,9 +1,6 @@
 <?php
 
-
 namespace Miladimos\FileManager;
-
-
 class FileManagerTest
 {
     protected $config = array();

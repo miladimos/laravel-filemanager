@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace Miladimos\FileManager\Models;
 
 use Miladimos\FileManager\Traits\HasUUID;
 use Illuminate\Database\Eloquent\Model;

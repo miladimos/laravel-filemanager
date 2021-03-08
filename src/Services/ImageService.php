@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Miladimos\FileManager\Services;
 
 use Illuminate\Support\Facades\Storage;

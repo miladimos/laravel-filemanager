@@ -29,9 +29,9 @@ class FileGroupController extends Controller
 
 
 
-//"php": ">=7.2",
-//        "illuminate/filesystem": "5.0.*",
-//        "league/flysystem": "^1.0",
-//        "league/flysystem-aws-s3-v3": "^1.0",
-//        "intervention/image": "^2.5"
+    //"php": ">=7.2",
+    //        "illuminate/filesystem": "5.0.*",
+    //        "league/flysystem": "^1.0",
+    //        "league/flysystem-aws-s3-v3": "^1.0",
+    //        "intervention/image": "^2.5"
 }

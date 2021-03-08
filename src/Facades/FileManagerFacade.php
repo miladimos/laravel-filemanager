@@ -1,6 +1,6 @@
 <?php
 
-namespace Miladimos\Social\Facades;
+namespace Miladimos\FileManager\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

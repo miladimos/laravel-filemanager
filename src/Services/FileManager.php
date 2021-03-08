@@ -1,7 +1,6 @@
 <?php
 
-
-namespace TalvBansal\MediaManager\Services;
+namespace Miladimos\FileManager\Services;
 
 use Carbon\Carbon;
 use Dflydev\ApacheMimeTypes\PhpRepository;

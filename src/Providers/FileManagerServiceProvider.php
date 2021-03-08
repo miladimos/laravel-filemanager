@@ -7,7 +7,6 @@ use Illuminate\Support\ServiceProvider;
 use Miladimos\FileManager\Console\Commands\InstallPackageCommand;
 use Miladimos\FileManager\FileManager;
 
-
 class FileManagerServiceProvider extends ServiceProvider
 {
 

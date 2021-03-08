@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Miladimos\FileManager\Services;
 
 use Illuminate\Support\Facades\Storage;
@@ -20,11 +19,6 @@ class UploadService
         $this->access = config('filemanager.access');
         $this->disk = Storage::disk(config('filemanager.disk'));
     }
-
-
-
-
-
 
     public function errors()
     {

@@ -1,5 +1,7 @@
 <?php
 
+namespace Miladimos\FileManager\Http\Controllers;
+
 
 class FolderController extends Controller
 {

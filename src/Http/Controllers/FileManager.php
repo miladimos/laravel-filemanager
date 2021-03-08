@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: talv
- * Date: 10/08/16
- * Time: 12:23.
- */
 
-namespace TalvBansal\MediaManager\Http\Controllers;
+namespace Miladimos\FileManager\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -53,7 +47,7 @@ class MediaController extends Controller
     public function createFolder(UploadNewFolderRequest $request)
     {
         $new_folder = $request->get('new_folder');
-        $folder = $request->get('folder').'/'.$new_folder;
+        $folder = $request->get('folder') . '/' . $new_folder;
 
         try {
             $result = $this->mediaManager->createDirectory($folder);
@@ -139,7 +133,7 @@ class MediaController extends Controller
 
             $response = $this->mediaManager->saveUploadedFiles($uploadedFiles, $folder);
             if ($response != 0) {
-                $response = trans('media-manager::messages.upload_success', ['entity' => $response.' New '.Str::plural('File', $response)]);
+                $response = trans('media-manager::messages.upload_success', ['entity' => $response . ' New ' . Str::plural('File', $response)]);
             }
 
             $errors = $this->mediaManager->errors();
@@ -196,8 +190,8 @@ class MediaController extends Controller
         $newPath = $request->get('newPath');
         $type = $request->get('type');
 
-        $currentFile = Str::finish($path, DIRECTORY_SEPARATOR).$currentFileName;
-        $newFile = Str::finish($newPath, DIRECTORY_SEPARATOR).$currentFileName;
+        $currentFile = Str::finish($path, DIRECTORY_SEPARATOR) . $currentFileName;
+        $newFile = Str::finish($newPath, DIRECTORY_SEPARATOR) . $currentFileName;
 
         try {
             if ($type == 'Folder') {

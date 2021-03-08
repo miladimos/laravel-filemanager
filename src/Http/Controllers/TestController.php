@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Controller;
+namespace Miladimos\FileManager\Http\Controllers;
 
 class FileManagerController extends Controller
 {

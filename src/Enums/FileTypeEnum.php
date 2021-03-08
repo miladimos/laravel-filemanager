@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Miladimos\FileManager\Enums;
 
 
@@ -40,5 +39,4 @@ class FileTypeEnum
             self::VIDEO
         ];
     }
-
 }
