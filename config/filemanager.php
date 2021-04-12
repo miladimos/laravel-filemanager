@@ -1,34 +1,47 @@
 <?php
 
-
 return [
 
-    /*
-                 * FQCN of the model to use for media
-                *
-                * Should extend `Plank\Mediable\Media`
-           */
+    /**
+              * FQCN of the model to use for media
+             * Should extend `Plank\Mediable\Media`
+           *
+          */
     'model' => \Miladimos\FileManager\Models\File::class,
 
-    /*
-    |--------------------------------------------------------------------------
-    | route configs that you want to use default work package
-    |--------------------------------------------------------------------------
-    |
-    | The default group settings for the elFinder routes.
-      prefix result return  =>  yourdomain.test/API_PREFIX/API_VERSION/FILE_MANAGER_API_PREFIX/
-    |
+    /**
+       *
+      * route configs that you want to use default work package
+      *
+     *
+     * The default group settings for the elFinder routes.
+     * prefix result return  =>  yourdomain.test/API_PREFIX/API_VERSION/FILE_MANAGER_PREFIX/
+     *
      */
     'routes' => [
+        'prefix' => env('FILE_MANAGER_PREFIX', 'file-manager'),
+
         'web' => [
-            'middleware' => ['web', 'auth'], //Set to null to disable middleware filter
+            'middleware' => ['web', 'auth'], //Set to empty to disable middleware filter
         ],
         'api' => [
-            'api_prefix' => env('API_PREFIX', 'api'),
+            'api_prefix'  => env('API_PREFIX', 'api'),
             'api_version' => env('API_VERSION', 'v1'),
-            'middleware' => ['api'], //Set to null to disable middleware filter
+            'middleware'  => ['api'], //Set to null to disable middleware filter
         ],
-        'prefix' => env('FILE_MANAGER_API_PREFIX', 'file-manager'),
+    ],
+
+
+    'database' => [
+        'files' => [
+            'table' => 'files',
+        ],
+        'file_group_table' => [
+            'table' => 'file_groups'
+        ],
+        'directories' => [
+            'table' => 'directories'
+        ],
     ],
 
     /**
@@ -44,15 +57,15 @@ return [
      * api : if you want use this package for Apis
      * web : if you want use this package for web with blade
      */
-    'uses' => 'api',
-
-    'middleware'      => ['web', 'auth'],
+    'uses' => 'web',
 
     'allow_format'    => 'jpeg,jpg,png,gif,webp',
 
     'max_size'        => 500,
 
     'max_image_width' => 1024,
+
+    'max_image_height' => 1024,
 
     'image_quality'   => 80,
 
@@ -62,7 +75,7 @@ return [
 
     "types" => [
         "default" => [
-            "provider"                => \AliGhale\FileManager\Types\File::class,
+            "provider"                => Miladimos\FileManager\Types\File::class,
             "path"                    => "default_files/test/",
             "private"                 => false,
             "date_time_prefix"        => true,
@@ -72,7 +85,7 @@ return [
         ],
 
         "image"   => [
-            "provider" => \AliGhale\FileManager\Types\Image::class,
+            "provider" => Miladimos\FileManager\Types\Image::class,
             "path"     => "images/upload/documents/",
             "sizes"    => ["16", "24", "32", "64", "128", "320"],
             "thumb"    => "320"
@@ -140,23 +153,20 @@ return [
         'image/tiff',
     ],
 
-    'database' => [
-        'files_table' => 'files',
-        'file_group_table' => 'file_groups',
-        'directories' => 'directories',
+    'pagination' => [
+        'folders' => 12, //2 rows
+
+        'files' => 15, //3 rows
     ],
 
-
-    'pagination_results_folders' => 12, //2 rows
-    'pagination_results_files' => 15, //3 rows
 
     /**
      * Image cache ( Intervention Image Cache )
      *
-     * set null, 0 - if you don't need cache (default)
+     * set 0 - if you don't need cache (default)
      * if you want use cache - set the number of minutes for which the value should be cached
      */
-    'cache' => null,
+    'cache' => 0,
 
     /**
      *
@@ -164,14 +174,7 @@ return [
      * available locale : en - fa - tr - ar
      *
     */
-    'locale' => 'fa',
-
-    /**
-     * File upload - Max file size in KB
-     *
-     * null - no restrictions
-     */
-    'maxUploadFileSize' => null,
+    'locale' => 'en',
 
     /**
      * Show / Hide system files and folders
