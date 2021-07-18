@@ -6,4 +6,6 @@ composer.lock
 *.meta.*
 _ide_*
 .phpunit.result.cache
+/.idea
+.idea
 

@@ -38,7 +38,7 @@
         }
     },
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.4",
         "illuminate/support": "^7",
         "nesbot/carbon": "^2.41",
         "morilog/jalali": "3.*",
