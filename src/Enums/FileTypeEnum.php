@@ -26,17 +26,4 @@ class FileTypeEnum
     const TYPE_PRESENTATION = 'presentation';
     const TYPE_OTHER = 'other';
     const TYPE_ALL = 'all';
-
-
-
-
-    static function getConstantsValue()
-    {
-        return [
-            self::AUDIO,
-            self::IMAGE,
-            self::DOCUMENT,
-            self::VIDEO
-        ];
-    }
 }

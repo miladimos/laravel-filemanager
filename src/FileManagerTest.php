@@ -1,6 +1,8 @@
 <?php
 
 namespace Miladimos\FileManager;
+
+
 class FileManagerTest
 {
     protected $config = array();
@@ -94,9 +96,9 @@ class FileManagerTest
     public function setFileRoot($path)
     {
         if ($this->config['options']['serverRoot'] === true) {
-            $this->doc_root = $_SERVER['DOCUMENT_ROOT'] . '/' .  $path;
+            $this->doc_root = $_SERVER['DOCUMENT_ROOT'] . '/' . $path;
         } else {
-            $this->doc_root =  $path;
+            $this->doc_root = $path;
         }
         // necessary for retrieving path when set dynamically with $fm->setFileRoot() method
         $this->dynamic_fileroot = str_replace($_SERVER['DOCUMENT_ROOT'], '', $this->doc_root);
@@ -105,6 +107,7 @@ class FileManagerTest
         $this->__log(__METHOD__ . ' $this->dynamic_fileroot value ' . $this->dynamic_fileroot);
         $this->__log(__METHOD__ . ' $this->separator value ' . $this->separator);
     }
+
     public function error($string, $textarea = false)
     {
         $array = array(
@@ -120,6 +123,7 @@ class FileManagerTest
         }
         die();
     }
+
     public function lang($string)
     {
         if (isset($this->language[$string]) && $this->language[$string] != '') {
@@ -128,6 +132,7 @@ class FileManagerTest
             return 'Language string error on ' . $string;
         }
     }
+
     public function getvar($var, $preserve = null)
     {
         if (!isset($_GET[$var]) || $_GET[$var] == '') {
@@ -137,6 +142,7 @@ class FileManagerTest
             return true;
         }
     }
+
     public function postvar($var, $sanitize = true)
     {
         if (!isset($_POST[$var]) || ($var != 'content' && $_POST[$var] == '')) {
@@ -150,6 +156,7 @@ class FileManagerTest
             return true;
         }
     }
+
     public function getinfo()
     {
         $this->item = array();
@@ -173,6 +180,7 @@ class FileManagerTest
         );
         return $array;
     }
+
     public function getfolder()
     {
         $array = array();
@@ -217,7 +225,7 @@ class FileManagerTest
                             'Code' => 0
                         );
                     }
-                } else if (!in_array($file, $this->config['exclude']['unallowed_files'])  && !preg_match($this->config['exclude']['unallowed_files_REGEXP'], $file)) {
+                } else if (!in_array($file, $this->config['exclude']['unallowed_files']) && !preg_match($this->config['exclude']['unallowed_files_REGEXP'], $file)) {
                     $this->item = array();
                     $this->item['properties'] = $this->properties;
                     $this->get_file_info($this->get['path'] . $file, true);
@@ -240,6 +248,7 @@ class FileManagerTest
         $array = $this->sortFiles($array);
         return $array;
     }
+
     public function editfile()
     {
         $current_path = $this->getFullPath();
@@ -260,6 +269,7 @@ class FileManagerTest
         );
         return $array;
     }
+
     public function savefile()
     {
         $current_path = $this->getFullPath($this->post['path']);
@@ -270,7 +280,7 @@ class FileManagerTest
             $this->error(sprintf($this->lang('ERROR_WRITING_PERM')));
         }
         $this->__log(__METHOD__ . ' - saving file ' . $current_path);
-        $content =  htmlspecialchars_decode($this->post['content']);
+        $content = htmlspecialchars_decode($this->post['content']);
         $r = file_put_contents($current_path, $content, LOCK_EX);
         if (!is_numeric($r)) {
             $this->error(sprintf($this->lang('ERROR_SAVING_FILE')));
@@ -282,6 +292,7 @@ class FileManagerTest
         );
         return $array;
     }
+
     public function rename()
     {
         $suffix = '';
@@ -327,6 +338,7 @@ class FileManagerTest
         );
         return $array;
     }
+
     public function move()
     {
         // dynamic fileroot dir must be used when enabled
@@ -391,6 +403,7 @@ class FileManagerTest
         );
         return $array;
     }
+
     public function delete()
     {
         $current_path = $this->getFullPath();
@@ -426,6 +439,7 @@ class FileManagerTest
             $this->error(sprintf($this->lang('INVALID_DIRECTORY_OR_FILE')));
         }
     }
+
     public function replace()
     {
         $this->setParams();
@@ -500,6 +514,7 @@ class FileManagerTest
         echo '<textarea>' . json_encode($response) . '</textarea>';
         die();
     }
+
     public function add()
     {
         $this->setParams();
@@ -568,6 +583,7 @@ class FileManagerTest
         echo '<textarea>' . json_encode($response) . '</textarea>';
         die();
     }
+
     public function addfolder()
     {
         $current_path = $this->getFullPath();
@@ -590,6 +606,7 @@ class FileManagerTest
         $this->__log(__METHOD__ . ' - adding folder ' . $current_path . $newdir);
         return $array;
     }
+
     public function download()
     {
         $current_path = $this->getFullPath();
@@ -614,6 +631,7 @@ class FileManagerTest
             $this->error(sprintf($this->lang('FILE_DOES_NOT_EXIST'), $current_path));
         }
     }
+
     public function preview($thumbnail)
     {
         $current_path = $this->getFullPath();
@@ -635,15 +653,17 @@ class FileManagerTest
             $this->error(sprintf($this->lang('FILE_DOES_NOT_EXIST'), $current_path));
         }
     }
+
     public function getMaxUploadFileSize()
     {
-        $max_upload = (int) ini_get('upload_max_filesize');
-        $max_post = (int) ini_get('post_max_size');
-        $memory_limit = (int) ini_get('memory_limit');
+        $max_upload = (int)ini_get('upload_max_filesize');
+        $max_post = (int)ini_get('post_max_size');
+        $memory_limit = (int)ini_get('memory_limit');
         $upload_mb = min($max_upload, $max_post, $memory_limit);
         $this->__log(__METHOD__ . ' - max upload file size is ' . $upload_mb . 'Mb');
         return $upload_mb;
     }
+
     private function setParams()
     {
         $tmp = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/');
@@ -662,11 +682,13 @@ class FileManagerTest
         }
         $this->params = $params;
     }
+
     private function setPermissions()
     {
         $this->allowed_actions = $this->config['options']['capabilities'];
         if ($this->config['edit']['enabled']) array_push($this->allowed_actions, 'edit');
     }
+
     private function get_file_info($path = '', $thumbnail = false)
     {
         // DO NOT  rawurlencode() since $current_path it
@@ -714,6 +736,7 @@ class FileManagerTest
         $this->item['properties']['filemtime'] = filemtime($this->getFullPath($current_path));
         //$return['properties']['Date Created'] = $this->config['options']['dateFormat'], $return['filectime']); // PHP cannot get create timestamp
     }
+
     private function getFullPath($path = '')
     {
         if ($path == '') {
@@ -731,6 +754,7 @@ class FileManagerTest
         $this->__log(" returned path : " . $full_path);
         return $full_path;
     }
+
     /**
      * format path regarding the initial configuration
      * @param string $path
@@ -744,6 +768,7 @@ class FileManagerTest
             return $path;
         }
     }
+
     private function sortFiles($array)
     {
         // handle 'NAME_ASC'
@@ -784,6 +809,7 @@ class FileManagerTest
         }
         return $array;
     }
+
     private function isValidPath($path)
     {
         // @todo remove debug message
@@ -801,6 +827,7 @@ class FileManagerTest
         else
             return true;
     }
+
     private function unlinkRecursive($dir, $deleteRootToo = true)
     {
         if (!$dh = @opendir($dir)) {
@@ -820,6 +847,7 @@ class FileManagerTest
         }
         return;
     }
+
     /**
      * isAllowedFile()
      * check if extension is allowed regarding the security Policy / Restrictions settings
@@ -845,6 +873,7 @@ class FileManagerTest
         }
         return true;
     }
+
     private function cleanString($string, $allowed = array())
     {
         $allow = null;
@@ -883,6 +912,7 @@ class FileManagerTest
         }
         return $cleaned;
     }
+
     /**
      * Checking if permission is set or not for a given action
      * @param string $action
@@ -894,6 +924,7 @@ class FileManagerTest
             return true;
         return false;
     }
+
     /**
      * Return Thumbnail path from given path
      * works for both file and dir path
@@ -912,6 +943,7 @@ class FileManagerTest
         }
         return $thumbnail_fullpath;
     }
+
     /**
      * For debugging just call
      * the direct URL http://localhost/Filemanager/connectors?mode=preview&path=%2FFilemanager%2Fuserfiles%2FMy%20folder3%2Fblanches_neiges.jPg&thumbnail=true
@@ -935,6 +967,7 @@ class FileManagerTest
         }
         return $thumbnail_fullpath;
     }
+
     private function sanitize($var, $preserve = null)
     {
         $sanitized = strip_tags($var);
@@ -945,13 +978,14 @@ class FileManagerTest
         }
         return $sanitized;
     }
+
     private function checkFilename($path, $filename, $i = '')
     {
         if (!file_exists($path . $filename)) {
             return $filename;
         } else {
             $_i = $i;
-            $tmp = explode(/*$this->config['upload']['suffix'] . */$i . '.', $filename);
+            $tmp = explode(/*$this->config['upload']['suffix'] . */ $i . '.', $filename);
             if ($i == '') {
                 $i = 1;
             } else {
@@ -961,6 +995,7 @@ class FileManagerTest
             return $this->checkFilename($path, $filename, $i);
         }
     }
+
     private function loadLanguageFile()
     {
         // we load langCode var passed into URL if present and if exists
@@ -975,6 +1010,7 @@ class FileManagerTest
             $this->language = json_decode($stream, true);
         }
     }
+
     private function availableLanguages()
     {
         if ($handle = opendir($this->root . 'filemanager/scripts/languages/')) {
@@ -986,6 +1022,7 @@ class FileManagerTest
             closedir($handle);
         }
     }
+
     private function is_image($path)
     {
         $a = @getimagesize($path);
@@ -995,6 +1032,7 @@ class FileManagerTest
         }
         return false;
     }
+
     private function isEditable($file)
     {
         $path_parts = pathinfo($file);
@@ -1005,15 +1043,17 @@ class FileManagerTest
             return false;
         }
     }
+
     private function __log($msg)
     {
         if ($this->logger == true) {
             $fp = fopen($this->logfile, "a");
-            $str = "[" . date("d/m/Y h:i:s", time()) . "]#" .  $this->getUserIP() . "#" . $msg;
+            $str = "[" . date("d/m/Y h:i:s", time()) . "]#" . $this->getUserIP() . "#" . $msg;
             fwrite($fp, $str . PHP_EOL);
             fclose($fp);
         }
     }
+
     public function enableLog($logfile = '')
     {
         $this->logger = true;
@@ -1022,11 +1062,13 @@ class FileManagerTest
         }
         $this->__log(__METHOD__ . ' - Log enabled (in ' . $this->logfile . ' file)');
     }
+
     public function disableLog()
     {
         $this->logger = false;
         $this->__log(__METHOD__ . ' - Log disabled');
     }
+
     /**
      * Remove "../" from path
      *
@@ -1036,7 +1078,7 @@ class FileManagerTest
      */
     public function expandPath($path, $clean = false)
     {
-        $todo  = explode('/', $path);
+        $todo = explode('/', $path);
         $fullPath = array();
         foreach ($todo as $dir) {
             if ($dir == '..') {
@@ -1053,11 +1095,12 @@ class FileManagerTest
         }
         return implode('/', $fullPath);
     }
+
     public function getUserIP()
     {
-        $client  = @$_SERVER['HTTP_CLIENT_IP'];
+        $client = @$_SERVER['HTTP_CLIENT_IP'];
         $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
-        $remote  = $_SERVER['REMOTE_ADDR'];
+        $remote = $_SERVER['REMOTE_ADDR'];
         if (filter_var($client, FILTER_VALIDATE_IP)) {
             $ip = $client;
         } elseif (filter_var($forward, FILTER_VALIDATE_IP)) {
@@ -1067,6 +1110,7 @@ class FileManagerTest
         }
         return $ip;
     }
+
     public function run()
     {
         $response = '';

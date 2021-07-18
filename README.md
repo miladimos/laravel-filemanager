@@ -12,7 +12,7 @@
 
 2. Open your config/app.php and add the following to the providers array:
 ```php
-Miladimos\FileManager\Providers\FileManagerServiceProvider::class
+Miladimos\FileManager\Providers\FileManagerServiceProvider::class,
 ```
 
 3. Run the command below to install package:
@@ -76,10 +76,7 @@ public function store(Request $request)
 
 ### امکانات 
 ❤️
-- [x] Write the press release
-- [ ] Update the website
-- [ ] Contact the media 
-
+- [x] Test
 
 ### ویژگی ها 
 

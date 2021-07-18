@@ -18,7 +18,6 @@ class ImageService
         $this->disk = Storage::disk(config('filemanager.disk'));
     }
 
-
     public function errors()
     {
         return $this->errors;

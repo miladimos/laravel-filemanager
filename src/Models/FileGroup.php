@@ -24,7 +24,6 @@ class FileGroup extends Model
 
     protected $guarded = [];
 
-
     public function files()
     {
         return $this->belongsToMany(File::class, 'file_group_pivot');

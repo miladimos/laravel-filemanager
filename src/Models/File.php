@@ -4,13 +4,13 @@ namespace Miladimos\FileManager\Models;
 
 use Carbon\Carbon;
 use Miladimos\FileManager\Traits\HasUUID;
-use App\Models\FileGroup;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Miladimos\FileManager\Traits\RouteKeyNameUUID;
 
 class File extends Model
 {
-    use HasUUID;
+    use HasUUID, RouteKeyNameUUID;
 
     /**
      * The table associated with the model.
@@ -79,10 +79,6 @@ class File extends Model
         return Carbon::parse($value)->diffForHumans();
     }
 
-    public function getRouteKeyName()
-    {
-        return 'uuid';
-    }
     //    public function getPublicUrl($key = null)
     //    {
     //        $storageDisk =  Storage::disk(config('upload.disk'));

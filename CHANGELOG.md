@@ -1,4 +1,4 @@
 # Changelog
 
-All notable changes to `miladimos/laravel-` will be documented in this file.
+All notable changes to `miladimos/laravel-filemanger` will be documented in this file.
 

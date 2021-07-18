@@ -3,8 +3,7 @@
 namespace Miladimos\FileManager\Traits;
 
 use Carbon\Carbon;
-
-use App\Models\File;
+use Miladimos\FileManager\Models\File;
 use Intervention\Image\Facades\Image;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 

@@ -3,7 +3,6 @@
 namespace Miladimos\FileManager\Services;
 
 use Carbon\Carbon;
-use Dflydev\ApacheMimeTypes\PhpRepository;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
@@ -13,7 +12,7 @@ use Illuminate\Support\Str;
 /**
  * Class MediaManager.
  */
-class MediaManager
+class FileManager
 {
     /**
      * @var FilesystemAdapter

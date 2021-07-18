@@ -4,10 +4,11 @@ namespace Miladimos\FileManager\Models;
 
 use Miladimos\FileManager\Traits\HasUUID;
 use Illuminate\Database\Eloquent\Model;
+use Miladimos\FileManager\Traits\RouteKeyNameUUID;
 
 class Directory extends Model
 {
-    use HasUUID;
+    use HasUUID, RouteKeyNameUUID;
 
     /**
      * The table associated with the model.
@@ -20,15 +21,8 @@ class Directory extends Model
 
     protected $guarded = [];
 
-
     public function parent()
     {
         return $this->belongsTo(Directory::class, 'parent_id', 'id');
-    }
-
-
-    public function getRouteKeyName()
-    {
-        return 'uuid';
     }
 }
