@@ -18,10 +18,6 @@ class InstallPackageCommand extends Command
     {
         $this->line("\t... Welcome To File Manager Package Installer ...");
 
-        //        $this->info('Installing FileManager Package Started...');
-
-        //        $this->info('Publishing configuration...');
-
         //config
         if (File::exists(config_path('filemanager.php'))) {
             $confirm = $this->confirm("filemanager.php already exist. Do you want to overwrite?");

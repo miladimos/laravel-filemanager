@@ -10,20 +10,15 @@ class FileTypeEnum
 
     use GetConstantsEnum;
 
-    const  AUDIO = 1;
-    const  IMAGE = 2;
-    const  DOCUMENT = 3;
-    const  VIDEO = 4;
-
-    const TYPE_IMAGE = 'image';
-    const TYPE_IMAGE_VECTOR = 'vector';
-    const TYPE_PDF = 'pdf';
-    const TYPE_VIDEO = 'video';
-    const TYPE_AUDIO = 'audio';
-    const TYPE_ARCHIVE = 'archive';
-    const TYPE_DOCUMENT = 'document';
-    const TYPE_SPREADSHEET = 'spreadsheet';
-    const TYPE_PRESENTATION = 'presentation';
-    const TYPE_OTHER = 'other';
-    const TYPE_ALL = 'all';
+    const TYPE_IMAGE = 1;
+    const TYPE_IMAGE_VECTOR = 2;
+    const TYPE_PDF = 3;
+    const TYPE_VIDEO = 4;
+    const TYPE_AUDIO = 5;
+    const TYPE_ARCHIVE = 6;
+    const TYPE_DOCUMENT = 7;
+    const TYPE_SPREADSHEET = 8;
+    const TYPE_PRESENTATION = 9;
+    const TYPE_PLAIN = 10;
+    const TYPE_OTHER = 11;
 }

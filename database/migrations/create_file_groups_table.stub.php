@@ -18,6 +18,7 @@ class CreateFileGroupsTable extends Migration
             $table->uuid('uuid')->uniuqe();
             $table->string('title')->unique();
             $table->string('description')->unique()->nullable();
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }

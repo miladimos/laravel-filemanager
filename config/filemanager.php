@@ -24,19 +24,19 @@ return [
         ],
     ],
 
-    'database' => [
-        'files' => [
-            'table' => 'files',
-            'model' => \Miladimos\FileManager\Models\File::class,
-        ],
-        'file_group_table' => [
-            'table' => 'file_groups'
-        ],
-        'directories' => [
-            'table' => 'directories',
-            'model' => \Miladimos\FileManager\Models\Directory::class,
-        ],
-    ],
+//    'database' => [
+//        'files' => [
+//            'table' => 'files',
+//            'model' => \Miladimos\FileManager\Models\File::class,
+//        ],
+//        'file_group_table' => [
+//            'table' => 'file_groups'
+//        ],
+//        'directories' => [
+//            'table' => 'directories',
+//            'model' => \Miladimos\FileManager\Models\Directory::class,
+//        ],
+//    ],
 
     /**
      * List of disk names that you want to use for upload

@@ -16,14 +16,15 @@ class CreateDirectoriesTable extends Migration
         Schema::create('directories', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->uniuqe();
-            $table->foreignID('parent_id')->default(0);
-            $table->foreignID('group_id')->nullable();
+            $table->foreignID('parent_id')->nullable();
+//            $table->foreignID('group_id')->nullable();
             $table->foreignID('user_id')->nullable();
             $table->string('title')->unique();
+            $table->string('color_hex')->nullable();
+            $table->string('path')->nullable();
             $table->string('icon')->nullable();
             $table->string('description')->nullable();
-            $table->enum('status', ['active', 'disabled', 'hide'])->nullable();
-            $table->boolean('active')->default(1);
+            $table->char('status')->default('a');
             $table->timestamps();
         });
     }

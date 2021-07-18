@@ -68,30 +68,32 @@ class FileManagerServiceProvider extends ServiceProvider
     private function registerPublishesMigrations()
     {
 
-        if (!class_exists('CreateFilesTable')) {
-            $this->publishes([
-                __DIR__ . '/../database/migrations/create_files_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_files_table.php'),
-                // you can add any number of migrations here
-            ], 'migrations');
-        }
-        if (!class_exists('CreateFileGroupsTable')) {
-            $this->publishes([
-                __DIR__ . '/../database/migrations/create_file_groups_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_file_groups_table.php'),
-                // you can add any number of migrations here
-            ], 'migrations');
-        }
-        if (!class_exists('CreateFileGroupPivotTable')) {
-            $this->publishes([
-                __DIR__ . '/../database/migrations/create_file_group_pivot_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_file_group_pivot_table.php'),
-                // you can add any number of migrations here
-            ], 'migrations');
-        }
         if (!class_exists('CreateDirectoriesTable')) {
             $this->publishes([
-                __DIR__ . '/../database/migrations/create_directories_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_directories_table.php'),
+                __DIR__ . '/../database/migrations/create_directories_table.stub.php' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_directories_table.php'),
                 // you can add any number of migrations here
             ], 'migrations');
         }
+
+        if (!class_exists('CreateFilesTable')) {
+            $this->publishes([
+                __DIR__ . '/../database/migrations/create_files_table.stub.php' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_files_table.php'),
+                // you can add any number of migrations here
+            ], 'migrations');
+        }
+
+//        if (!class_exists('CreateFileGroupsTable')) {
+//            $this->publishes([
+//                __DIR__ . '/../database/migrations/create_file_groups_table.stub.php' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_file_groups_table.php'),
+//                // you can add any number of migrations here
+//            ], 'migrations');
+//        }
+//        if (!class_exists('CreateFileGroupPivotTable')) {
+//            $this->publishes([
+//                __DIR__ . '/../database/migrations/create_file_group_pivot_table.stub.php' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_file_group_pivot_table.php'),
+//                // you can add any number of migrations here
+//            ], 'migrations');
+//        }
     }
 
     private function registerRoutes()
