@@ -12,7 +12,7 @@ class FileManagerServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . "/../../config/file_manager.php", 'file_manager');
+        $this->mergeConfigFrom(__DIR__ . "/../../config/filemanager.php", 'filemanager');
 
         $this->registerFacades();
 
@@ -37,7 +37,7 @@ class FileManagerServiceProvider extends ServiceProvider
 
     private function registerFacades()
     {
-        $this->app->bind('file_manager', function ($app) {
+        $this->app->bind('filemanager', function ($app) {
             return new FileManager();
         });
     }
@@ -54,8 +54,8 @@ class FileManagerServiceProvider extends ServiceProvider
     private function registerConfig()
     {
         $this->publishes([
-            __DIR__ . '/../../config/config.php' => config_path('file_manager.php')
-        ], 'file_manager_config');
+            __DIR__ . '/../../config/config.php' => config_path('filemanager.php')
+        ], 'filemanager_config');
     }
 
     private function registerCommands()
@@ -95,13 +95,13 @@ class FileManagerServiceProvider extends ServiceProvider
     }
     private function registerRoutes()
     {
-        if (config('file_manager.uses') == 'web') {
+        if (config('filemanager.uses') == 'web') {
             Route::group($this->routeConfiguration('web'), function () {
-                $this->loadRoutesFrom(__DIR__ . '\..\..\routes\web.php', 'filemanager-routes');
+                $this->loadRoutesFrom(__DIR__ . '/../../routes/web.php', 'filemanager-routes');
             });
-        } else  if (config('file_manager.uses') == 'api') {
+        } else  if (config('filemanager.uses') == 'api') {
             Route::group($this->routeConfiguration('api'), function () {
-                $this->loadRoutesFrom(__DIR__ . '\..\..\routes\filemanger-api.php', 'filemanager-routes');
+                $this->loadRoutesFrom(__DIR__ . '/../../routes/filemanger-api.php', 'filemanager-routes');
             });
         }
     }
@@ -110,13 +110,13 @@ class FileManagerServiceProvider extends ServiceProvider
     {
         if ($uses == 'api') {
             return [
-                'prefix' => config('file_manager.routes.api.api_prefix') . '/' . config('file_manager.routes.api.api_version') . '/' . config('file_manager.routes.prefix'),
-                'middleware' => config('file_manager.routes.api.middleware'),
+                'prefix' => config('filemanager.routes.api.api_prefix') . '/' . config('filemanager.routes.api.api_version') . '/' . config('filemanager.routes.prefix'),
+                'middleware' => config('filemanager.routes.api.middleware'),
             ];
         } else if ($uses == 'web') {
             return [
-                'prefix' => config('file_manager.routes.prefix'),
-                'middleware' => config('file_manager.routes.web.middleware'),
+                'prefix' => config('filemanager.routes.prefix'),
+                'middleware' => config('filemanager.routes.web.middleware'),
             ];
         }
 

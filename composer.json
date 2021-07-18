@@ -39,12 +39,11 @@
     },
     "require": {
         "php": ">=7.4",
-        "illuminate/support": "^7",
-        "nesbot/carbon": "^2.41",
-        "morilog/jalali": "3.*",
-        "intervention/image": "^2.5.1",
+        "nesbot/carbon": "^2.50.0",
+        "morilog/jalali": ">=v3.1.0",
+        "intervention/image": "^2.6",
         "ramsey/uuid": "^4.1",
-        "webpatser/laravel-uuid": "^3.0"
+        "webpatser/laravel-uuid": "^3"
     },
     "minimum-stability": "stable",
     "license": "MIT"
