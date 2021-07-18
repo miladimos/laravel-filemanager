@@ -2,28 +2,10 @@
 
 namespace Miladimos\FileManager\Services;
 
-use Illuminate\Support\Facades\Storage;
 use Miladimos\FileManager\Models\FileGroup;
 
 class FileGroupService extends Service
 {
-
-    protected $disk;
-
-    protected $access;
-
-    protected $mimeDetect;
-
-    private $errors = [];
-
-    private $diskName;
-
-    public function __construct()
-    {
-        $this->diskName = config('filemanager.disk');
-        $this->access = config('filemanager.access');
-        $this->disk = Storage::disk($this->diskName);
-    }
 
     public function allFileGroups()
     {
@@ -37,13 +19,10 @@ class FileGroupService extends Service
             'description' => $description,
         ]);
 
-        if (!$fileGroup)
-            return false;
+        if (!$fileGroup) return false;
+
         return $fileGroup;
     }
-
-    // if (! file_exists(public_path().'/uploads')) { File::makeDirectory(public_path().'/uploads',0777, true);}
-
 
     public function updateFileGroup(FileGroup $fileGroup, $tile, $description)
     {
@@ -51,8 +30,7 @@ class FileGroupService extends Service
             'title' => $tile,
             'description' => $description,
         ]);
-        if (!$fileGroup)
-            return false;
+        if (!$fileGroup) return false;
 
         return $fileGroup;
     }

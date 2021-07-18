@@ -46,6 +46,12 @@ return [
      */
     'disk' => env('UPLOAD_DISK', 'public'),
 
+    'disks' => [
+        'public' => [],
+        'ftp' => [],
+        'private' => [],
+    ],
+
     'allow_format' => ['jpeg', 'jpg', 'png', 'gif', 'webp'],
 
     'max_size' => 500,

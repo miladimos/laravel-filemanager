@@ -16,7 +16,7 @@ class DirectoryService extends Service
 
     public function createDirectory($data)
     {
-        //
+
     }
 
     public function deleteDirectory($data)

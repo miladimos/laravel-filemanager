@@ -8,7 +8,7 @@ use Miladimos\FileManager\Services\FileGroupService;
 
 class FileGroupController extends Controller
 {
-    protected $fileGroupService = null;
+    protected $fileGroupService;
 
     public function __construct(FileGroupService $fileGroupService)
     {
@@ -26,12 +26,4 @@ class FileGroupController extends Controller
         $fileGroups = $this->fileGroupService->deleteFileGroup($id);
         return $this->responseSuccess($fileGroups);
     }
-
-
-
-    //"php": ">=7.2",
-    //        "illuminate/filesystem": "5.0.*",
-    //        "league/flysystem": "^1.0",
-    //        "league/flysystem-aws-s3-v3": "^1.0",
-    //        "intervention/image": "^2.5"
 }
