@@ -10,18 +10,10 @@ class UploadService extends Service
 
     protected $access;
 
-    protected $mimeDetect;
-
-    private $errors = [];
-
     public function __construct()
     {
         $this->access = config('filemanager.access');
         $this->disk = Storage::disk(config('filemanager.disk'));
     }
 
-    public function errors()
-    {
-        return $this->errors;
-    }
 }

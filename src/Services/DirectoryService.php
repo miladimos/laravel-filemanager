@@ -16,21 +16,19 @@ class DirectoryService extends Service
 
     public function createDirectory($data)
     {
-
+        $this->disk->makeDirectory('');
+        return true;
     }
 
     public function deleteDirectory($data)
     {
-        //
+        $this->disk->deleteDirectory('');
+        return true;
     }
 
     public function renameDirectory($data)
     {
-        //
-    }
-
-    public function moveDirectory($data)
-    {
-        //
+        $this->disk->renameDirectory('');
+        return true;
     }
 }

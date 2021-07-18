@@ -9,6 +9,13 @@ use Miladimos\FileManager\Models\File;
 
 abstract class Service
 {
+    private $errors = [];
+
+    public function errors()
+    {
+        return $this->errors;
+    }
+
     /**
      * Sanitize the directory name.
      *
@@ -35,6 +42,25 @@ abstract class Service
                 ->where("name", $randomName)
                 ->first();
         } while (!empty($check));
+
+        return $randomName;
+    }
+
+    /**
+     * generate and unique & random name
+     *
+     * @param int $length
+     * @return string
+     */
+    protected function generateRandomName(int $length = 10)
+    {
+        $chars = range('a', 'z');
+        $charsC = range('A', 'Z');
+        $nums = range(1, 9) + 1;
+
+        $merged = implode("", array_merge($chars, $charsC, $nums));
+        $str = str_shuffle($merged);
+        $randomName = Str::random(3) . substr($str, 0, $length);
 
         return $randomName;
     }
