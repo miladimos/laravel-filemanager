@@ -42,20 +42,20 @@ class FileManagerServiceProvider extends ServiceProvider
         });
     }
 
-    private function registerTranslations()
-    {
-        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'courier');
-
-        $this->publishes([
-            __DIR__ . '/../resources/lang' => resource_path('lang/vendor/courier'),
-        ]);
-    }
-
     private function registerConfig()
     {
         $this->publishes([
-            __DIR__ . '/../../config/config.php' => config_path('filemanager.php')
+            __DIR__ . '/../../config/filemanager.php' => config_path('filemanager.php')
         ], 'filemanager_config');
+    }
+
+    private function registerTranslations()
+    {
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'filemanager');
+
+        $this->publishes([
+            __DIR__ . '/../resources/lang' => resource_path('lang/miladimos/laravel-filemanager'),
+        ]);
     }
 
     private function registerCommands()
@@ -93,17 +93,16 @@ class FileManagerServiceProvider extends ServiceProvider
             ], 'migrations');
         }
     }
+
     private function registerRoutes()
     {
-        if (config('filemanager.uses') == 'web') {
-            Route::group($this->routeConfiguration('web'), function () {
-                $this->loadRoutesFrom(__DIR__ . '/../../routes/web.php', 'filemanager-routes');
-            });
-        } else  if (config('filemanager.uses') == 'api') {
-            Route::group($this->routeConfiguration('api'), function () {
-                $this->loadRoutesFrom(__DIR__ . '/../../routes/filemanger-api.php', 'filemanager-routes');
-            });
-        }
+        Route::group($this->routeConfiguration('web'), function () {
+            $this->loadRoutesFrom(__DIR__ . '/../../routes/web.php', 'filemanager-routes');
+        });
+
+        Route::group($this->routeConfiguration('api'), function () {
+            $this->loadRoutesFrom(__DIR__ . '/../../routes/filemanger-api.php', 'filemanager-routes');
+        });
     }
 
     private function routeConfiguration($uses = 'api')
@@ -113,13 +112,12 @@ class FileManagerServiceProvider extends ServiceProvider
                 'prefix' => config('filemanager.routes.api.api_prefix') . '/' . config('filemanager.routes.api.api_version') . '/' . config('filemanager.routes.prefix'),
                 'middleware' => config('filemanager.routes.api.middleware'),
             ];
-        } else if ($uses == 'web') {
+        } else {
             return [
                 'prefix' => config('filemanager.routes.prefix'),
                 'middleware' => config('filemanager.routes.web.middleware'),
             ];
         }
 
-        return [];
     }
 }

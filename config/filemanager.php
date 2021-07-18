@@ -46,13 +46,6 @@ return [
      */
     'disk' => env('UPLOAD_DISK', 'public'),
 
-    /**
-     * web - api
-     * api : if you want use this package for Apis
-     * web : if you want use this package for web with blade
-     */
-    'uses' => 'web',
-
     'allow_format' => ['jpeg', 'jpg', 'png', 'gif', 'webp'],
 
     'max_size' => 500,
