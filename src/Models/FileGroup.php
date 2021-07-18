@@ -12,11 +12,6 @@ class FileGroup extends Model
     use HasUUID,
         RouteKeyNameUUID;
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
     protected $table = 'file_groups';
 
 

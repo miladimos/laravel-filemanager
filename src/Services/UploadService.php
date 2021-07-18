@@ -4,7 +4,7 @@ namespace Miladimos\FileManager\Services;
 
 use Illuminate\Support\Facades\Storage;
 
-class UploadService
+class UploadService extends Service
 {
     protected $disk;
 

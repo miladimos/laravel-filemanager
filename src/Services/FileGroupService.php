@@ -2,11 +2,10 @@
 
 namespace Miladimos\FileManager\Services;
 
-
-use App\Models\FileGroup;
 use Illuminate\Support\Facades\Storage;
+use Miladimos\FileManager\Models\FileGroup;
 
-class FileGroupService
+class FileGroupService extends Service
 {
 
     protected $disk;
@@ -21,9 +20,8 @@ class FileGroupService
 
     public function __construct()
     {
-        $this->diskName = config('media-manager.disk');
-        $this->access = config('media-manager.access');
-        $this->breadcrumbRootLabel = config('media-manager.breadcrumb.root');
+        $this->diskName = config('filemanager.disk');
+        $this->access = config('filemanager.access');
         $this->disk = Storage::disk($this->diskName);
     }
 

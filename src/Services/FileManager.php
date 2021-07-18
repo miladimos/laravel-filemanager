@@ -118,18 +118,6 @@ class FileManager
     }
 
     /**
-     * Sanitize the folder name.
-     *
-     * @param $folder
-     *
-     * @return string
-     */
-    protected function cleanFolder($folder)
-    {
-        return DIRECTORY_SEPARATOR . trim(str_replace('..', '', $folder), DIRECTORY_SEPARATOR);
-    }
-
-    /**
      * Return breadcrumbs to current folder.
      *
      * @param $folder
@@ -162,7 +150,7 @@ class FileManager
         $path = '/' . ltrim($path, '/');
 
         return [
-            'name'     => basename($path),
+            'name' => basename($path),
             'mimeType' => 'folder',
             'fullPath' => $path,
             'modified' => $this->fileModified($path),
@@ -181,12 +169,12 @@ class FileManager
         $path = '/' . ltrim($path, '/');
 
         return [
-            'name'         => basename($path),
-            'fullPath'     => $path,
-            'webPath'      => $this->fileWebpath($path),
-            'mimeType'     => $this->fileMimeType($path),
-            'size'         => $this->fileSize($path),
-            'modified'     => $this->fileModified($path),
+            'name' => basename($path),
+            'fullPath' => $path,
+            'webPath' => $this->fileWebpath($path),
+            'mimeType' => $this->fileMimeType($path),
+            'size' => $this->fileSize($path),
+            'modified' => $this->fileModified($path),
             'relativePath' => $this->fileRelativePath($path),
         ];
     }
@@ -415,7 +403,7 @@ class FileManager
      * the given path.
      *
      * @param UploadedFilesInterface $files
-     * @param string                 $path
+     * @param string $path
      *
      * @return int
      */
