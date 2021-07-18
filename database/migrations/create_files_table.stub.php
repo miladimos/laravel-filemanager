@@ -31,6 +31,7 @@ class CreateFilesTable extends Migration
             $table->string('width')->nullable();
             $table->string('height')->nullable();
             $table->string('disk')->nullable();
+            $table->boolean('is_private')->default(false);
             $table->unsignedInteger('priority_column')->nullable();
             $table->timestamps();
         });

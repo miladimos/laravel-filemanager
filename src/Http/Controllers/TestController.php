@@ -2,7 +2,7 @@
 
 namespace Miladimos\FileManager\Http\Controllers;
 
-class FileManagerController extends Controller
+class TestController extends Controller
 {
 
     public function index()

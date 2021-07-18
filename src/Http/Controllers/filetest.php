@@ -2,7 +2,7 @@
 
 namespace Miladimos\FileManager\Http\Controllers;
 
-class FileController extends Controller
+class filetest extends Controller
 {
     public function uploadFile(Request $request)
     {
@@ -24,7 +24,7 @@ class FileController extends Controller
             $userQuota = json_decode($userQuota);
 
             $diskQuota = $userQuota->{'disk_quota'};
-            $diskUsed  = $userQuota->{'disk_usage'};
+            $diskUsed = $userQuota->{'disk_usage'};
 
             if (($size / 1024 / 1024) + $diskUsed > $diskQuota) {
                 return response()->json(['msg' => 'You do not have enough of you quota left to upload this file.', 'status' => '500'], 500);
@@ -57,6 +57,35 @@ class FileController extends Controller
         }
 
         return $files->toJson();
+    }
+
+    public function download($file)
+    {
+        /** @var File $file */
+        $file = File::query()
+            ->where("id", $file)
+            ->orWhere("name", $file)
+            ->firstOrFail();
+
+        $config = filemanager_config();
+
+        if ($file->isPublic) {
+            return $file->download();
+        } else {
+            $secret = "";
+            if ($config['secret']) {
+                $secret = $config['secret'];
+            }
+
+            $hash = $secret . $file->id . request()->ip() . request('t');
+
+            if ((Carbon::createFromTimestamp(request('t')) > Carbon::now()) &&
+                Hash::check($hash, request('mac'))) {
+                return $file->download();
+            } else {
+                throw new InternalErrorException("link not valid");
+            }
+        }
     }
 
     public function downloadFile($id)

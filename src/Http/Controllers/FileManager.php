@@ -12,7 +12,7 @@ use TalvBansal\MediaManager\Services\MediaManager;
 /**
  * Class FileManagerController.
  */
-class MediaController extends Controller
+class FileManager extends Controller
 {
     /**
      * @var MediaManager
@@ -224,7 +224,7 @@ class MediaController extends Controller
      *
      * @param       $error
      * @param array $notices
-     * @param int   $errorCode
+     * @param int $errorCode
      *
      * @return \Illuminate\Http\JsonResponse
      */
