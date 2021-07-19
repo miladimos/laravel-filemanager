@@ -39,8 +39,8 @@ class InstallPackageCommand extends Command
     {
         $this->call('vendor:publish', [
             '--provider' => "Miladimos\FileManager\Providers\FileManagerServiceProvider",
-            '--tag'      => 'filemanager_config',
-            '--force'    => true
+            '--tag' => 'filemanager_config',
+            '--force' => true
         ]);
     }
 

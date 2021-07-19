@@ -10,13 +10,12 @@ class directoryController extends Controller
 {
     public function createDirectory(Request $request)
     {
-        $name = $request->input('name');
-        $desc = $request->input('description');
-        $parent = $request->input('parent');
 
-        Directory::create([
-            'user_id' => auth()->id(),
-        ]);
+        $data = [
+            'directoryName' =>  $request->input('name'),
+            'directoryDescription' =>  $request->input('description'),
+            'directoryParent' =>  $request->input('parent_id'),
+        ];
 
         return $this->responseSuccess("Directory created", 201, "Created");
     }

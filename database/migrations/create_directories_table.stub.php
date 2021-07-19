@@ -22,7 +22,6 @@ class CreateDirectoriesTable extends Migration
             $table->string('title')->unique();
             $table->string('color_hex')->nullable();
             $table->string('path')->nullable();
-            $table->string('icon')->nullable();
             $table->string('description')->nullable();
             $table->char('status')->default('a');
             $table->timestamps();

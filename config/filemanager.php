@@ -6,7 +6,6 @@ return [
      *
      * route configs that you want to use default work package
      *
-     *
      * The default group settings for the elFinder routes.
      * prefix result return  =>  yourdomain.test/API_PREFIX/API_VERSION/FILE_MANAGER_PREFIX/
      *
@@ -41,18 +40,10 @@ return [
     /**
      * List of disk names that you want to use for upload
      *
-     * public, ftp, storage
+     * local, public, ftp
      *
      */
-    'disk' => env('UPLOAD_DISK', 'public'),
-
-    'disks' => [
-        'public' => [],
-        'ftp' => [],
-        'private' => [],
-    ],
-
-    'allow_format' => ['jpeg', 'jpg', 'png', 'gif', 'webp'],
+    'disk' => env('UPLOAD_DISK', 'storage'),
 
     'max_size' => 500,
 
@@ -145,6 +136,8 @@ return [
         'image/png',
         'image/tiff',
     ],
+
+    'allow_format' => ['jpeg', 'jpg', 'png', 'gif', 'webp', 'docx', 'pdf', 'ttf'],
 
     'pagination' => [
         'folders' => 12, //2 rows

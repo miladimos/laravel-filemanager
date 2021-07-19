@@ -4,11 +4,20 @@
 namespace Miladimos\FileManager\Services;
 
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Miladimos\FileManager\Models\File;
 
 abstract class Service
 {
+
+    protected $disk;
+
+    public function __construct()
+    {
+        $this->disk = Storage::disk(config('filemanager.disk'));
+    }
+
     private $errors = [];
 
     public function errors()
