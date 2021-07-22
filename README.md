@@ -3,84 +3,120 @@
 
 
 - [English](README-en.md)
-# در حال توسعه 
 
-### برای نصب در مسیر روت پروژه خود دستور زیر را در ریشه پروژه اجرا کنید 
+# در حال توسعه
 
-``composer require miladimos/laravel-filemanager``
+### برای نصب در مسیر روت پروژه خود دستور زیر را در ریشه پروژه اجرا کنید
 
+``` php
+composer require miladimos/laravel-filemanager
+```
 
-2. Open your config/app.php and add the following to the providers array:
+2. Open your config/app.php and add the following lines:
+
 ```php
+// in providers
 Miladimos\FileManager\Providers\FileManagerServiceProvider::class,
+
+// in aliases
+Miladimos\FileManager\Facades\FileManagerFacade::class,
 ```
 
 3. Run the command below to install package:
+
 ```
 php artisan filemanager:install
 ```
 
+### Configuration ! important !
 
-### Configuration
-Go to the file
-
-```php
-config/file_uploads.php;
-```
-
-There you have an ability to set:
-
-1. default storage to upload file (default is: local)
-2. default image quality (default is: 100)
-3. default folder to put your uploads (default is: public/user-uploads)
-
-### نحوه استفاده
-برای اپلود فایل:
-
-```
-public function store(Request $request)
-{   
-    // This will upload your file to the default folder of selected in config storage
-    UploadService::uploadFile($request->file('some_file'));
-    
-    // This will upload your file to the given as second parameter path of default storage
-    UploadService::uploadFile($request->file('some_file'), 'path/to/upload');
-    
-    // This will upload your file to the given storage
-    UploadService::uploadFile($request->file('some_file'), 'path/to/upload', 'storage_name');
-    
-    // This will also resize image to the given width and height
-    UploadService::uploadFile($request->file('some_file'), 'path/to/upload', 'storage_name');
-}
-```
-
-
-برای آپلود عکس با فرمت base64:
+next go to the file
 
 ```php
-public function store(Request $request)
-{   
-    // This will upload your file to the default folder of selected in config storage
-    UploadService::uploadBase64Image($request->input('image'));
-    
-    // This will upload your file to the given as second parameter path of default storage
-    UploadService::uploadFile($request->input('image'), 'path/to/upload');
-    
-    // This will upload your file to the given storage
-    UploadService::uploadFile($request->input('image'), 'path/to/upload', 'storage_name');
-    
-    // This will also resize image to the given width and height
-    UploadService::uploadFile($request->input('image'), 'path/to/upload', 'storage_name');
-}
+config/filemanager.php;
 ```
 
-### امکانات 
+for initialize file manager first set these confings:
+
+1. set default storage to upload file (default is: local)
+2. set base directory name for file manager (default is: filemanager/)
+
+and run bellow command for initialize:
+
+``` php
+php artisan filemanager:init
+```
+
+[comment]: <> (### نحوه استفاده)
+
+[comment]: <> (برای اپلود فایل:)
+
+[comment]: <> (```)
+
+[comment]: <> (public function store&#40;Request $request&#41;)
+
+[comment]: <> ({   )
+
+[comment]: <> (    // This will upload your file to the default folder of selected in config storage)
+
+[comment]: <> (    UploadService::uploadFile&#40;$request->file&#40;'some_file'&#41;&#41;;)
+
+[comment]: <> (    // This will upload your file to the given as second parameter path of default storage)
+
+[comment]: <> (    UploadService::uploadFile&#40;$request->file&#40;'some_file'&#41;, 'path/to/upload'&#41;;)
+
+[comment]: <> (    // This will upload your file to the given storage)
+
+[comment]: <> (    UploadService::uploadFile&#40;$request->file&#40;'some_file'&#41;, 'path/to/upload', 'storage_name'&#41;;)
+
+[comment]: <> (    // This will also resize image to the given width and height)
+
+[comment]: <> (    UploadService::uploadFile&#40;$request->file&#40;'some_file'&#41;, 'path/to/upload', 'storage_name'&#41;;)
+
+[comment]: <> (})
+
+[comment]: <> (```)
+
+[comment]: <> (برای آپلود عکس با فرمت base64:)
+
+[comment]: <> (```php)
+
+[comment]: <> (public function store&#40;Request $request&#41;)
+
+[comment]: <> ({   )
+
+[comment]: <> (    // This will upload your file to the default folder of selected in config storage)
+
+[comment]: <> (    UploadService::uploadBase64Image&#40;$request->input&#40;'image'&#41;&#41;;)
+
+[comment]: <> (    // This will upload your file to the given as second parameter path of default storage)
+
+[comment]: <> (    UploadService::uploadFile&#40;$request->input&#40;'image'&#41;, 'path/to/upload'&#41;;)
+
+[comment]: <> (    // This will upload your file to the given storage)
+
+[comment]: <> (    UploadService::uploadFile&#40;$request->input&#40;'image'&#41;, 'path/to/upload', 'storage_name'&#41;;)
+
+[comment]: <> (    // This will also resize image to the given width and height)
+
+[comment]: <> (    UploadService::uploadFile&#40;$request->input&#40;'image'&#41;, 'path/to/upload', 'storage_name'&#41;;)
+
+[comment]: <> (})
+
+[comment]: <> (```)
+
+### امکانات
+
 ❤️
-- [x] Test
 
-### ویژگی ها 
+- [x] Directory service - list, list recursive, create, delete, move
+- [] File service - list, delete, move
+- [] Upload service -
+- [] Image service -
+- [] FileGroup service -
 
-* مناسب برای استفاده ای پی ای ها
+### ویژگی ها
+
 * شخصی سازی بالا
   
     

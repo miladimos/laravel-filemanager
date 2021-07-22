@@ -3,8 +3,6 @@
 
 namespace Miladimos\FileManager\Services;
 
-use Illuminate\Support\Facades\Storage;
-use Miladimos\FileManager\Models\Directory;
 
 class DirectoryService extends Service
 {
