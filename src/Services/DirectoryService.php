@@ -42,12 +42,4 @@ class DirectoryService extends Service
             return false;
         }
     }
-
-    public function renameDirectory($name, $newName)
-    {
-        if (!$this->disk->exists($name)) return "false";
-
-        if ($this->disk->move($name, $newName)) return "true";
-
-    }
 }

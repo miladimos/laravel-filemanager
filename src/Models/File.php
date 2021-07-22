@@ -6,7 +6,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Miladimos\FileManager\Enums\FileStatusEnum;
 use Miladimos\FileManager\Traits\HasUUID;
 use Illuminate\Database\Eloquent\Model;
 use Miladimos\FileManager\Traits\RouteKeyNameUUID;
@@ -14,7 +13,6 @@ use Miladimos\FileManager\Traits\RouteKeyNameUUID;
 class File extends Model
 {
     use HasUUID, RouteKeyNameUUID;
-
 
     protected $table = 'files';
 

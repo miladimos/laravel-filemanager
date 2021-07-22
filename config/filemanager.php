@@ -5,7 +5,6 @@ return [
     // All of Functionality in this Directory
     'base_directory' => 'filemanager',
 
-
     /**
      *
      * route configs that you want to use default work package
@@ -49,7 +48,11 @@ return [
      */
     'disk' => env('UPLOAD_DISK', 'storage'),
 
-    'max_size' => 500,
+    /**
+     * The maximum upload file size of an item in bytes.
+     * Adding a larger file will result in an exception.
+     */
+    'max_file_size' => 1024 * 1024 * 10,
 
     'max_image_width' => 1024,
 
@@ -126,12 +129,6 @@ return [
      */
     'access' => env('MEDIA_MANAGER_ACCESS', 'public'),
 
-    /*
-    * The maximum file size of an item in bytes.
-    * Adding a larger file will result in an exception.
-    */
-    'max_file_size' => 1024 * 1024 * 10,
-
     'allowed_mimes' => [
         'image/gif',
         'image/jpeg',
@@ -168,7 +165,7 @@ return [
     /**
      * Show / Hide system files and folders
      */
-    'hiddenFiles' => true,
+    'hiddenFiles' => false,
 
     /***************************************************************************
      * ACL rules list - used for default ACL repository (ConfigACLRepository)

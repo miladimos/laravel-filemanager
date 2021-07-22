@@ -2,22 +2,17 @@
 
 namespace Miladimos\FileManager\Services;
 
-use Illuminate\Support\Facades\Storage;
 use Miladimos\FileManager\Models\File;
 
 class ImageService extends Service
 {
-    private $disk;
-
-    private $access;
 
     private $sizes;
 
     public function __construct()
     {
         $this->access = config('filemanager.access');
-        $this->disk = Storage::disk(config('filemanager.disk'));
-        $this->sizes = config('filemanager.sizes');
+        $this->sizes = config('filemanager.images.sizes');
     }
 
     protected function handleDelete(File $file)
@@ -46,7 +41,7 @@ class ImageService extends Service
                 $sizePath = public_path($sizePath);
             }
 
-            FileFacade::delete($sizePath);
+            $this->disk->delete($sizePath);
         }
 
         $thumbSize = $file->base_path . "thumb/" . $file->file_name;
@@ -64,8 +59,8 @@ class ImageService extends Service
             $originalSize = public_path($originalSize);
         }
 
-        FileFacade::delete($thumbSize);
-        FileFacade::delete($originalSize);
+        $this->disk->delete($thumbSize);
+        $this->disk->delete($originalSize);
 
         return true;
     }
@@ -136,5 +131,4 @@ class ImageService extends Service
     {
         return $this->sizes;
     }
-
 }

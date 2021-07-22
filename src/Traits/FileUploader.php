@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 trait FileUploader
 {
+    // Simple uploader for simple projects without file manager
+
     /**
      * Default File Disk
      *
@@ -21,7 +23,7 @@ trait FileUploader
      *
      * @var string
      */
-    private $defaultUploadfolderName = 'upload';
+    private $defaultUploadFolderName = 'upload';
 
     /**
      * Directory Seperator
@@ -47,16 +49,16 @@ trait FileUploader
             'width' => '120',
             'height' => '120'
         ],
-        'small' => '',
-        'medium' => '',
-        'original' => '',
+        'small' => '200x200',
+        'medium' => '320x300',
+        'original' => '420x400',
     ];
 
 
     public function uploadOneImage(UploadedFile $uploadedFile, $path = null)
     {
 
-        $path = $path ?? $this->defaultUploadfolderName;
+        $path = $path ?? $this->defaultUploadFolderName;
 
         if ($uploadedFile->isValid()) {
             $model = resolve($this->model);
@@ -67,12 +69,11 @@ trait FileUploader
             $day = Carbon::now()->day;
 
             $fileName = $uploadedFile->getClientOriginalName();
-            $fileExt  = $uploadedFile->getClientOriginalExtension();
+            $fileExt = $uploadedFile->getClientOriginalExtension();
             $mimeType = $uploadedFile->getClientMimeType();
             $fileSize = $uploadedFile->getSize();
 
             $uploadPath = "{$path}{$this->ds}{$year}{$this->ds}{$month}{$this->ds}{$day}";
-
 
             $fullUploadedPath = public_path($uploadPath . $this->ds . $fileName);
 
@@ -91,7 +92,7 @@ trait FileUploader
                     'file_path' => url($uploadPath . $this->ds . $finalFileName),
                     'file_size' => $fileSize,
                     'mime_type' => $mimeType,
-                    'file_ext'  => $fileExt,
+                    'file_ext' => $fileExt,
                     'width' => $image->width(),
                     'height' => $image->height(),
                 ]);
@@ -111,7 +112,7 @@ trait FileUploader
                 'file_path' => url($uploadPath . $this->ds . $fileName),
                 'file_size' => $fileSize,
                 'mime_type' => $mimeType,
-                'file_ext'  => $fileExt,
+                'file_ext' => $fileExt,
                 'width' => $image->width(),
                 'height' => $image->height(),
             ]);
@@ -131,20 +132,20 @@ trait FileUploader
 
     // $path = $request->photo->storeAs('images', 'filename.jpg', 'disk');
 
-    public function uploadOneFile(UploadedFile $uploadedFile, $path = null,  $disk = 'public')
+    public function uploadOneFile(UploadedFile $uploadedFile, $path = null, $disk = 'public')
     {
 
-        $path = $path ?? $this->defaultUploadfolderName;
+        $path = $path ?? $this->defaultUploadFolderName;
 
         if ($uploadedFile->isValid()) {
             $model = resolve($this->model);
 
-            $year  = Carbon::now()->year;
+            $year = Carbon::now()->year;
             $month = Carbon::now()->month;
-            $day   = Carbon::now()->day;
+            $day = Carbon::now()->day;
 
             $fileName = $uploadedFile->getClientOriginalName();
-            $fileExt  = $uploadedFile->getClientOriginalExtension();
+            $fileExt = $uploadedFile->getClientOriginalExtension();
             $mimeType = $uploadedFile->getClientMimeType();
             $fileSize = $uploadedFile->getSize();
 
@@ -167,7 +168,7 @@ trait FileUploader
                     'file_path' => url($uploadPath . $this->ds . $finalFileName),
                     'file_size' => $fileSize,
                     'mime_type' => $mimeType,
-                    'file_ext'  => $fileExt,
+                    'file_ext' => $fileExt,
                 ]);
 
                 return response()->json([
@@ -185,7 +186,7 @@ trait FileUploader
                 'file_path' => url($uploadPath . $this->ds . $fileName),
                 'file_size' => $fileSize,
                 'mime_type' => $mimeType,
-                'file_ext'  => $fileExt,
+                'file_ext' => $fileExt,
             ]);
 
             return response()->json([
@@ -221,7 +222,7 @@ trait FileUploader
         // their associated MIME types. We will loop through them and look for
         // the MIME type of the current SymfonyUploadedFile.
         foreach ($this->imageMimes as $imageMime) {
-            if (in_array($mime, (array) $imageMime)) {
+            if (in_array($mime, (array)$imageMime)) {
                 return true;
             }
         }
