@@ -109,11 +109,18 @@ php artisan filemanager:init
 
 ❤️
 
+### Backend api:
+
 - [x] Directory service - list, list recursive, create, delete, move
-- [] File service - list, delete, move
-- [] Upload service -
-- [] Image service -
-- [] FileGroup service -
+- [ ] File service - list, delete, move
+- [ ] Upload service -
+- [ ] Image service -
+- [ ] FileGroup service -
+- [ ] Archive service - zip, tar
+
+### Frontend:
+
+- [ ] Web view -
 
 ### ویژگی ها
 

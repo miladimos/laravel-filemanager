@@ -109,6 +109,26 @@ class ImageService extends Service
         return $this;
     }
 
+    public function preview($disk, $path)
+    {
+        // get image
+        $preview = Image::make(Storage::disk($disk)->get($path));
+
+        return $preview->response();
+    }
+
+
+    public function url($disk, $path)
+    {
+        return [
+            'result' => [
+                'status'  => 'success',
+                'message' => null,
+            ],
+            'url'    => Storage::disk($disk)->url($path),
+        ];
+    }
+
 
     /**
      * set sizes

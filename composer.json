@@ -1,6 +1,6 @@
 {
     "name": "miladimos/laravel-filemanager",
-    "description": "a cute laravel api,  web file manager",
+    "description": "a powerful, flexible laravel file manager",
     "homepage": "https://github.com/miladimos/laravel-filemanager",
     "type": "library",
     "keywords": [
