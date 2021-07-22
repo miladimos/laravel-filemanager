@@ -4,6 +4,7 @@ namespace Miladimos\FileManager\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Miladimos\FileManager\Console\Commands\InitializePackageCommand;
 use Miladimos\FileManager\Console\Commands\InstallPackageCommand;
 use Miladimos\FileManager\FileManager;
 
@@ -62,6 +63,7 @@ class FileManagerServiceProvider extends ServiceProvider
     {
         $this->commands([
             InstallPackageCommand::class,
+            InitializePackageCommand::class,
         ]);
     }
 
