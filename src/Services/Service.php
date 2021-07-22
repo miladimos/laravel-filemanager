@@ -13,12 +13,15 @@ abstract class Service
 
     protected $disk;
 
+    protected $base_directory;
+
+    protected $errors = [];
+
     public function __construct()
     {
         $this->disk = Storage::disk(config('filemanager.disk'));
+        $this->base_directory = config('filemanager.base_directory');
     }
-
-    private $errors = [];
 
     public function errors()
     {

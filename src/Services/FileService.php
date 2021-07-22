@@ -3,64 +3,23 @@
 namespace Miladimos\FileManager\Services;
 
 use Carbon\Carbon;
-use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-/**
- * Class MediaManager.
- */
-class FileManager
-{
-    /**
-     * @var FilesystemAdapter
-     */
-    protected $disk;
 
-    /**
-     * Access Mode of the file as S3 uploads are private by default.
-     *
-     * @var string
-     */
+class FileService extends Service
+{
+
     protected $access;
 
-    /**
-     * @var PhpRepository
-     */
     protected $mimeDetect;
 
-    /**
-     * @var array
-     */
-    private $errors = [];
 
-    /**
-     * Name of the disk to upload to.
-     *
-     * @var string
-     */
-    private $diskName;
-
-    /**
-     * Label of the breadcrumb's root.
-     *
-     * @var string
-     */
-    private $breadcrumbRootLabel = 'Root';
-
-    /**
-     * UploadsManager constructor.
-     *
-     * @param PhpRepository $mimeDetect
-     */
     public function __construct(PhpRepository $mimeDetect)
     {
-        $this->diskName = config('media-manager.disk');
         $this->access = config('media-manager.access');
-        $this->breadcrumbRootLabel = config('media-manager.breadcrumb.root');
-        $this->disk = Storage::disk($this->diskName);
         $this->mimeDetect = $mimeDetect;
     }
 

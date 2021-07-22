@@ -2,6 +2,10 @@
 
 return [
 
+    // All of Functionality in this Directory
+    'base_directory' => 'filemanager',
+
+
     /**
      *
      * route configs that you want to use default work package
