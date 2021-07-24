@@ -5,37 +5,42 @@ namespace Miladimos\FileManager\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Miladimos\FileManager\Models\Directory;
+use Miladimos\FileManager\Services\DirectoryService;
 
 class directoryController extends Controller
 {
 
+    private $directoryService;
+
+    public function __construct()
+    {
+        $this->directoryService = new DirectoryService();
+    }
 
     public function createDirectory(Request $request)
     {
 
         $data = [
-            'directoryName' =>  $request->input('name'),
-            'directoryDescription' =>  $request->input('description'),
-            'directoryParent' =>  $request->input('parent_id'),
+            'directoryName' => $request->input('name'),
+            'directoryDescription' => $request->input('description'),
+            'directoryParent' => $request->input('parent_id'),
         ];
 
-        return $this->responseSuccess("Directory created", 201, "Created");
-    }
+        if ($this->directoryService->createDirectory($data))
+            return $this->responseSuccess("Directory created", 201, "Created");
 
-    public function addDirectory(Request $request)
-    {
-        return json_encode([
-            'result' => Storage::makeDirectory($request->name)
-        ]);
+        return $this->responseError("Error in Directory create", 500);
+
     }
 
     public function deleteDirectories(Request $request)
     {
         foreach ($request->input('directories', []) as $key => $directory) {
-            Storage::deleteDirectory($directory);
+            if ($this->directoryService->deleteDirectory($directory))
+                continue;
         }
 
-        return json_encode(['result' => true]);
+        return $this->responseSuccess("Directories Deleted");
     }
 
     public function getUserDirectorys(Request $request)
@@ -72,36 +77,4 @@ class directoryController extends Controller
         return response()->json(['msg' => 'Directory renamed.', 'status' => '200'], 200);
     }
 
-    public function getDirectoryBreadcrumb(Request $request)
-    {
-        // This probably could be better.
-        $id = $request->input('folder');
-
-        if ($id != 0) {
-            // Get the current folder
-            $folders = Directory::where('id', $id)->get();
-
-            // See if it has a parent
-            $parentId = $folders[0]["parent_folder"];
-
-            if ($parentId != 0) {
-                $looping = true;
-
-                while ($looping) {
-                    // Get the parent details.
-                    $nextDirectory = Directory::where('id', $parentId)->get();
-
-                    $parentId = $nextDirectory[0]["parent_folder"];
-
-                    $folders = $folders->merge($nextDirectory);
-
-                    $looping = $parentId != 0;
-                }
-            }
-
-            return $folders->toJson();
-        }
-
-        return null;
-    }
 }

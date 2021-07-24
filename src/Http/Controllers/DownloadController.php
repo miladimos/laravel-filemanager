@@ -3,18 +3,28 @@
 
 namespace Miladimos\FileManager\Http\Controllers;
 
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
+use Miladimos\FileManager\Models\File;
+use Symfony\Component\CssSelector\Exception\InternalErrorException;
 
-class DownloadController
+class DownloadController extends Controller
 {
-    public function download($file)
+
+    public function __construct()
     {
-        /** @var File $file */
+
+    }
+
+    public function download($file_id)
+    {
+        /** @var File $file_id */
         $file = File::query()
-            ->where("id", $file)
-            ->orWhere("name", $file)
+            ->where("id", $file_id)
+            ->orWhere("name", $file_id)
             ->firstOrFail();
 
-        $config = filemanager_config();
+        $config = config('filemanager');
 
         if ($file->isPublic) {
             return $file->download();

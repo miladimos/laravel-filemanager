@@ -2,6 +2,8 @@
 
 namespace Miladimos\FileManager\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage;
+
 class TestController extends Controller
 {
 

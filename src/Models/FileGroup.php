@@ -14,7 +14,6 @@ class FileGroup extends Model
 
     protected $table = 'file_groups';
 
-
     // protected $fillable = ['title', 'description', 'uuid'];
 
     protected $guarded = [];

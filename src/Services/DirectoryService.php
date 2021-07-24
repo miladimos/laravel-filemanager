@@ -4,8 +4,22 @@
 namespace Miladimos\FileManager\Services;
 
 
+use Miladimos\FileManager\Models\Directory;
+
+// all of about directories
 class DirectoryService extends Service
 {
+
+    // Directory Model
+    private $model;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->model = new Directory();
+    }
+
     public function listDirectories($path)
     {
         $dirs = $this->disk->directories($path);
@@ -22,7 +36,7 @@ class DirectoryService extends Service
 
     public function createDirectory($directory)
     {
-//        $dir = Directory::create([
+//        $dir = $this->model->create([
 //            'user_id' => user()->id,
 //
 //        ]);
@@ -35,7 +49,8 @@ class DirectoryService extends Service
     {
         try {
             if ($this->disk->deleteDirectory($directory))
-                return true;
+                $this->model->where('id', $directory)->delete();
+            return true;
         } catch (\Exception $exception) {
             return false;
         }

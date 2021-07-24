@@ -4,7 +4,7 @@
 namespace Miladimos\FileManager\Http\Controllers;
 
 
-class FileController
+class FileController extends Controller
 {
     public function deleteFile($id)
     {
@@ -50,7 +50,6 @@ class FileController
         return response()->json(['msg' => 'File moved.', 'status' => '200'], 200);
     }
 
-
     public function getUserFiles(Request $request)
     {
         $folder = $request->input('folder');
@@ -65,9 +64,6 @@ class FileController
         return $files->toJson();
     }
 
-
-
-
     public function deleteFiles(Request $request)
     {
         foreach ($request->input('files', []) as $key => $file) {
@@ -76,8 +72,6 @@ class FileController
 
         return json_encode(['result' => true]);
     }
-
-
 
     public function listAllFiles(Request $request)
     {

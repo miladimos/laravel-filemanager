@@ -7,14 +7,24 @@ use Miladimos\FileManager\Models\FileGroup;
 class FileGroupService extends Service
 {
 
+    // FileGroup Model
+    private $model;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->model = new FileGroup();
+    }
+
     public function allFileGroups()
     {
-        return FileGroup::all();
+        return $this->model->all();
     }
 
     public function createFileGroup($tile, $description)
     {
-        $fileGroup = FileGroup::create([
+        $fileGroup = $this->model->create([
             'title' => $tile,
             'description' => $description,
         ]);
@@ -32,13 +42,13 @@ class FileGroupService extends Service
         ]);
         if (!$fileGroup) return false;
 
-        return $fileGroup;
+        return true;
     }
 
     public function deleteFileGroup(FileGroup $fileGroup)
     {
         if ($fileGroup = $fileGroup->delete())
-            return $fileGroup;
+            return true;
 
         return false;
     }

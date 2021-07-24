@@ -10,7 +10,7 @@ use RecursiveIteratorIterator;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 use ZipArchive;
 
-class ArchiveService
+class ArchiveService extends Service
 {
     protected $zip;
     protected $request;
@@ -24,6 +24,8 @@ class ArchiveService
      */
     public function __construct(ZipArchive $zip, Request $request)
     {
+        parent::__construct();
+        
         $this->zip = $zip;
         $this->request = $request;
         $this->pathPrefix = Storage::disk($request->input('disk'))

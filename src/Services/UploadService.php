@@ -3,12 +3,14 @@
 namespace Miladimos\FileManager\Services;
 
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
+
+
+// all of about uploads (upload file, files, ...)
 
 class UploadService extends Service
 {
@@ -16,9 +18,10 @@ class UploadService extends Service
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->access = config('filemanager.access');
     }
-
 
 
     //public function resizeImagePost(Request $request)

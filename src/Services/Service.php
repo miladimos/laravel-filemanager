@@ -9,9 +9,9 @@ use Illuminate\Support\Str;
 use League\MimeTypeDetection\FinfoMimeTypeDetector;
 use Miladimos\FileManager\Models\File;
 
+// public functionalities write here for inherit by other services
 abstract class Service
 {
-    // public functionalities write here for inherit by other services
 
     protected $disk;
 
@@ -111,6 +111,5 @@ abstract class Service
 
         if ($this->disk->move($oldName, $newName)) return true;
     }
-
 
 }

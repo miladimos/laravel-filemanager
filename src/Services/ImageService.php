@@ -4,6 +4,7 @@ namespace Miladimos\FileManager\Services;
 
 use Miladimos\FileManager\Models\File;
 
+// all of about images (resize - quality ...)
 class ImageService extends Service
 {
 
@@ -11,6 +12,8 @@ class ImageService extends Service
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->access = config('filemanager.access');
         $this->sizes = config('filemanager.images.sizes');
     }
@@ -122,10 +125,10 @@ class ImageService extends Service
     {
         return [
             'result' => [
-                'status'  => 'success',
+                'status' => 'success',
                 'message' => null,
             ],
-            'url'    => Storage::disk($disk)->url($path),
+            'url' => Storage::disk($disk)->url($path),
         ];
     }
 

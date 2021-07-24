@@ -1,0 +1,32 @@
+public function getDirectoryBreadcrumb(Request $request)
+    {
+        // This probably could be better.
+        $id = $request->input('folder');
+
+        if ($id != 0) {
+            // Get the current folder
+            $folders = Directory::where('id', $id)->get();
+
+            // See if it has a parent
+            $parentId = $folders[0]["parent_folder"];
+
+            if ($parentId != 0) {
+                $looping = true;
+
+                while ($looping) {
+                    // Get the parent details.
+                    $nextDirectory = Directory::where('id', $parentId)->get();
+
+                    $parentId = $nextDirectory[0]["parent_folder"];
+
+                    $folders = $folders->merge($nextDirectory);
+
+                    $looping = $parentId != 0;
+                }
+            }
+
+            return $folders->toJson();
+        }
+
+        return null;
+    }

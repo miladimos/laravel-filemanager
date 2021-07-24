@@ -4,17 +4,17 @@
 namespace Miladimos\FileManager\Http\Controllers;
 
 
-class BrowseController
+use Illuminate\Http\Request;
+
+class BrowseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return [
-            'result'      => [
-                'status'  => 'success',
-                'message' => null,
-            ],
-//            'directories' => $content['directories'],
-//            'files'       => $content['files'],
+        $data = [
+            'directories' => '',
+            'files' => '',
         ];
+
+        return $this->responseSuccess($data);
     }
 }

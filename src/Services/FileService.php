@@ -5,10 +5,10 @@ namespace Miladimos\FileManager\Services;
 use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 
+// all of about files
 class FileService extends Service
 {
 
@@ -16,6 +16,8 @@ class FileService extends Service
 
     public function __construct()
     {
+        parent::__construct();
+        
         $this->access = config('media-manager.access');
     }
 
