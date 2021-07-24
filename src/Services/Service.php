@@ -8,16 +8,17 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use League\MimeTypeDetection\FinfoMimeTypeDetector;
 use Miladimos\FileManager\Models\File;
+use Miladimos\FileManager\Traits\ErrorHandler;
 
 // public functionalities write here for inherit by other services
 abstract class Service
 {
+    use ErrorHandler;
 
     protected $disk;
 
     protected $base_directory;
 
-    protected $errors = [];
 
     protected $mimeDetect;
 
@@ -26,11 +27,6 @@ abstract class Service
         $this->disk = Storage::disk(config('filemanager.disk'));
         $this->base_directory = config('filemanager.base_directory');
         $this->mimeDetect = new FinfoMimeTypeDetector();
-    }
-
-    public function errors()
-    {
-        return $this->errors;
     }
 
     /**
