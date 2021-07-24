@@ -8,6 +8,8 @@ use Miladimos\FileManager\Models\Directory;
 
 class directoryController extends Controller
 {
+
+
     public function createDirectory(Request $request)
     {
 
@@ -18,6 +20,22 @@ class directoryController extends Controller
         ];
 
         return $this->responseSuccess("Directory created", 201, "Created");
+    }
+
+    public function addDirectory(Request $request)
+    {
+        return json_encode([
+            'result' => Storage::makeDirectory($request->name)
+        ]);
+    }
+
+    public function deleteDirectories(Request $request)
+    {
+        foreach ($request->input('directories', []) as $key => $directory) {
+            Storage::deleteDirectory($directory);
+        }
+
+        return json_encode(['result' => true]);
     }
 
     public function getUserDirectorys(Request $request)
