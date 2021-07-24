@@ -19,11 +19,6 @@ class FileManagerServiceProvider extends ServiceProvider
 
     }
 
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
     public function boot()
     {
 
@@ -31,7 +26,7 @@ class FileManagerServiceProvider extends ServiceProvider
             $this->registerConfig();
             // $this->registerPublishesMigrations();
             $this->registerCommands();
-            // $this->registerTranslations();
+            $this->registerTranslations();
             $this->registerRoutes();
         }
     }

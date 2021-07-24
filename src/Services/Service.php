@@ -4,6 +4,7 @@
 namespace Miladimos\FileManager\Services;
 
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use League\MimeTypeDetection\FinfoMimeTypeDetector;
@@ -94,7 +95,7 @@ abstract class Service
     }
 
     /**
-     * Rename file or folder
+     * Rename file or Directory
      *
      * @param $newName
      * @param $oldName
@@ -106,6 +107,114 @@ abstract class Service
         if (!$this->disk->exists($oldName)) return false;
 
         if ($this->disk->move($oldName, $newName)) return true;
+    }
+
+
+    /**
+     * Get content for the selected disk and path
+     *
+     * @param       $disk
+     * @param null $path
+     *
+     * @return array
+     */
+    public function getContent($disk, $path = null)
+    {
+        $content = Storage::disk($disk)->listContents($path);
+
+        // get a list of directories
+        $directories = $this->filterDir($disk, $content);
+
+        // get a list of files
+        $files = $this->filterFile($disk, $content);
+
+        return compact('directories', 'files');
+    }
+
+    /**
+     * Get only directories
+     *
+     * @param $content
+     *
+     * @return array
+     */
+    protected function filterDir($disk, $content)
+    {
+        // select only dir
+        $dirsList = Arr::where($content, function ($item) {
+            return $item['type'] === 'dir';
+        });
+
+        // remove 'filename' param
+        $dirs = array_map(function ($item) {
+            return Arr::except($item, ['filename']);
+        }, $dirsList);
+
+        return array_values($dirs);
+    }
+
+    /**
+     * Get only files
+     *
+     * @param $disk
+     * @param $content
+     *
+     * @return array
+     */
+    protected function filterFile($disk, $content)
+    {
+        // select only files
+        $files = Arr::where($content, function ($item) {
+            return $item['type'] === 'file';
+        });
+
+        return array_values($files);
+    }
+
+    /**
+     * Get directories for tree module
+     *
+     * @param $disk
+     * @param $path
+     *
+     * @return array
+     */
+    public function getDirectoriesTree($disk, $path = null)
+    {
+        $directories = $this->directoriesWithProperties($disk, $path);
+
+        foreach ($directories as $index => $dir) {
+            $directories[$index]['props'] = [
+                'hasSubdirectories' => Storage::disk($disk)
+                    ->directories($dir['path']) ? true : false,
+            ];
+        }
+
+        return $directories;
+    }
+
+    /**
+     * File properties
+     *
+     * @param       $disk
+     * @param null $path
+     *
+     * @return mixed
+     */
+    public function fileProperties($disk, $path = null)
+    {
+        $file = Storage::disk($disk)->getMetadata($path);
+
+        $pathInfo = pathinfo($path);
+
+        $file['basename'] = $pathInfo['basename'];
+        $file['dirname'] = $pathInfo['dirname'] === '.' ? ''
+            : $pathInfo['dirname'];
+        $file['extension'] = isset($pathInfo['extension'])
+            ? $pathInfo['extension'] : '';
+        $file['filename'] = $pathInfo['filename'];
+
+        return $file;
     }
 
 }

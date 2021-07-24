@@ -8,7 +8,7 @@ trait ErrorHandler
 {
     public $errors = [];
 
-    public function errors($error, $type)
+    public function error($error, $type)
     {
         array_push($this->errors, [$error => $type]);
     }
