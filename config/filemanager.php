@@ -3,7 +3,7 @@
 return [
 
     // All of Functionality in this Directory
-    'base_directory' => 'filemanager',
+    'base_directory' => env("FILEMANAGER_BASE_DIR", 'filemanager'),
 
     /**
      *
@@ -14,7 +14,7 @@ return [
      *
      */
     'routes' => [
-        'prefix' => env('FILE_MANAGER_PREFIX', 'file-manager'),
+        'prefix' => env('FILEMANAGER_PREFIX', 'file-manager'),
 
         'web' => [
             'middleware' => ['web', 'auth'], //Set to empty to disable middleware filter
@@ -46,7 +46,8 @@ return [
      * local, public, ftp
      *
      */
-    'disk' => env('UPLOAD_DISK', 'storage'),
+    'disk' => env('FILEMANAGER_DISK', 'local'),
+
 
     /**
      * The maximum upload file size of an item in bytes.
@@ -123,12 +124,6 @@ return [
 
     ],
 
-    /*
-     * Configure the Access Mode of the uploaded files.
-     * By default S3 uploads are private, we're setting them to public here.
-     */
-    'access' => env('MEDIA_MANAGER_ACCESS', 'public'),
-
     'allowed_mimes' => [
         'image/gif',
         'image/jpeg',
@@ -136,9 +131,16 @@ return [
         'image/bmp',
         'image/png',
         'image/tiff',
+        'application/json',
+        'application/x-tar',
+        'application/zip',
     ],
 
     'allow_format' => ['jpeg', 'jpg', 'png', 'gif', 'webp', 'docx', 'pdf', 'ttf'],
+
+    'disallow_format' => ['exe', 'asm', 'bin', 'o', 'jar'],
+
+    'hide_files_ext' => true,
 
     'pagination' => [
         'folders' => 12, //2 rows
@@ -160,7 +162,7 @@ return [
      * available locale : en - fa
      * for display texts
      */
-    'locale' => 'fa',
+    'locale' => env("FILEMANAGER_LOCALE", 'fa'),
 
     /**
      * Show / Hide system files and folders
