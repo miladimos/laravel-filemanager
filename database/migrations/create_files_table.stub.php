@@ -16,6 +16,7 @@ class CreateFilesTable extends Migration
         Schema::create('files', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->uniuqe();
+            $table->morphs('fileable')->nullable();
             $table->foreignId('group_id')->nullable();
             $table->unsignedBigInteger('directory_id');
             $table->unsignedBigInteger('user_id')->nullable();
@@ -24,7 +25,7 @@ class CreateFilesTable extends Migration
             $table->string('file_path');
             $table->string('file_description')->nullable();
             $table->string('file_extension')->nullable();
-            $table->string('file_size')->nullable();
+            $table->unsignedBigInteger('file_size')->nullable();
             $table->char('file_type')->nullable();
             $table->string('mime_type')->nullable();
             $table->char('status')->nullable();

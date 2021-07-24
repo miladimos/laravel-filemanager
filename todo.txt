@@ -6,4 +6,16 @@ add breadcrumb manager
 
 add transfer service between storages
 
+add change visibility : public / private
 
+add hide or visible items
+
+add search functionality
+
+add notification system to specific users ( send email/sms to admin users) for specific operations
+
+add zip / tar comperes algorithms and download file or dirs in zip / tar format
+
+add work with remote (ssh, ftp) storages
+
+add pagination system
