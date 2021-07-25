@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Miladimos\FileManager\Models\Directory;
 use Miladimos\FileManager\Services\DirectoryService;
 
-class directoryController extends Controller
+class DirectoryController extends Controller
 {
 
     private $directoryService;

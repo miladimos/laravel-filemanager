@@ -31,6 +31,11 @@ class InstallPackageCommand extends Command
             $this->publishConfig();
         }
 
+//        $this->publishMigration();
+//        $this->info("migrations published.");
+//
+
+
         $this->info("FileManager Package Successfully Installed. Star me on Github :) \n");
         $this->info("\t\tGood Luck.");
     }
@@ -40,6 +45,15 @@ class InstallPackageCommand extends Command
         $this->call('vendor:publish', [
             '--provider' => "Miladimos\FileManager\Providers\FileManagerServiceProvider",
             '--tag' => 'filemanager_config',
+            '--force' => true
+        ]);
+    }
+
+    private function publishMigration()
+    {
+        $this->call('vendor:publish', [
+            '--provider' => "Miladimos\FileManager\Providers\FileManagerServiceProvider",
+            '--tag' => 'migrations',
             '--force' => true
         ]);
     }
@@ -72,15 +86,6 @@ class InstallPackageCommand extends Command
     //         $this->info("migration published");
     //     }
     //     $this->call('migrate');
-    // }
-
-    // private function publishMigration()
-    // {
-    //     $this->call('vendor:publish', [
-    //         '--provider' => "Miladimos\FileManager\Providers\FileManagerServiceProvider",
-    //         '--tag'      => 'migrations',
-    //         '--force'    => true
-    //     ]);
     // }
 
     // private function publishAssets()

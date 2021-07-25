@@ -15,6 +15,8 @@ class FileManagerServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . "/../../config/filemanager.php", 'filemanager');
 
+        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+
         $this->registerFacades();
 
     }
@@ -24,7 +26,7 @@ class FileManagerServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->registerConfig();
-            // $this->registerPublishesMigrations();
+//            $this->registerPublishesMigrations();
             $this->registerCommands();
             $this->registerTranslations();
             $this->registerRoutes();
@@ -64,32 +66,11 @@ class FileManagerServiceProvider extends ServiceProvider
 
     private function registerPublishesMigrations()
     {
-
-        if (!class_exists('CreateDirectoriesTable')) {
-            $this->publishes([
-                __DIR__ . '/../database/migrations/create_directories_table.stub.php' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_directories_table.php'),
-                // you can add any number of migrations here
-            ], 'migrations');
-        }
-
-        if (!class_exists('CreateFilesTable')) {
-            $this->publishes([
-                __DIR__ . '/../database/migrations/create_files_table.stub.php' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_files_table.php'),
-                // you can add any number of migrations here
-            ], 'migrations');
-        }
-
-//        if (!class_exists('CreateFileGroupsTable')) {
-//            $this->publishes([
-//                __DIR__ . '/../database/migrations/create_file_groups_table.stub.php' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_file_groups_table.php'),
-//                // you can add any number of migrations here
-//            ], 'migrations');
-//        }
-//        if (!class_exists('CreateFileGroupPivotTable')) {
-//            $this->publishes([
-//                __DIR__ . '/../database/migrations/create_file_group_pivot_table.stub.php' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_file_group_pivot_table.php'),
-//                // you can add any number of migrations here
-//            ], 'migrations');
+//        if (!class_exists('CreateFilemanagerTables')) {
+        $this->publishes([
+            __DIR__ . '/../../database/migrations/2021_07_25_232905_create_filemanager_tables.php' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_filemanger_tables.php'),
+            // you can add any number of migrations here
+        ], 'migrations');
 //        }
     }
 
