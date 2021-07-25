@@ -77,7 +77,7 @@ class ImageService extends Service
         $image_path = $this->lfm->setName($image_name)->path('absolute');
         $crop_path = $image_path;
 
-        if (! $overWrite) {
+        if (!$overWrite) {
             $fileParts = explode('.', $image_name);
             $fileParts[count($fileParts) - 2] = $fileParts[count($fileParts) - 2] . '_cropped_' . time();
             $crop_path = $this->lfm->setName(implode('.', $fileParts))->path('absolute');

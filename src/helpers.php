@@ -15,7 +15,7 @@ if (!function_exists('user')) {
 
 // if exists return true
 if (!function_exists('checkPath')) {
-    function checkPath($disk = 'local', $path)
+    function checkPath($path, $disk = 'local')
     {
         if ($disk && $path && \Illuminate\Support\Facades\Storage::disk($disk)->exists($path))
             return true;

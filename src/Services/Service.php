@@ -18,14 +18,18 @@ abstract class Service
 
     protected $disk;
 
+    protected $disk_name;
+
     protected $base_directory;
 
-
     protected $mimeDetect;
+
+    protected $ds = DIRECTORY_SEPARATOR;
 
     public function __construct()
     {
         $this->disk = Storage::disk(config('filemanager.disk'));
+        $this->disk_name = config('filemanager.disk');
         $this->base_directory = config('filemanager.base_directory');
         $this->mimeDetect = new FinfoMimeTypeDetector();
     }
@@ -79,7 +83,7 @@ abstract class Service
         return $randomName;
     }
 
-    public function getHumanReadableSize(int $sizeInBytes): string
+    protected function getHumanReadableSize(int $sizeInBytes): string
     {
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
 
@@ -102,7 +106,7 @@ abstract class Service
      *
      * @return bool
      */
-    public function rename($oldName, $newName)
+    protected function rename($oldName, $newName)
     {
         if (!$this->disk->exists($oldName)) return false;
 
@@ -118,7 +122,7 @@ abstract class Service
      *
      * @return array
      */
-    public function getContent($disk, $path = null)
+    protected function getContent($disk, $path = null)
     {
         $content = Storage::disk($disk)->listContents($path);
 
@@ -179,7 +183,7 @@ abstract class Service
      *
      * @return array
      */
-    public function getDirectoriesTree($disk, $path = null)
+    protected function getDirectoriesTree($disk, $path = null)
     {
         $directories = $this->directoriesWithProperties($disk, $path);
 
@@ -201,7 +205,7 @@ abstract class Service
      *
      * @return mixed
      */
-    public function fileProperties($disk, $path = null)
+    protected function fileProperties($disk, $path = null)
     {
         $file = Storage::disk($disk)->getMetadata($path);
 
@@ -215,6 +219,18 @@ abstract class Service
         $file['filename'] = $pathInfo['filename'];
 
         return $file;
+    }
+
+    /**
+     * Work out if an item (file or folder) is hidden (begins with a ".").
+     *
+     * @param $item
+     *
+     * @return bool
+     */
+    protected function isItemHidden($item)
+    {
+        return Str::startsWith(last(explode(DIRECTORY_SEPARATOR, $item)), '.');
     }
 
 }

@@ -26,9 +26,10 @@ class directoryController extends Controller
             'directoryParent' => $request->input('parent_id'),
         ];
 
-        if ($this->directoryService->createDirectory($data))
+        if ($this->directoryService->createDirectory($data)) {
             $msg = trans('filemanager::messages.directory.created');
-            return $this->responseSuccess("Directory created", 201, "Created");
+            return $this->responseSuccess($msg, 201, "Created");
+        }
 
         return $this->responseError("Error in Directory create", 500);
 

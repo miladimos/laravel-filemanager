@@ -47,7 +47,7 @@ class FileGroupService extends Service
 
     public function deleteFileGroup(FileGroup $fileGroup)
     {
-        if ($fileGroup = $fileGroup->delete())
+        if ($fileGroup->delete())
             return true;
 
         return false;

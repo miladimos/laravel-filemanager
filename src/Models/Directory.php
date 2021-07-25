@@ -22,6 +22,7 @@ class Directory extends Model
         return $this->belongsTo(Directory::class, 'parent_id', 'id');
     }
 
+    // who created ?
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

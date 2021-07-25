@@ -6,11 +6,11 @@ namespace Miladimos\FileManager\Traits;
 
 trait ErrorHandler
 {
-    public $errors = [];
+    private $errors = [];
 
-    public function error($error, $type)
+    public function error($error)
     {
-        array_push($this->errors, [$error => $type]);
+        array_push($this->errors, $error);
     }
 
     public function getErrors()

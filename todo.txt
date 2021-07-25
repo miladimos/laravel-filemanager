@@ -1,5 +1,7 @@
 add logger / Log Service
 
+add error handler - error type and codes
+
 add ACL
 
 add breadcrumb manager
@@ -19,3 +21,7 @@ add zip / tar comperes algorithms and download file or dirs in zip / tar format
 add work with remote (ssh, ftp) storages
 
 add pagination system
+
+add scheduled backup (store or send to ftp, email, ...)
+
+

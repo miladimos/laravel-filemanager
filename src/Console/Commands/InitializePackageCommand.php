@@ -32,7 +32,7 @@ class InitializePackageCommand extends Command
         if (!$this->disk->exists($this->base_directory)) {
             $this->disk->makeDirectory($this->base_directory);
         }
-        
+
         $this->line("Initialized ... \n");
 
         $this->warn("enjoy it, star me of github :) \n");

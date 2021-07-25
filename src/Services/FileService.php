@@ -3,8 +3,10 @@
 namespace Miladimos\FileManager\Services;
 
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 
@@ -17,7 +19,7 @@ class FileService extends Service
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->access = config('media-manager.access');
     }
 
@@ -173,61 +175,84 @@ class FileService extends Service
     }
 
     /**
-     * Create a new directory.
-     *
-     * @param $folder
-     *
-     * @return bool
-     */
-    public function createDirectory($folder)
-    {
-        $folder = $this->cleanFolder($folder);
-        if ($this->disk->exists($folder)) {
-            $this->errors[] = 'Folder "' . $folder . '" already exists.';
-
-            return false;
-        }
-
-        return $this->disk->makeDirectory($folder);
-    }
-
-    /**
-     * Delete a directory.
-     *
-     * @param $folder
-     *
-     * @return bool
-     */
-    public function deleteDirectory($folder)
-    {
-        $folder = $this->cleanFolder($folder);
-        $filesFolders = array_merge($this->disk->directories($folder), $this->disk->files($folder));
-        if (!empty($filesFolders)) {
-            $this->errors[] = 'The directory must be empty to delete it.';
-
-            return false;
-        }
-
-        return $this->disk->deleteDirectory($folder);
-    }
-
-    /**
      * Delete a file.
      *
      * @param $path
      *
      * @return bool
      */
-    public function deleteFile($path)
-    {
-        $path = $this->cleanFolder($path);
-        if (!$this->disk->exists($path)) {
-            $this->errors[] = 'File does not exist.';
+//    public function deleteFile($path)
+//    {
+//        $path = $this->cleanFolder($path);
+//        if (!$this->disk->exists($path)) {
+//            $this->errors[] = 'File does not exist.';
+//
+//            return false;
+//        }
+//
+//        return $this->disk->delete($path);
+//    }
 
-            return false;
+    public function uploadFiles(Request $request)
+    {
+        $request->validate([
+            'files.*' => 'mimetypes:image/png,image/jpeg'
+        ]);
+        $path = $request->path ? $request->path : '';
+
+        foreach ($request->file('files') as $key => $file) {
+            $file->storeAs($path, $file->getClientOriginalName());
         }
 
-        return $this->disk->delete($path);
+        return response()->json([
+            'result' => true
+        ]);
+    }
+
+    public function deleteFiles(Request $request)
+    {
+        foreach ($request->input('files', []) as $key => $file) {
+            Storage::delete($file);
+        }
+
+        return json_encode(['result' => true]);
+    }
+
+    public function listAllFiles(Request $request)
+    {
+        $path = $request->input('path', '');
+        $directoriesList = Storage::directories($path);
+        $filesList = Storage::files($path);
+
+        $directories = [];
+        $files = [];
+
+        foreach ($directoriesList as $key => $directory) {
+            $directories[] = [
+                'name' => last(explode("/", $directory)),
+                'path' => $directory,
+                'public_path' => Storage::url($directory),
+                'size' => Storage::size($directory),
+                'type' => 'directory',
+                'last_modified' => \Carbon\Carbon::createFromTimestamp(Storage::lastModified($directory))->diffForHumans()
+            ];
+        }
+
+        foreach ($filesList as $key => $file) {
+            $files[] = [
+                'name' => last(explode("/", $file)),
+                'path' => $file,
+                'public_path' => Storage::url($file),
+                'size' => Storage::size($file),
+                'type' => 'file',
+                'last_modified' => \Carbon\Carbon::createFromTimestamp(Storage::lastModified($file))->diffForHumans()
+            ];
+        }
+
+        return [
+            'path' => $path,
+            'directoriesAndFiles' => array_merge($directories, $files)
+        ];
     }
 
     /**
@@ -242,35 +267,12 @@ class FileService extends Service
         $path = $this->cleanFolder($path);
         $nameName = $path . DIRECTORY_SEPARATOR . $newFileName;
         if ($this->disk->exists($nameName)) {
-            $this->errors[] = 'The file "' . $newFileName . '" already exists in this folder.';
+//            $this->errors[] = 'The file "' . $newFileName . '" already exists in this folder.';
 
             return false;
         }
 
         return $this->disk->getDriver()->rename(($path . DIRECTORY_SEPARATOR . $originalFileName), $nameName);
-    }
-
-    /**
-     * Show all directories that the selected item can be moved to.
-     *
-     * @return array
-     */
-    public function allDirectories()
-    {
-        $directories = $this->disk->allDirectories('/');
-
-        return collect($directories)->filter(function ($directory) {
-            return !(Str::startsWith($directory, '.'));
-        })->map(function ($directory) {
-            return DIRECTORY_SEPARATOR . $directory;
-        })->reduce(function ($allDirectories, $directory) {
-            $parts = explode('/', $directory);
-            $name = str_repeat('&nbsp;', (count($parts)) * 4) . basename($directory);
-
-            $allDirectories[$directory] = $name;
-
-            return $allDirectories;
-        }, collect())->prepend($this->breadcrumbRootLabel, '/');
     }
 
     /**
@@ -282,7 +284,7 @@ class FileService extends Service
     public function moveFile($currentFile, $newFile)
     {
         if ($this->disk->exists($newFile)) {
-            $this->errors[] = 'File already exists.';
+//            $this->errors[] = 'File already exists.';
 
             return false;
         }
@@ -299,13 +301,13 @@ class FileService extends Service
     public function moveFolder($currentFolder, $newFolder)
     {
         if ($newFolder == $currentFolder) {
-            $this->errors[] = 'Please select another folder to move this folder into.';
+//            $this->errors[] = 'Please select another folder to move this folder into.';
 
             return false;
         }
 
         if (Str::startsWith($newFolder, $currentFolder)) {
-            $this->errors[] = 'You can not move this folder inside of itself.';
+//            $this->errors[] = 'You can not move this folder inside of itself.';
 
             return false;
         }
@@ -359,7 +361,7 @@ class FileService extends Service
         return $files->getUploadedFiles()->reduce(function ($uploaded, UploadedFile $file) use ($path) {
             $fileName = $file->getClientOriginalName();
             if ($this->disk->exists($path . $fileName)) {
-                $this->errors[] = 'File ' . $path . $fileName . ' already exists in this folder.';
+//                $this->errors[] = 'File ' . $path . $fileName . ' already exists in this folder.';
 
                 return $uploaded;
             }
@@ -368,7 +370,7 @@ class FileService extends Service
                 'disk' => $this->diskName,
                 'visibility' => $this->access,
             ])) {
-                $this->errors[] = trans('media-manager::messages.upload_error', ['entity' => $fileName]);
+//                $this->errors[] = trans('media-manager::messages.upload_error', ['entity' => $fileName]);
 
                 return $uploaded;
             }
@@ -377,19 +379,6 @@ class FileService extends Service
             return $uploaded;
         }, 0);
     }
-
-    /**
-     * Work out if an item (file or folder) is hidden (begins with a ".").
-     *
-     * @param $item
-     *
-     * @return bool
-     */
-    private function isItemHidden($item)
-    {
-        return Str::startsWith(last(explode(DIRECTORY_SEPARATOR, $item)), '.');
-    }
-
 
     /**
      * first get passed file and fetch name and format from original name
@@ -487,17 +476,6 @@ class FileService extends Service
 
     /**********     Getters & Setters    **********/
 
-    /**
-     * set config
-     *
-     * @param array $config
-     * @return $this
-     */
-    public function setConfig(array $config)
-    {
-        $this->config = $config;
-        return $this;
-    }
 
     /**
      * get config
@@ -665,29 +643,6 @@ class FileService extends Service
 
 
     /**
-     * you can set file name for upload
-     *
-     * @param string $name
-     * @return $this
-     */
-    public function setName(string $name)
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-
-    /**
-     * get the current name for upload file
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
      * get file path like: /path/prefix/filename.format
      *
      * @param array $parameters
@@ -697,7 +652,6 @@ class FileService extends Service
     {
         return $this->getUploadPath() . $this->getFileName();
     }
-
 
     /**
      * get file name like: current name.format
