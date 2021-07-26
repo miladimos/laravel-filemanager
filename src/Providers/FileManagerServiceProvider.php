@@ -76,10 +76,6 @@ class FileManagerServiceProvider extends ServiceProvider
 
     private function registerRoutes()
     {
-        Route::group($this->routeConfiguration('web'), function () {
-            $this->loadRoutesFrom(__DIR__ . '/../../routes/web.php', 'filemanager-routes');
-        });
-
         Route::group($this->routeConfiguration('api'), function () {
             $this->loadRoutesFrom(__DIR__ . '/../../routes/filemanger-api.php', 'filemanager-routes');
         });
@@ -87,17 +83,11 @@ class FileManagerServiceProvider extends ServiceProvider
 
     private function routeConfiguration($uses = 'api')
     {
-        if ($uses == 'api') {
-            return [
-                'prefix' => config('filemanager.routes.api.api_prefix') . '/' . config('filemanager.routes.api.api_version') . '/' . config('filemanager.routes.prefix'),
-                'middleware' => config('filemanager.routes.api.middleware'),
-            ];
-        } else {
-            return [
-                'prefix' => config('filemanager.routes.prefix'),
-                'middleware' => config('filemanager.routes.web.middleware'),
-            ];
-        }
+        $filemanager_api_version = 'v1';
 
+        return [
+            'prefix' => config('filemanager.routes.api.api_prefix') . '/' . $filemanager_api_version . '/' . config('filemanager.routes.prefix'),
+            'middleware' => config('filemanager.routes.api.middleware'),
+        ];
     }
 }

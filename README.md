@@ -1,5 +1,5 @@
-- [![Starts](https://img.shields.io/github/stars/miladimos/laravel-filemanager?style=flat&logo=github)](https://github.com/miladimos/laravel-filemanager/forks)
-- [![Forks](https://img.shields.io/github/forks/miladimos/laravel-filemanager?style=flat&logo=github)](https://github.com/miladimos/laravel-filemanager/stargazers)
+ [![Starts](https://img.shields.io/github/stars/miladimos/laravel-filemanager?style=flat&logo=github)](https://github.com/miladimos/laravel-filemanager/forks)
+ [![Forks](https://img.shields.io/github/forks/miladimos/laravel-filemanager?style=flat&logo=github)](https://github.com/miladimos/laravel-filemanager/stargazers)
 
 [comment]: <> (- [English]&#40;README-en.md&#41;)
 
@@ -166,7 +166,7 @@ $service = new UploadService();
 
 ### API over backend services:
 ```
-prefix = /route_prefix/api_prefix/filemanager_api_version/
+prefix = /api_prefix/filemanager_api_version/route_prefix
 
 GET -> prefix/filegroups // return all available file groups
 ```
