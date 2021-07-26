@@ -81,13 +81,14 @@ class FileManagerServiceProvider extends ServiceProvider
         });
     }
 
-    private function routeConfiguration($uses = 'api')
+    private function routeConfiguration()
     {
         $filemanager_api_version = 'v1';
 
         return [
             'prefix' => config('filemanager.routes.api.api_prefix') . '/' . $filemanager_api_version . '/' . config('filemanager.routes.prefix'),
             'middleware' => config('filemanager.routes.api.middleware'),
+            'as' => 'filemanager.'
         ];
     }
 }

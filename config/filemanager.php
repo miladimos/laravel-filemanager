@@ -14,8 +14,7 @@ return [
      *
      */
     'routes' => [
-        'prefix' => env('FILEMANAGER_ROUTE_PREFIX', 'file-manager'),
-
+        'prefix' => env('FILEMANAGER_ROUTE_PREFIX', 'filemanager'),
         'web' => [
             'middleware' => ['web', 'auth'], //Set to empty to disable middleware filter
         ],
