@@ -5,7 +5,6 @@ namespace Miladimos\FileManager\Services;
 
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Miladimos\FileManager\Models\Directory;
 
@@ -60,23 +59,26 @@ class DirectoryService extends Service
         return $dirs;
     }
 
-
     public function createDirectory($directory)
     {
-//        DB::transaction(function () {
-//            $this->model->create([
-//                'user_id' => user()->id,
-//            ]);
-//        });
-
         $path = $this->base_directory . $this->ds . $directory;
 
         if (!checkPath($path)) {
-            if ($this->disk->makeDirectory($path))
+
+            if ($this->disk->makeDirectory($path)) {
+                DB::transaction(function () use ($directory, $path) {
+                    $this->model->create([
+//                'user_id' => user()->id,
+                        'name' => $directory,
+                        'path' => $path,
+                        'disk' => $this->disk_name,
+                    ]);
+                });
                 return true;
-            else {
+            } else {
+
 //                $this->error('Directory "' . $directory . '" already exists.');
-                $this->error('Can not create directory.');
+//                $this->error('Can not create directory.');
                 return false;
             }
         }
@@ -84,11 +86,27 @@ class DirectoryService extends Service
         return false;
     }
 
-    public function deleteDirectory($directory)
+    /**
+     * Rename file or Directory
+     *
+     * @param $newName
+     * @param $oldName
+     *
+     * @return bool
+     */
+    protected function renameDirectory($oldName, $newName)
     {
-        $path = $this->base_directory . $this->ds . $directory;
+        if (!$this->disk->exists($oldName)) return false;
 
-//        dd($path);
+        if ($this->disk->move($oldName, $newName)) return true;
+    }
+
+    public function deleteDirectory($uuid)
+    {
+        $directory = Directory::where('uuid', $uuid)->first();
+
+        $path = $this->base_directory . $this->ds . $directory->name;
+
         if (!checkPath($path, $this->disk_name)) {
             return false; // directory does not exists
         }
@@ -98,9 +116,9 @@ class DirectoryService extends Service
             return false; // directory is not empty
 
         if ($this->disk->deleteDirectory($path)) {
-//            DB::transaction(function () use ($directory) {
-//                $this->model->where('id', $directory)->delete();
-//            });
+            DB::transaction(function () use ($uuid) {
+                $this->model->where('uuid', $uuid)->delete();
+            });
             return true;
         }
 

@@ -14,14 +14,13 @@ return [
      *
      */
     'routes' => [
-        'prefix' => env('FILEMANAGER_PREFIX', 'file-manager'),
+        'prefix' => env('FILEMANAGER_ROUTE_PREFIX', 'file-manager'),
 
         'web' => [
             'middleware' => ['web', 'auth'], //Set to empty to disable middleware filter
         ],
         'api' => [
-            'api_prefix' => env('API_PREFIX', 'api'),
-            'api_version' => env('API_VERSION', 'v1'),
+            'api_prefix' => env('FILEMANAGER_API_PREFIX', 'api'),
             'middleware' => ['api'], //Set to null to disable middleware filter
         ],
     ],

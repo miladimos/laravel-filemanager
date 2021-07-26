@@ -1,12 +1,13 @@
 - [![Starts](https://img.shields.io/github/stars/miladimos/laravel-filemanager?style=flat&logo=github)](https://github.com/miladimos/laravel-filemanager/forks)
 - [![Forks](https://img.shields.io/github/forks/miladimos/laravel-filemanager?style=flat&logo=github)](https://github.com/miladimos/laravel-filemanager/stargazers)
 
+[comment]: <> (- [English]&#40;README-en.md&#41;)
 
-- [English](README-en.md)
+# Under Development
 
-# در حال توسعه
+##### help us for development :)
 
-### برای نصب در مسیر روت پروژه خود دستور زیر را در ریشه پروژه اجرا کنید
+### for installation in root of your project do these steps:
 
 ``` php
 composer require miladimos/laravel-filemanager
@@ -46,6 +47,14 @@ and run bellow command for initialize:
 ``` php
 php artisan filemanager:init
 ```
+
+then create tables:
+
+``` php
+php artisan migrate
+```
+
+just it :)
 
 [comment]: <> (### نحوه استفاده)
 
@@ -105,11 +114,64 @@ php artisan filemanager:init
 
 [comment]: <> (```)
 
-### امکانات
+### Features ❤️
 
-❤️
+#### You are free to use whatever you like 😎 ( you can just use services in your coding or use apis for your graphical file manager or whatever ...)
 
-### Backend api:
+### Backend Services:
+
+##### Directory service:
+
+```php
+use Miladimos\FileManager\Services\DirectoryService;
+
+$service = new DirectoryService();
+$service->createDirectory($name); // name of directory for create
+$service->deleteDirectory($uuid); // uuid of directory for delete in db and disk
+$service->listDirectories($path) // list all directories in given path
+$service->listDirectoriesRecursive($path); // list all directories in given path Recursively
+```
+
+##### File service:
+
+```php
+use Miladimos\FileManager\Services\FileService;
+
+$service = new FileService();
+```
+
+##### FileGroup service:
+
+```php
+use Miladimos\FileManager\Services\FileGroupService;
+
+$service = new FileGroupService();
+```
+
+##### Image service:
+
+```php
+use Miladimos\FileManager\Services\ImageService;
+
+$service = new ImageService();
+```
+
+##### Upload service:
+
+```php
+use Miladimos\FileManager\Services\UploadService;
+
+$service = new UploadService();
+```
+
+### API over backend services:
+```
+prefix = /route_prefix/api_prefix/filemanager_api_version/
+
+GET -> prefix/filegroups // return all available file groups
+```
+
+### BACKEND TODO:
 
 - [x] Directory service - list, list recursive, create, delete, move
 - [ ] File service - list, delete, move
@@ -118,12 +180,6 @@ php artisan filemanager:init
 - [ ] FileGroup service -
 - [ ] Archive service - zip, tar
 
-### Frontend:
+### FRONTEND TODO:
 
 - [ ] Web view -
-
-### ویژگی ها
-
-* شخصی سازی بالا
-  
-    

@@ -19,9 +19,10 @@ class CreateFilemanagerTables extends Migration
             $table->foreignID('parent_id')->nullable();
 //            $table->foreignID('group_id')->nullable();
             $table->foreignID('user_id')->nullable();
-            $table->string('title')->unique();
+            $table->string('disk');
+            $table->string('name')->unique();
+            $table->string('path');
             $table->string('color_hex')->nullable();
-            $table->string('path')->nullable();
             $table->string('description')->nullable();
             $table->char('status')->default('a');
             $table->timestamps();

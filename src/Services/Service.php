@@ -99,22 +99,6 @@ abstract class Service
     }
 
     /**
-     * Rename file or Directory
-     *
-     * @param $newName
-     * @param $oldName
-     *
-     * @return bool
-     */
-    protected function rename($oldName, $newName)
-    {
-        if (!$this->disk->exists($oldName)) return false;
-
-        if ($this->disk->move($oldName, $newName)) return true;
-    }
-
-
-    /**
      * Get content for the selected disk and path
      *
      * @param       $disk
