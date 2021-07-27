@@ -20,10 +20,10 @@ Route::group(['as' => 'files.'], function () {
 });
 
 Route::group(['as' => 'file-groups.'], function () {
-    Route::get('file-groups', [FileGroupController::class, 'index'])->name('index');
-    Route::post('file-groups', [FileGroupController::class, 'store'])->name('store');
-    Route::post('file-groups/{file-group}', [FileGroupController::class, 'update'])->name('update');
-    Route::delete('file-groups/{file-group}', [FileGroupController::class, 'delete'])->name('delete');
+    Route::get('filegroups', [FileGroupController::class, 'index'])->name('index');
+    Route::post('filegroups', [FileGroupController::class, 'store'])->name('store');
+    Route::put('filegroups/{filegroup}/update', [FileGroupController::class, 'update'])->name('update');
+    Route::delete('filegroups/{filegroup}', [FileGroupController::class, 'delete'])->name('delete');
 });
 
 

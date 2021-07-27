@@ -1,5 +1,5 @@
- [![Starts](https://img.shields.io/github/stars/miladimos/laravel-filemanager?style=flat&logo=github)](https://github.com/miladimos/laravel-filemanager/forks)
- [![Forks](https://img.shields.io/github/forks/miladimos/laravel-filemanager?style=flat&logo=github)](https://github.com/miladimos/laravel-filemanager/stargazers)
+[![Starts](https://img.shields.io/github/stars/miladimos/laravel-filemanager?style=flat&logo=github)](https://github.com/miladimos/laravel-filemanager/forks)
+[![Forks](https://img.shields.io/github/forks/miladimos/laravel-filemanager?style=flat&logo=github)](https://github.com/miladimos/laravel-filemanager/stargazers)
 
 [comment]: <> (- [English]&#40;README-en.md&#41;)
 
@@ -146,6 +146,10 @@ $service = new FileService(); // or resolve(FileService::class)
 use Miladimos\FileManager\Services\FileGroupService;
 
 $service = new FileGroupService();
+$service->allFileGroups();
+$service->createFileGroup(array $data); //  $data = ['title', 'description']
+$service->updateFileGroup(FileGroup $fileGroup, array $data); //  $data = ['title', 'description']
+$service->deleteFileGroup(FileGroup $fileGroup);
 ```
 
 ##### Image service:
@@ -165,10 +169,19 @@ $service = new UploadService();
 ```
 
 ### API over backend services:
+
 ```
 prefix = /api_prefix/filemanager_api_version/route_prefix
 
-GET -> prefix/filegroups // return all available file groups
+// Directories
+POST   -> prefix/directories // store new directory 
+
+
+// File Groups
+GET    -> prefix/filegroups // return all available file groups
+POST   -> prefix/filegroups // store new file groups -> receive : title, description
+PUT    -> prefix/filegroups/{filegroup}/update // update file groups -> receive : title, description
+DELETE -> prefix/filegroups/{filegroup} // delete file groups
 ```
 
 ### BACKEND TODO:
