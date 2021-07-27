@@ -4,6 +4,7 @@
 namespace Miladimos\FileManager\Services;
 
 
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -32,6 +33,36 @@ abstract class Service
         $this->disk_name = config('filemanager.disk');
         $this->base_directory = config('filemanager.base_directory');
         $this->mimeDetect = new FinfoMimeTypeDetector();
+    }
+
+    /**
+     * Return the last modified time. If a timestamp can not be found fall back
+     * to today's date and time...
+     *
+     * @param string $path
+     *
+     * @return Carbon
+     */
+    public function lastModified(string $path)
+    {
+        try {
+            return Carbon::createFromTimestamp($this->disk->lastModified($path));
+        } catch (\Exception $e) {
+            return Carbon::now();
+        }
+    }
+
+
+    /**
+     * Return the file size.
+     *
+     * @param $path
+     *
+     * @return int
+     */
+    public function getSize($path)
+    {
+        return $this->disk->size($path);
     }
 
     /**

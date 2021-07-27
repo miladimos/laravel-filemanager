@@ -26,7 +26,7 @@ class File extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(config('filemanager.database.user_model'), 'user_id');
     }
 
     public function groups()
@@ -81,46 +81,6 @@ class File extends Model
     public function getBasenameAttribute(): string
     {
         return $this->filename . '.' . $this->extension;
-    }
-
-    /**
-     * generate the link for download file
-     * this link has expire time
-     *
-     * @return string
-     */
-    public function generateLink()
-    {
-
-        if (isset($config['secret'])) {
-            $secret = $config['secret'];
-        }
-
-        if (isset($config['download_link_expire'])) {
-            $expireTime = (int)$config['download_link_expire'];
-        }
-
-        /** @var int $expireTime */
-        $timestamp = Carbon::now()->addMinutes($expireTime)->timestamp;
-        $hash = Hash::make($secret . $this->id . request()->ip() . $timestamp);
-
-        return "/api/filemanager/download/$this->id?mac=$hash&t=$timestamp";
-    }
-
-
-    /**
-     * download the selected file
-     *
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-     */
-    public function download()
-    {
-        if (!$this->private) {
-            $path = public_path($this->path);
-        } else {
-            $path = storage_path($this->path);
-        }
-        return response()->download($path);
     }
 
 }

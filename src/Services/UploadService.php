@@ -108,6 +108,84 @@ class UploadService extends Service
     //        ->with('imageName',$input['imagename']);
     //}
 
+
+    public function uploadFiles(Request $request)
+    {
+        $request->validate([
+            'files.*' => 'mimetypes:image/png,image/jpeg'
+        ]);
+        $path = $request->path ? $request->path : '';
+
+        foreach ($request->file('files') as $key => $file) {
+            $file->storeAs($path, $file->getClientOriginalName());
+        }
+
+        return response()->json([
+            'result' => true
+        ]);
+    }
+
+//    /**
+//     * This method will take a collection of files that have been
+//     * uploaded during a request and then save those files to
+//     * the given path.
+//     *
+//     * @param UploadedFilesInterface $files
+//     * @param string $path
+//     *
+//     * @return int
+//     */
+//    public function saveUploadedFiles(UploadedFilesInterface $files, $path = '/')
+//    {
+//        return $files->getUploadedFiles()->reduce(function ($uploaded, UploadedFile $file) use ($path) {
+//            $fileName = $file->getClientOriginalName();
+//            if ($this->disk->exists($path . $fileName)) {
+////                $this->errors[] = 'File ' . $path . $fileName . ' already exists in this folder.';
+//
+//                return $uploaded;
+//            }
+//
+//            if (!$file->storeAs($path, $fileName, [
+//                'disk' => $this->diskName,
+//                'visibility' => $this->access,
+//            ])) {
+////                $this->errors[] = trans('media-manager::messages.upload_error', ['entity' => $fileName]);
+//
+//                return $uploaded;
+//            }
+//            $uploaded++;
+//
+//            return $uploaded;
+//        }, 0);
+//    }
+//
+//    /**
+//     * first get passed file and fetch name and format from original name
+//     * and if not set these when set
+//     * then return handle method
+//     *
+//     * @param $file
+//     * @return mixed
+//     */
+//    public function upload($file)
+//    {
+//        $nameSplit = explode('.', $file->getClientOriginalName());
+//        $fileName = $nameSplit[0];
+//        $format = $nameSplit[1];
+//        if (!$this->getName()) {
+//            if ($this->useFileNameToUpload) {
+//                $this->setName($fileName);
+//            } else {
+//                $this->setName($this->generateRandomName());
+//            }
+//        }
+//
+//        if (is_null($this->getFormat())) $this->setFormat($format);
+//
+//        return $this->handle($file);
+//    }
+//
+//
     public function uploadFile(UploadedFile $uploadedFile, string $file)
     {
         $storage = Storage::disk(config('upload.disk'));
@@ -189,7 +267,7 @@ class UploadService extends Service
         } else { // upload via ckeditor5 expects json responses
             if (is_null($new_filename)) {
                 $response = [
-                    'error' => [ 'message' =>  $error_bag[0] ]
+                    'error' => ['message' => $error_bag[0]]
                 ];
             } else {
                 $url = $this->lfm->setName($new_filename)->url();

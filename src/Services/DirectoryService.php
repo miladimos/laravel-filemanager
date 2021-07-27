@@ -3,7 +3,6 @@
 
 namespace Miladimos\FileManager\Services;
 
-
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Miladimos\FileManager\Models\Directory;
@@ -59,12 +58,17 @@ class DirectoryService extends Service
         return $dirs;
     }
 
+    /**
+     * Create a directory from the given name.
+     *
+     * @param mixed $value
+     * @return \Illuminate\Support\Collection
+     */
     public function createDirectory($directory)
     {
         $path = $this->base_directory . $this->ds . $directory;
 
         if (!checkPath($path)) {
-
             if ($this->disk->makeDirectory($path)) {
                 DB::transaction(function () use ($directory, $path) {
                     $this->model->create([
@@ -87,7 +91,7 @@ class DirectoryService extends Service
     }
 
     /**
-     * Rename file or Directory
+     * Rename  Directory
      *
      * @param $newName
      * @param $oldName
@@ -96,9 +100,22 @@ class DirectoryService extends Service
      */
     protected function renameDirectory($oldName, $newName)
     {
-        if (!$this->disk->exists($oldName)) return false;
+        if ($oldName == $newName) return false;
 
-        if ($this->disk->move($oldName, $newName)) return true;
+        $directory = Directory::where('name', $oldName)->first();
+
+        $path = $this->base_directory . $this->ds . $oldName;
+
+        if ($this->disk->exists($path)) {
+            DB::transaction(function () use ($directory, $newName) {
+                $directory->update([
+                    'name' => $newName
+                ]);
+            });
+
+            if ($this->disk->move($oldName, $newName)) return true;
+        };
+        return false;
     }
 
     public function deleteDirectory($uuid)
@@ -124,4 +141,5 @@ class DirectoryService extends Service
 
         return false;
     }
+
 }
