@@ -7,10 +7,6 @@ use Miladimos\FileManager\Http\Controllers\FileController;
 use Miladimos\FileManager\Http\Controllers\FileGroupController;
 
 
-Route::apiResources([
-    'file-groups' => FileGroupController::class,
-]);
-
 Route::group(['as' => 'directories.'], function () {
     Route::post('directories', [DirectoryController::class, 'createDirectory'])->name('create');
     Route::delete('directories', [DirectoryController::class, 'deleteDirectories'])->name('delete');
@@ -21,6 +17,13 @@ Route::group(['as' => 'files.'], function () {
     Route::delete('files', [FileController::class, 'deleteFile'])->name('delete');
     Route::post('files/rename', [FileController::class, 'renameFile'])->name('rename');
     Route::post('files/move', [FileController::class, 'moveFile'])->name('move');
+});
+
+Route::group(['as' => 'file-groups.'], function () {
+    Route::get('file-groups', [FileGroupController::class, 'index'])->name('index');
+    Route::post('file-groups', [FileGroupController::class, 'store'])->name('store');
+    Route::post('file-groups/{file-group}', [FileGroupController::class, 'update'])->name('update');
+    Route::delete('file-groups/{file-group}', [FileGroupController::class, 'delete'])->name('delete');
 });
 
 

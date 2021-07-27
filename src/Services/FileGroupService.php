@@ -2,6 +2,7 @@
 
 namespace Miladimos\FileManager\Services;
 
+use Illuminate\Support\Facades\DB;
 use Miladimos\FileManager\Models\FileGroup;
 
 class FileGroupService extends Service
@@ -22,25 +23,26 @@ class FileGroupService extends Service
         return $this->model->all();
     }
 
-    public function createFileGroup($tile, $description)
+    public function createFileGroup(array $data)
     {
-        $fileGroup = $this->model->create([
-            'title' => $tile,
-            'description' => $description,
-        ]);
+        DB::transaction(function () use ($data) {
+            $fileGroup = $this->model->create([
+                'title' => $data['title'],
+                'description' => $data['description'],
+            ]);
+        });
 
-        if (!$fileGroup) return false;
-
-        return $fileGroup;
+        return true;
     }
 
-    public function updateFileGroup(FileGroup $fileGroup, $tile, $description)
+    public function updateFileGroup(FileGroup $fileGroup, $data)
     {
-        $fileGroup = $fileGroup->update([
-            'title' => $tile,
-            'description' => $description,
-        ]);
-        if (!$fileGroup) return false;
+        DB::transaction(function () use ($fileGroup, $data) {
+            $fileGroup->update([
+                'title' => $data['title'],
+                'description' => $data['description'],
+            ]);
+        });
 
         return true;
     }
