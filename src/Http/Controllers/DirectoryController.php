@@ -12,9 +12,9 @@ class DirectoryController extends Controller
 
     private $directoryService;
 
-    public function __construct()
+    public function __construct(DirectoryService $directoryService)
     {
-        $this->directoryService = new DirectoryService();
+        $this->directoryService = $directoryService;
     }
 
     public function createDirectory(Request $request)

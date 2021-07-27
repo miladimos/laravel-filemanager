@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class BrowseController extends Controller
 {
+    public function __construct()
+    {
+        //
+    }
+
     public function index(Request $request)
     {
         $data = [

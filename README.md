@@ -137,7 +137,7 @@ $service->listDirectoriesRecursive($path); // list all directories in given path
 ```php
 use Miladimos\FileManager\Services\FileService;
 
-$service = new FileService();
+$service = new FileService(); // or resolve(FileService::class)
 ```
 
 ##### FileGroup service:

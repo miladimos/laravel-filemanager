@@ -11,6 +11,11 @@ use Symfony\Component\CssSelector\Exception\InternalErrorException;
 class DownloadController extends Controller
 {
 
+    public function __construct()
+    {
+        //
+    }
+
     public function download($file_id)
     {
         /** @var File $file_id */

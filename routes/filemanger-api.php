@@ -23,6 +23,7 @@ Route::group(['as' => 'files.'], function () {
     Route::post('files/move', [FileController::class, 'moveFile'])->name('move');
 });
 
+
 Route::get("download/{file}", [DownloadController::class, 'download']);
 
 //Route::post('/browser/folders/parent', ['uses' => 'FolderController@getParentFolderId'])->name('browser.folder.parent');

@@ -2,6 +2,7 @@
 
 namespace Miladimos\FileManager\Providers;
 
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Miladimos\FileManager\Console\Commands\InitializePackageCommand;
@@ -23,7 +24,6 @@ class FileManagerServiceProvider extends ServiceProvider
 
     public function boot()
     {
-
         if ($this->app->runningInConsole()) {
             $this->registerConfig();
 //            $this->registerPublishesMigrations();
@@ -35,9 +35,7 @@ class FileManagerServiceProvider extends ServiceProvider
 
     private function registerFacades()
     {
-        $this->app->bind('filemanager', function ($app) {
-            return new FileManager();
-        });
+        $this->app->singleton('filemanager', FileManager::class);
     }
 
     private function registerConfig()

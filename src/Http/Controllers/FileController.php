@@ -11,9 +11,9 @@ class FileController extends Controller
 {
     private $fileService;
 
-    public function __construct()
+    public function __construct(FileService $fileService)
     {
-        $this->fileService = new FileService();
+        $this->fileService = $fileService;
     }
 
     public function deleteFile($uuid)
