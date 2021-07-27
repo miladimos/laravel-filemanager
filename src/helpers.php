@@ -63,7 +63,17 @@ if (!function_exists('decodeBase64File')) {
     }
 }
 
-function version(): string
-{
-    return trim(file_get_contents(base_path('.version')));
+if (!function_exists('version')) {
+    function version(): string
+    {
+        return trim(file_get_contents(base_path('.version')));
+    }
+}
+
+if (!function_exists('checkInstanceOf')) {
+    function checkInstanceOf($varable, string $model): string
+    {
+
+        return !!($varable instanceof $model);
+    }
 }

@@ -4,12 +4,11 @@ namespace Miladimos\FileManager\Services;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Miladimos\FileManager\Models\File;
+use Symfony\Component\CssSelector\Exception\InternalErrorException;
 
 
 // all of about files
@@ -25,34 +24,6 @@ class FileService extends Service
         $this->model = new File();
     }
 
-
-    public function deleteFile($id)
-    {
-        if (!$this->disk->exists($id)) {
-
-        }
-
-        try {
-            $file = $this->model->where('id', $id)->first();
-
-            Storage::delete("uploads/" . $file->file_hash);
-
-            $file->forceDelete();
-
-            return response()->json(['msg' => 'File deleted.', 'status' => '200'], 200);
-        } catch (\Exception $ex) {
-            return response()->json(['msg' => $ex->getMessage(), 'status' => '500'], 500);
-        }
-    }
-
-    public function deleteFiles(Request $request)
-    {
-        foreach ($request->input('files', []) as $key => $file) {
-            Storage::delete($file);
-        }
-
-        return true;
-    }
 
     public function rename($path, $originalFileName, $newFileName)
     {
@@ -85,92 +56,36 @@ class FileService extends Service
         return response()->json(['msg' => 'File moved.', 'status' => '200'], 200);
     }
 
+    public function deleteFile(File $file)
+    {
+        if (!$this->disk->exists($id)) {
 
+        }
 
+        try {
+            $file = $this->model->where('id', $id)->first();
+
+            Storage::delete("uploads/" . $file->file_hash);
+
+            $file->forceDelete();
+
+            return response()->json(['msg' => 'File deleted.', 'status' => '200'], 200);
+        } catch (\Exception $ex) {
+            return response()->json(['msg' => $ex->getMessage(), 'status' => '500'], 500);
+        }
+    }
+
+    public function deleteFiles(array $files)
+    {
+        foreach ($files as $key => $file) {
+            Storage::delete($file);
+        }
+
+        return true;
+    }
 
 //////////////////////////////////////////////////////////
 
-    /**
-     * Return files and directories within a folder.
-     *
-     * @param string $folder
-     *
-     * @return array of [
-     *               'folder' => 'path to current folder',
-     *               'folderName' => 'name of just current folder',
-     *               'breadCrumbs' => breadcrumb array of [ $path => $foldername ],
-     *               'subfolders' => array of [ $path => $foldername] of each subfolder,
-     *               'files' => array of file details on each file in folder,
-     *               'itemsCount' => a combined count of the files and folders within the current folder
-     *               ]
-     */
-    public function folderInfo($folder = '/')
-    {
-        $folder = $this->cleanFolder($folder);
-
-        // Get the names of the sub folders within this folder
-        $subFolders = collect($this->disk->directories($folder))->reduce(function ($subFolders, $subFolder) {
-            if (!$this->isItemHidden($subFolder)) {
-                $subFolders[] = $this->folderDetails($subFolder);
-            }
-
-            return $subFolders;
-        }, collect([]));
-
-        // Get all files within this folder
-        $files = collect($this->disk->files($folder))->reduce(function ($files, $path) {
-            if (!$this->isItemHidden($path)) {
-                $files[] = $this->fileDetails($path);
-            }
-
-            return $files;
-        }, collect([]));
-
-        $itemsCount = $subFolders->count() + $files->count();
-
-        return compact('folder', 'subFolders', 'files', 'itemsCount');
-    }
-
-    /**
-     * Return an array of folder details for a given folder.
-     *
-     * @param $path
-     *
-     * @return array
-     */
-    protected function folderDetails($path)
-    {
-        $path = '/' . ltrim($path, '/');
-
-        return [
-            'name' => basename($path),
-            'mimeType' => 'folder',
-            'fullPath' => $path,
-            'modified' => $this->fileModified($path),
-        ];
-    }
-
-    /**
-     * Return an array of file details for a given file.
-     *
-     * @param $path
-     *
-     * @return array
-     */
-    protected function fileDetails($path)
-    {
-        $path = '/' . ltrim($path, '/');
-
-        return [
-            'name' => basename($path),
-            'fullPath' => $path,
-            'webPath' => $this->fileWebpath($path),
-            'mimeType' => $this->fileMimeType($path),
-            'size' => $this->fileSize($path),
-            'modified' => $this->fileModified($path),
-            'relativePath' => $this->fileRelativePath($path),
-        ];
-    }
 
     /**
      * Return the mime type.
@@ -179,9 +94,9 @@ class FileService extends Service
      *
      * @return string
      */
-    public function fileMimeType($path)
+    public function getMimeType($path)
     {
-        $type = $this->mimeDetect->findType(strtolower(pathinfo($path, PATHINFO_EXTENSION)));
+        $type = $this->mimeDetect->detectMimeTypeFromPath(strtolower(pathinfo($path, PATHINFO_EXTENSION)));
         if (!empty($type)) {
             return $type;
         }
@@ -190,59 +105,19 @@ class FileService extends Service
     }
 
 
-//
-//    public function getUserFiles(Request $request)
-//    {
-//        $folder = $request->input('folder');
-//
-//        // un-foldered files
-//        if ($folder == 0) {
-//            $files = File::where('folder_id', '0')->where('user_id', Auth::id())->orderBy('file_name', 'asc')->get();
-//        } else {
-//            $files = File::where('folder_id', $folder)->where('user_id', Auth::id())->orderBy('file_name', 'asc')->get();
-//        }
-//
-//        return $files->toJson();
-//    }
-//
+    public function getUserFiles(Request $request)
+    {
+        $folder = $request->input('folder');
 
-//
-//    public function listAllFiles(Request $request)
-//    {
-//        $path = $request->input('path', '');
-//        $directoriesList = Storage::directories($path);
-//        $filesList = Storage::files($path);
-//
-//        $directories = [];
-//        $files = [];
-//
-//        foreach ($directoriesList as $key => $directory) {
-//            $directories[] = [
-//                'name' => last(explode("/", $directory)),
-//                'path' => $directory,
-//                'public_path' => Storage::url($directory),
-//                'size' => Storage::size($directory),
-//                'type' => 'directory',
-//                'last_modified' => \Carbon\Carbon::createFromTimestamp(Storage::lastModified($directory))->diffForHumans()
-//            ];
-//        }
-//
-//        foreach ($filesList as $key => $file) {
-//            $files[] = [
-//                'name' => last(explode("/", $file)),
-//                'path' => $file,
-//                'public_path' => Storage::url($file),
-//                'size' => Storage::size($file),
-//                'type' => 'file',
-//                'last_modified' => \Carbon\Carbon::createFromTimestamp(Storage::lastModified($file))->diffForHumans()
-//            ];
-//        }
-//
-//        return [
-//            'path' => $path,
-//            'directoriesAndFiles' => array_merge($directories, $files)
-//        ];
-//    }
+        // un-foldered files
+        if ($folder == 0) {
+            $files = File::where('folder_id', '0')->where('user_id', Auth::id())->orderBy('file_name', 'asc')->get();
+        } else {
+            $files = File::where('folder_id', $folder)->where('user_id', Auth::id())->orderBy('file_name', 'asc')->get();
+        }
+
+        return $files->toJson();
+    }
 
 
     public function listAllFiles(Request $request)
@@ -283,6 +158,26 @@ class FileService extends Service
     }
 
     /**
+     * if has $this->file and is null name return this
+     * else get file by name
+     *
+     * @param null $name
+     * @return Builder|Model|\Illuminate\Http\File|File
+     * @throws InternalErrorException
+     */
+    public function getFile($name = null)
+    {
+        if (is_null($name) && !is_null($this->file) && $this->file instanceof File) return $this->file;
+
+        if (is_null($name)) throw new InternalErrorException("file name not valid!");
+
+        return File::query()
+            ->where("name", $name)
+            ->first();
+    }
+
+
+    /**
      * Return the full web path to a file.
      *
      * @param $path
@@ -311,98 +206,6 @@ class FileService extends Service
         $path = str_replace(' ', '%20', $path);
 
         return $path;
-    }
-
-    /**
-     * create a new file row in db
-     *
-     * @param null $name
-     * @return mixed
-     */
-    protected function createFileRow($name = null)
-    {
-        $file = $this->model->create([
-            "name" => $name ?? $this->generateRandomName(),
-            "file_name" => $this->getFileName(),
-            "type" => $this->getType(),
-            "base_path" => $this->getUploadPath(),
-            "format" => $this->getFormat(),
-            "private" => $this->public ? false : true,
-        ]);
-        $this->setFile($file);
-        return $file;
-    }
-
-
-    /**
-     * if has $this->file and is null name return this
-     * else get file by name
-     *
-     * @param null $name
-     * @return Builder|Model|\Illuminate\Http\File|File
-     * @throws InternalErrorException
-     */
-    public function getFile($name = null)
-    {
-        if (is_null($name) && !is_null($this->file) && $this->file instanceof File) return $this->file;
-
-        if (is_null($name)) throw new InternalErrorException("file name not valid!");
-
-        return File::query()
-            ->where("name", $name)
-            ->first();
-    }
-
-    /**
-     * get upload location path
-     * we append the prefix
-     * if the dateTimePrefix property is true also append this {$year}/{$month}/{$day}/
-     *
-     * @return string
-     */
-    public function getUploadPath()
-    {
-        $path = $this->getPath();
-        $prefix = $this->getPrefix() ?? "";
-
-        /** Check and set dateTimePrefix */
-        if ($this->dateTimePrefix) {
-            $now = Carbon::now();
-            $year = $now->year;
-            $month = $now->month;
-            $day = $now->day;
-            $prefix .= "{$year}/{$month}/{$day}/";
-        }
-
-        return $path . $prefix;
-    }
-
-
-    /**
-     * check storage path
-     *
-     * @param $src
-     *
-     * @return string
-     */
-    protected function getStorageFolder($src)
-    {
-        if ($this->storageFolder == "storage")
-            return storage_path($src);
-        if ($this->storageFolder == "public")
-            return public_path($src);
-        return public_path($src);
-    }
-
-    /**
-     * get file path like: /path/prefix/filename.format
-     *
-     * @param array $parameters
-     * @return string
-     */
-    public function getFilePath()
-    {
-        return $this->getUploadPath() . $this->getFileName();
     }
 
     /**

@@ -45,6 +45,17 @@ class DirectoryController extends Controller
         return $this->responseSuccess("Directories Deleted");
     }
 
+    public function renameDirectory(Directory $directory, Request $request)
+    {
+        $name = $request->input('new_name');
+
+        if (checkInstanceOf($directory, Directory::class)) {
+
+        }
+
+        return response()->json(['msg' => 'Directory renamed.', 'status' => '200'], 200);
+    }
+
     public function getUserDirectorys(Request $request)
     {
         $folder = $request->input('folder');
@@ -64,19 +75,6 @@ class DirectoryController extends Controller
         $folder = $request->input('folder');
 
         return Directory::where('id', $folder)->select('parent_folder')->firstOrFail();
-    }
-
-    public function renameDirectory(Request $request)
-    {
-        $id = $request->input('id');
-        $name = $request->input('name');
-
-        $folder = Directory::where('id', $id)->first();
-
-        $folder->folder_name = $name;
-        $folder->save();
-
-        return response()->json(['msg' => 'Directory renamed.', 'status' => '200'], 200);
     }
 
 }

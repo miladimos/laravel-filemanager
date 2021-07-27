@@ -2,6 +2,7 @@
 
 namespace Miladimos\FileManager\Services;
 
+use Intervention\Image\Image;
 use Miladimos\FileManager\Models\File;
 
 // all of about images (resize - quality ...)
@@ -14,7 +15,6 @@ class ImageService extends Service
     {
         parent::__construct();
 
-        $this->access = config('filemanager.access');
         $this->sizes = config('filemanager.images.sizes');
     }
 
@@ -150,7 +150,7 @@ class ImageService extends Service
     public function preview($disk, $path)
     {
         // get image
-        $preview = Image::make(Storage::disk($disk)->get($path));
+        $preview = Image::make($this->disk($disk)->get($path));
 
         return $preview->response();
     }
@@ -163,31 +163,8 @@ class ImageService extends Service
                 'status' => 'success',
                 'message' => null,
             ],
-            'url' => Storage::disk($disk)->url($path),
+            'url' => $this->disk->disk($disk)->url($path),
         ];
-    }
-
-
-    /**
-     * set sizes
-     *
-     * @param array $sizes
-     * @return $this
-     */
-    public function setSizes(array $sizes)
-    {
-        $this->sizes = $sizes;
-        return $this;
-    }
-
-    /**
-     * get current sizes
-     *
-     * @return array
-     */
-    public function getSizes()
-    {
-        return $this->sizes;
     }
 
 //

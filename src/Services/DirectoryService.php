@@ -62,18 +62,18 @@ class DirectoryService extends Service
      * Create a directory from the given name.
      *
      * @param mixed $value
-     * @return \Illuminate\Support\Collection
+     * @return boolean
      */
-    public function createDirectory($directory)
+    public function createDirectory($name)
     {
-        $path = $this->base_directory . $this->ds . $directory;
+        $path = $this->base_directory . $this->ds . $name;
 
         if (!checkPath($path)) {
             if ($this->disk->makeDirectory($path)) {
-                DB::transaction(function () use ($directory, $path) {
+                DB::transaction(function () use ($name, $path) {
                     $this->model->create([
 //                'user_id' => user()->id,
-                        'name' => $directory,
+                        'name' => $name,
                         'path' => $path,
                         'disk' => $this->disk_name,
                     ]);
@@ -98,7 +98,7 @@ class DirectoryService extends Service
      *
      * @return bool
      */
-    protected function renameDirectory($oldName, $newName)
+    public function renameDirectory($oldName, $newName)
     {
         if ($oldName == $newName) return false;
 
@@ -142,4 +142,85 @@ class DirectoryService extends Service
         return false;
     }
 
+    /**
+     * Return files and directories within a folder.
+     *
+     * @param string $folder
+     *
+     * @return array of [
+     *               'folder' => 'path to current folder',
+     *               'folderName' => 'name of just current folder',
+     *               'breadCrumbs' => breadcrumb array of [ $path => $foldername ],
+     *               'subfolders' => array of [ $path => $foldername] of each subfolder,
+     *               'files' => array of file details on each file in folder,
+     *               'itemsCount' => a combined count of the files and folders within the current folder
+     *               ]
+     */
+    public function folderInfo($folder = '/')
+    {
+        $folder = $this->cleanFolder($folder);
+
+        // Get the names of the sub folders within this folder
+        $subFolders = collect($this->disk->directories($folder))->reduce(function ($subFolders, $subFolder) {
+            if (!$this->isItemHidden($subFolder)) {
+                $subFolders[] = $this->folderDetails($subFolder);
+            }
+
+            return $subFolders;
+        }, collect([]));
+
+        // Get all files within this folder
+        $files = collect($this->disk->files($folder))->reduce(function ($files, $path) {
+            if (!$this->isItemHidden($path)) {
+                $files[] = $this->fileDetails($path);
+            }
+
+            return $files;
+        }, collect([]));
+
+        $itemsCount = $subFolders->count() + $files->count();
+
+        return compact('folder', 'subFolders', 'files', 'itemsCount');
+    }
+
+    /**
+     * Return an array of folder details for a given folder.
+     *
+     * @param $path
+     *
+     * @return array
+     */
+    public function folderDetails($path)
+    {
+        $path = '/' . ltrim($path, '/');
+
+        return [
+            'name' => basename($path),
+            'mimeType' => 'folder',
+            'fullPath' => $path,
+            'modified' => $this->fileModified($path),
+        ];
+    }
+
+    /**
+     * Return an array of file details for a given file.
+     *
+     * @param $path
+     *
+     * @return array
+     */
+    public function fileDetails($path)
+    {
+        $path = '/' . ltrim($path, '/');
+
+        return [
+            'name' => basename($path),
+            'fullPath' => $path,
+            'webPath' => $this->fileWebpath($path),
+            'mimeType' => $this->fileMimeType($path),
+            'size' => $this->fileSize($path),
+            'modified' => $this->fileModified($path),
+            'relativePath' => $this->fileRelativePath($path),
+        ];
+    }
 }

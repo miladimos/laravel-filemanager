@@ -52,17 +52,20 @@ abstract class Service
         }
     }
 
-
     /**
-     * Return the file size.
+     * check storage path
      *
-     * @param $path
+     * @param $src
      *
-     * @return int
+     * @return string
      */
-    public function getSize($path)
+    protected function getStorageFolder($src)
     {
-        return $this->disk->size($path);
+        if ($this->storageFolder == "storage")
+            return storage_path($src);
+        if ($this->storageFolder == "public")
+            return public_path($src);
+        return public_path($src);
     }
 
     /**
