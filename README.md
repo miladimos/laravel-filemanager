@@ -169,6 +169,9 @@ $service = new UploadService();
 ```
 
 ### API over backend services:
+for all requests set these headers: 
+
+Content-Type : application/x-www-form-urlencoded
 
 ```
 prefix = /api_prefix/filemanager_api_version/route_prefix

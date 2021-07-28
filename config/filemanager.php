@@ -14,7 +14,7 @@ return [
      *
      */
     'routes' => [
-        'prefix' => env('FILEMANAGER_ROUTE_PREFIX', 'filemanager'),
+        'prefix' => env('FILEMANAGER_ROUTE_PREFIX', 'filemanger'),
         'web' => [
             'middleware' => ['web', 'auth'], //Set to empty to disable middleware filter
         ],
@@ -49,6 +49,13 @@ return [
      */
     'disk' => env('FILEMANAGER_DISK', 'local'),
 
+    /**
+     *
+     * Default Locale
+     * available locale : en - fa
+     * for display texts
+     */
+    'locale' => env("FILEMANAGER_LOCALE", 'en'),
 
     /**
      * The maximum upload file size of an item in bytes.
@@ -62,67 +69,40 @@ return [
 
     'image_quality' => 80,
 
-    /*
+    /**
      * strategies
+     *
+     * directory path template.
+     * Variables:
+     *  - `Y`   Year, example: 2019
+     *  - `m`   Month, example: 04
+     *  - `d`   Date, example: 08
+     *  - `H`   Hour, example: 12
+     *  - `i`   Minute, example: 03
+     *  - `s`   Second, example: 12
+     *
+     * sizes in pixel
      */
+
     'strategies' => [
-        /*
-        * Thumbnail size in pixel
-        */
         'thumbnail' => [
-            'path' => 'thumbnails',
-            'height' => 250,
-            'width' => 250,
+            'path' => 'thumbnails/{Y}/{m}/{d}',
+            "date_time_prefix" => false, // before name : time_name.ext
+            'height' => 60,
+            'width' => 60,
             'fit' => 'stretch', // ['stretch', 'crop', 'contain', 'max', 'fill']
-            'crop' => [
-                'x' => 100,
-                'y' => 100
-            ],
-            'validation' => 'required|mimes:jpeg,png,gif',
-            'mimes' => ['image/jpeg', 'image/png', 'image/bmp', 'image/gif'],
             'max_size' => '2m',
-            'disk' => env('FILESYSTEM_DRIVER', 'public'),
-            /*
-             * Default directory template.
-             * Variables:
-             *  - `Y`   Year, example: 2019
-             *  - `m`   Month, example: 04
-             *  - `d`   Date, example: 08
-             *  - `H`   Hour, example: 12
-             *  - `i`   Minute, example: 03
-             *  - `s`   Second, example: 12
-             */
-            'directory' => 'uploads/{Y}/{m}/{d}',
         ],
         'avatar' => [
-            'path' => 'thumbnails',
-            "date_time_prefix" => false,
+            'path' => 'thumbnails/{Y}/{m}/{d}',
+            "date_time_prefix" => false, // before name : time_name.ext
             'height' => 250,
             'width' => 250,
             'fit' => 'stretch', // ['stretch', 'crop', 'contain', 'max', 'fill']
-            'crop' => [
-                'x' => 100,
-                'y' => 100
-            ],
             "sizes" => ["16", "24", "32", "64", "128", "320"],
             "thumb" => "320",
-            'validation' => 'required|mimes:jpeg,png,gif',
-            'mimes' => ['image/jpeg', 'image/png', 'image/bmp', 'image/gif'],
             'max_size' => '2m',
-            'disk' => env('FILESYSTEM_DRIVER', 'public'),
-            /*
-             * Default directory template.
-             * Variables:
-             *  - `Y`   Year, example: 2019
-             *  - `m`   Month, example: 04
-             *  - `d`   Date, example: 08
-             *  - `H`   Hour, example: 12
-             *  - `i`   Minute, example: 03
-             *  - `s`   Second, example: 12
-             */
-            'directory' => 'uploads/{Y}/{m}/{d}',
         ],
-
     ],
 
     'allowed_mimes' => [
@@ -141,7 +121,12 @@ return [
 
     'disallow_format' => ['exe', 'asm', 'bin', 'o', 'jar'],
 
-    'hide_files_ext' => true,
+    'hide_files_extension' => true,
+
+    /**
+     * Show / Hide system files and folders
+     */
+    'hiddenFiles' => false,
 
     'pagination' => [
         'folders' => 12, //2 rows
@@ -156,19 +141,6 @@ return [
      * if you want use cache - set the number of minutes for which the value should be cached
      */
     'cache' => 0,
-
-    /**
-     *
-     * Default Locale
-     * available locale : en - fa
-     * for display texts
-     */
-    'locale' => env("FILEMANAGER_LOCALE", 'fa'),
-
-    /**
-     * Show / Hide system files and folders
-     */
-    'hiddenFiles' => false,
 
     /***************************************************************************
      * ACL rules list - used for default ACL repository (ConfigACLRepository)

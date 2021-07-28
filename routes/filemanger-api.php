@@ -6,8 +6,12 @@ use Miladimos\FileManager\Http\Controllers\DownloadController;
 use Miladimos\FileManager\Http\Controllers\FileController;
 use Miladimos\FileManager\Http\Controllers\FileGroupController;
 
+Route::get('test', function (){
+    dd("test");
+});
 
 Route::group(['as' => 'directories.'], function () {
+//    Route::get('directories', [DirectoryController::class, 'allDirectory'])->name('index');
     Route::post('directories', [DirectoryController::class, 'createDirectory'])->name('create');
     Route::delete('directories', [DirectoryController::class, 'deleteDirectories'])->name('delete');
     Route::post('directories/rename', [DirectoryController::class, 'renameDirectory'])->name('rename');
@@ -19,7 +23,7 @@ Route::group(['as' => 'files.'], function () {
     Route::post('files/move', [FileController::class, 'moveFile'])->name('move');
 });
 
-Route::group(['as' => 'file-groups.'], function () {
+Route::group(['as' => 'filegroups.'], function () {
     Route::get('filegroups', [FileGroupController::class, 'index'])->name('index');
     Route::post('filegroups', [FileGroupController::class, 'store'])->name('store');
     Route::put('filegroups/{filegroup}/update', [FileGroupController::class, 'update'])->name('update');

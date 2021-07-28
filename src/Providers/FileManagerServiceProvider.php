@@ -29,8 +29,9 @@ class FileManagerServiceProvider extends ServiceProvider
 //            $this->registerPublishesMigrations();
             $this->registerCommands();
             $this->registerTranslations();
-            $this->registerRoutes();
         }
+
+        $this->registerRoutes();
     }
 
     private function registerFacades()
@@ -74,7 +75,7 @@ class FileManagerServiceProvider extends ServiceProvider
 
     private function registerRoutes()
     {
-        Route::group($this->routeConfiguration('api'), function () {
+        Route::group($this->routeConfiguration(), function () {
             $this->loadRoutesFrom(__DIR__ . '/../../routes/filemanger-api.php', 'filemanager-routes');
         });
     }

@@ -198,14 +198,6 @@ class FileService extends Service
         ];
     }
 
-    /**
-     * if has $this->file and is null name return this
-     * else get file by name
-     *
-     * @param null $name
-     * @return Builder|Model|\Illuminate\Http\File|File
-     * @throws InternalErrorException
-     */
     public function getFile($name = null)
     {
         if (is_null($name) && $this->file instanceof File) return $this->file;

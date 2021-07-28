@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'directory_active' => "Directory Is Active",
+    'directory_hide' => "Directory Is Hide",
+    'directory_locked' => "Directory is Locked",
+    'directory_private' => "Directory is Private",
     'directory_created' => "دایرکتوری ایجاد شد",
     'title' => 'مدیریت فایل',
     'upload' => 'آپلود',

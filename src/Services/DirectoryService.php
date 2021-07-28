@@ -64,17 +64,19 @@ class DirectoryService extends Service
      * @param mixed $value
      * @return boolean
      */
-    public function createDirectory($name)
+    public function createDirectory(array $data)
     {
-        $path = $this->base_directory . $this->ds . $name;
+        $path = $this->base_directory . $this->ds . $data['name'];
 
         if (!checkPath($path)) {
             if ($this->disk->makeDirectory($path)) {
-                DB::transaction(function () use ($name, $path) {
+                DB::transaction(function () use ($data, $path) {
                     $this->model->create([
 //                'user_id' => user()->id,
-                        'name' => $name,
+                        'name' => $data['name'],
+                        'description' => $data['description'],
                         'path' => $path,
+                        'parent_id' => $data['parent_id'],
                         'disk' => $this->disk_name,
                     ]);
                 });
@@ -102,7 +104,7 @@ class DirectoryService extends Service
     {
         if ($oldName == $newName) return false;
 
-        $directory = Directory::where('name', $oldName)->first();
+        $directory = $this->model->where('name', $oldName)->first();
 
         $path = $this->base_directory . $this->ds . $oldName;
 
@@ -120,21 +122,21 @@ class DirectoryService extends Service
 
     public function deleteDirectory($uuid)
     {
-        $directory = Directory::where('uuid', $uuid)->first();
+        $directory = $this->model->where('uuid', $uuid)->first();
 
-        $path = $this->base_directory . $this->ds . $directory->name;
+        $path = $directory->path;
 
         if (!checkPath($path, $this->disk_name)) {
             return false; // directory does not exists
         }
 
-        $filesFolders = array_merge($this->disk->directories($path), $this->disk->files($path));
-        if ($filesFolders)
+        $directoryFiles = array_merge($this->disk->directories($path), $this->disk->files($path));
+        if ($directoryFiles)
             return false; // directory is not empty
 
         if ($this->disk->deleteDirectory($path)) {
-            DB::transaction(function () use ($uuid) {
-                $this->model->where('uuid', $uuid)->delete();
+            DB::transaction(function () use ($directory) {
+                $directory->forceDelete();
             });
             return true;
         }

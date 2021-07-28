@@ -2,6 +2,10 @@
 
 return [
     'directory_created' => "Directory created",
+    'directory_active' => "Directory Is Active",
+    'directory_hide' => "Directory Is Hide",
+    'directory_locked' => "Directory is Locked",
+    'directory_private' => "Directory is Private",
     'title' => 'File Manager',
     'upload' => 'Upload',
     'upload-message' => 'Drop files here to upload',

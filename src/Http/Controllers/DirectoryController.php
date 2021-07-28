@@ -19,30 +19,36 @@ class DirectoryController extends Controller
 
     public function createDirectory(Request $request)
     {
-
         $data = [
-            'directoryName' => $request->input('name'),
-            'directoryDescription' => $request->input('description'),
-            'directoryParent' => $request->input('parent_id'),
+            'name' => $request->get('name'),
+            'description' => $request->has('description') ? $request->input('description') : null,
+            'parent_id' => $request->has('parent_id') ? $request->input('parent_id') : 0,
         ];
 
         if ($this->directoryService->createDirectory($data)) {
-            $msg = trans('filemanager::messages.directory.created');
+            $msg = trans('filemanager::messages.directory_created');
             return $this->responseSuccess($msg, 201, "Created");
         }
 
         return $this->responseError("Error in Directory create", 500);
-
     }
 
     public function deleteDirectories(Request $request)
     {
-        foreach ($request->input('directories', []) as $key => $directory) {
-            if ($this->directoryService->deleteDirectory($directory))
-                continue;
+        if (is_array($request->get('directories'))) {
+            foreach ($request->get('directories', []) as $key => $directory) {
+                if (!$this->directoryService->deleteDirectory($directory)) {
+                    return $this->responseError("Error in Directory Delete", 500);
+                }
+            }
+        }
+
+        if (!$this->directoryService->deleteDirectory($request->get('directories'))) {
+            return $this->responseError("Error in Directory Delete", 500);
         }
 
         return $this->responseSuccess("Directories Deleted");
+
     }
 
     public function renameDirectory(Directory $directory, Request $request)

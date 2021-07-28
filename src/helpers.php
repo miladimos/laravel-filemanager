@@ -2,6 +2,25 @@
 
 // for more than helper function see and start miladimos/laravel-toolkit
 
+
+if (!function_exists('getDirectoryStatus')) {
+    function getDirectoryStatus($status)
+    {
+        switch ($status) {
+            case \Miladimos\FileManager\Enums\DirectoryStatusEnum::ACTIVE:
+                return trans('filemanager::messages.directory_active');
+            case \Miladimos\FileManager\Enums\DirectoryStatusEnum::HIDE:
+                return trans('filemanager::messages.directory_hide');
+            case \Miladimos\FileManager\Enums\DirectoryStatusEnum::LOCKED:
+                return trans('filemanager::messages.directory_locked');
+            case \Miladimos\FileManager\Enums\DirectoryStatusEnum::PRIVATE:
+                return trans('filemanager::messages.directory_private');
+            default:
+                return '';
+        }
+    }
+}
+
 if (!function_exists('user')) {
     function user($guard = 'web')
     {
