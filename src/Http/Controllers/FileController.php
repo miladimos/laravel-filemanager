@@ -19,12 +19,26 @@ class FileController extends Controller
 
     public function renameFile(Request $request)
     {
-        //
+        $file = $request->file;
+        $new_name = $request->new_name;
+
+        if ($this->fileService->rename($file, $new_name)) {
+            return $this->responseSuccess("File Renamed");
+        }
+
+        return $this->responseError("Error in Rename File");
     }
 
     public function moveFile(Request $request)
     {
-        //
+        $new_dir = $request->input('new_dir'); // id
+        $file = $request->input('file');
+
+        if ($this->fileService->moveFile($file, $new_dir)) {
+            return $this->responseSuccess("File Moved");
+        }
+
+        return $this->responseError("Error in Move File");
     }
 
     public function deleteFile(File $file)
@@ -34,7 +48,6 @@ class FileController extends Controller
         }
 
         return $this->responseError("Error in Delete File");
-
     }
 
     public function deleteFiles(Request $request)
@@ -50,7 +63,14 @@ class FileController extends Controller
 
     public function getUserFiles(Request $request)
     {
-        //
+        $user = $request->user_id;
+        $directory = $request->has('directory') ? $request->directory : 0;
+
+        if ($files = $this->fileService->getUserFiles($user, $directory)) {
+            return $this->responseError($files);
+        }
+
+        return $this->responseError("Error in get user files.");
     }
 
     public function listAllFiles(Request $request)

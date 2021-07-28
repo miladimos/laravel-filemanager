@@ -4,6 +4,7 @@ namespace Miladimos\FileManager\Services;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -24,46 +25,54 @@ class FileService extends Service
         $this->model = new File();
     }
 
-
     public function rename($path, $originalFileName, $newFileName)
     {
         $nameName = $path . DIRECTORY_SEPARATOR . $newFileName;
-        if ($this->disk->exists($nameName)) {
-//            $this->errors[] = 'The file "' . $newFileName . '" already exists in this folder.';
 
+        if (!checkPath($newFileName, $this->disk_name)) {
             return false;
         }
 
-        return $this->disk->rename(($path . DIRECTORY_SEPARATOR . $originalFileName), $nameName);
+        if ($this->disk->rename(($path . DIRECTORY_SEPARATOR . $originalFileName), $nameName)) {
+
+            DB::transaction(function () use ($originalFileName, $newFileName) {
+                $this->model->where('name', $originalFileName)->update([
+                    'name' => $newFileName
+                ]);
+            });
+
+            return true;
+        }
+
+        return false;
     }
 
-
-    public function moveFile(Request $request)
+    public function moveFile($file, $newdir)
     {
-        $folderId = $request->input('folderId');
-        $fileId = $request->input('fileId');
 
         if ($this->disk->exists($newFile)) {
 //            $this->errors[] = 'File already exists.';
 
             return false;
         }
-        $file = File::where('id', $fileId)->first();
 
-        $file->folder_id = $folderId;
-        $file->save();
+        DB::transaction(function () use ($file, $newdir) {
+            $this->model->where('id', $file)->update([
+                'directory_id' => $newdir
+            ]);
+        });
 
-        return response()->json(['msg' => 'File moved.', 'status' => '200'], 200);
+        return true;
     }
 
     public function deleteFile(File $file)
     {
-        if (!$this->disk->exists($id)) {
+        if (!$this->disk->exists($file->path)) {
 
         }
 
         try {
-            $file = $this->model->where('id', $id)->first();
+            $file = $this->model->where('id', $file)->first();
 
             Storage::delete("uploads/" . $file->file_hash);
 
@@ -84,7 +93,17 @@ class FileService extends Service
         return true;
     }
 
-//////////////////////////////////////////////////////////
+    public function getUserFiles($user, $directory)
+    {
+        // all files in everywhere
+        if ($directory == 0) {
+            $files = $this->model->where('user_id', $user)->latest()->get();
+        } else {
+            $files = $this->model->where('directory_id', $directory)->where('user_id', $user)->latest()->get();
+        }
+
+        return $files;
+    }
 
 
     /**
@@ -104,21 +123,43 @@ class FileService extends Service
         return 'unknown/type';
     }
 
-
-    public function getUserFiles(Request $request)
+    /**
+     * Return the mime type.
+     *
+     * @param $path
+     *
+     * @return string
+     */
+    public function getExtention($path)
     {
-        $folder = $request->input('folder');
-
-        // un-foldered files
-        if ($folder == 0) {
-            $files = File::where('folder_id', '0')->where('user_id', Auth::id())->orderBy('file_name', 'asc')->get();
-        } else {
-            $files = File::where('folder_id', $folder)->where('user_id', Auth::id())->orderBy('file_name', 'asc')->get();
+        $type = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        if (!empty($type)) {
+            return $type;
         }
 
-        return $files->toJson();
+        return false;
     }
 
+    /**
+     * generate the link for download file
+     * this link has expire time
+     *
+     * @return string
+     */
+    public function generateLink(File $file)
+    {
+        $secret = env('APP_KEY');
+
+        $expireTime = (int)config('filemanager.download_link_expire');
+
+        $timestamp = Carbon::now()->addMinutes($expireTime)->timestamp;
+        $hash = Hash::make($secret . $file->uuid . getUserIP() . $timestamp);
+
+//        return "/api/filemanager/download/$file->uuid?mac=$hash&t=$timestamp";
+        return route('filemanager.download', [$file, $hash, $timestamp]);
+    }
+
+    ////////////////////////////////
 
     public function listAllFiles(Request $request)
     {
@@ -167,7 +208,7 @@ class FileService extends Service
      */
     public function getFile($name = null)
     {
-        if (is_null($name) && !is_null($this->file) && $this->file instanceof File) return $this->file;
+        if (is_null($name) && $this->file instanceof File) return $this->file;
 
         if (is_null($name)) throw new InternalErrorException("file name not valid!");
 
@@ -175,7 +216,6 @@ class FileService extends Service
             ->where("name", $name)
             ->first();
     }
-
 
     /**
      * Return the full web path to a file.
@@ -207,29 +247,4 @@ class FileService extends Service
 
         return $path;
     }
-
-    /**
-     * generate the link for download file
-     * this link has expire time
-     *
-     * @return string
-     */
-    public function generateLink(File $file)
-    {
-
-        if (isset($config['secret'])) {
-            $secret = $config['secret'];
-        }
-
-        if (isset($config['download_link_expire'])) {
-            $expireTime = (int)$config['download_link_expire'];
-        }
-
-        /** @var int $expireTime */
-        $timestamp = Carbon::now()->addMinutes($expireTime)->timestamp;
-        $hash = Hash::make($secret . $file->id . request()->ip() . $timestamp);
-
-        return "/api/filemanager/download/$file->id?mac=$hash&t=$timestamp";
-    }
-
 }

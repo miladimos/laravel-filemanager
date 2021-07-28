@@ -77,3 +77,5 @@ if (!function_exists('checkInstanceOf')) {
         return !!($varable instanceof $model);
     }
 }
+
+

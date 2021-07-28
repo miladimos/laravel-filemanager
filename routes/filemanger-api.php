@@ -27,7 +27,8 @@ Route::group(['as' => 'file-groups.'], function () {
 });
 
 
-Route::get("download/{file}", [DownloadController::class, 'download']);
+//download/$file->uuid?mac=$hash&t=$timestamp
+Route::get("download/{file}?max={hash}&et={timestamp}", [DownloadController::class, 'download'])->name('download');
 
 //Route::post('/browser/folders/parent', ['uses' => 'FolderController@getParentFolderId'])->name('browser.folder.parent');
 //Route::post('/browser/folders/get-breadcrumb', ['uses' => 'FolderController@getFolderBreadcrumb'])->name('browser.folder.getBreadcrumb');
