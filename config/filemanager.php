@@ -57,6 +57,8 @@ return [
      */
     'locale' => env("FILEMANAGER_LOCALE", 'en'),
 
+    'download_link_expire' => '5', // in minute
+
     /**
      * The maximum upload file size of an item in bytes.
      * Adding a larger file will result in an exception.

@@ -58,12 +58,6 @@ class DirectoryService extends Service
         return $dirs;
     }
 
-    /**
-     * Create a directory from the given name.
-     *
-     * @param mixed $value
-     * @return boolean
-     */
     public function createDirectory(array $data)
     {
         $path = $this->base_directory . $this->ds . $data['name'];
@@ -92,21 +86,14 @@ class DirectoryService extends Service
         return false;
     }
 
-    /**
-     * Rename  Directory
-     *
-     * @param $newName
-     * @param $oldName
-     *
-     * @return bool
-     */
-    public function renameDirectory($oldName, $newName)
+    public function renameDirectory($uuid, $newName)
     {
-        if ($oldName == $newName) return false;
+        $directory = $this->model->where('uuid', $uuid)->first();
 
-        $directory = $this->model->where('name', $oldName)->first();
+        if ($directory->name == $newName) return false;
 
-        $path = $this->base_directory . $this->ds . $oldName;
+
+        $path = $this->base_directory . $this->ds . $directory->name;
 
         if ($this->disk->exists($path)) {
             DB::transaction(function () use ($directory, $newName) {
@@ -115,7 +102,7 @@ class DirectoryService extends Service
                 ]);
             });
 
-            if ($this->disk->move($oldName, $newName)) return true;
+            if ($this->disk->move($directory->name, $newName)) return true;
         };
         return false;
     }
@@ -160,8 +147,6 @@ class DirectoryService extends Service
      */
     public function folderInfo($folder = '/')
     {
-        $folder = $this->cleanFolder($folder);
-
         // Get the names of the sub folders within this folder
         $subFolders = collect($this->disk->directories($folder))->reduce(function ($subFolders, $subFolder) {
             if (!$this->isItemHidden($subFolder)) {

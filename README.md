@@ -178,6 +178,7 @@ prefix = /api_prefix/filemanager_api_version/route_prefix
 
 // Directories
 POST   -> prefix/directories // store new directory 
+DELETE -> prefix/directories // receive directories field: it can be array of uuid or one uuid of directories for delete
 
 
 // File Groups

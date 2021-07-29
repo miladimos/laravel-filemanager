@@ -2,7 +2,6 @@
 
 namespace Miladimos\FileManager\Models;
 
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -49,6 +48,25 @@ class File extends Model
         return Carbon::parse($value)->diffForHumans();
     }
 
+    /**
+     * generate the link for download file
+     * this link has expire time
+     *
+     * @return string
+     */
+    public function generateDownloadLink()
+    {
+        $secret = env('APP_KEY');
+
+        $expireTime = (int)config('filemanager.download_link_expire');
+
+        $timestamp = Carbon::now()->addMinutes($expireTime)->timestamp;
+        $hash = Hash::make($secret . $this->uuid . getUserIP() . $timestamp);
+
+//        return "/api/filemanager/download/$this->uuid?mac=$hash&t=$timestamp";
+        return route('filemanager.download', [$this, $hash, $timestamp]);
+    }
+
     public function getPublicUrl($key = null)
     {
         $storageDisk = Storage::disk(config('filemanager.disk'));
@@ -82,5 +100,7 @@ class File extends Model
     {
         return $this->filename . '.' . $this->extension;
     }
+
+
 
 }

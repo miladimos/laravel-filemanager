@@ -1,3 +1,5 @@
 ## free feel to Contribute 
 
-fork , new branch,  change, pull request
+fork , new branch,  write your ideas, pull request 😎
+
+

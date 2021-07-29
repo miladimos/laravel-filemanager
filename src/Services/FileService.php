@@ -146,8 +146,10 @@ class FileService extends Service
      *
      * @return string
      */
-    public function generateLink(File $file)
+    public function generateLink($uuid)
     {
+        $file = File::where('uuid', $uuid)->first();
+
         $secret = env('APP_KEY');
 
         $expireTime = (int)config('filemanager.download_link_expire');

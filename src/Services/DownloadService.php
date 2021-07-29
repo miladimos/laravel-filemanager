@@ -8,12 +8,6 @@ use Miladimos\FileManager\Models\File;
 
 class DownloadService extends Service
 {
-
-    /**
-     * download the selected file
-     *
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-     */
     public function download(File $file)
     {
         if (!$file->private) {

@@ -14,16 +14,12 @@ use Intervention\Image\Facades\Image;
 
 class UploadService extends Service
 {
-    protected $access;
 
     public function __construct()
     {
         parent::__construct();
-
-        $this->access = config('filemanager.access');
     }
 
-//
 //    public function uploadFile(Request $request)
 //    {
 //        if ($request->hasFile('file')) {
@@ -124,6 +120,160 @@ class UploadService extends Service
             'result' => true
         ]);
     }
+//
+//    public function uploadOneImage(\Symfony\Component\HttpFoundation\File\UploadedFile $uploadedFile, $path = null)
+//    {
+//
+//        $path = $path ?? $this->defaultUploadFolderName;
+//
+//        if ($uploadedFile->isValid()) {
+//            $model = resolve($this->model);
+//
+//            $image = Image::make($uploadedFile->getRealPath());
+//            $year = Carbon::now()->year;
+//            $month = Carbon::now()->month;
+//            $day = Carbon::now()->day;
+//
+//            $fileName = $uploadedFile->getClientOriginalName();
+//            $fileExt = $uploadedFile->getClientOriginalExtension();
+//            $mimeType = $uploadedFile->getClientMimeType();
+//            $fileSize = $uploadedFile->getSize();
+//
+//            $uploadPath = "{$path}{$this->ds}{$year}{$this->ds}{$month}{$this->ds}{$day}";
+//
+//            $fullUploadedPath = public_path($uploadPath . $this->ds . $fileName);
+//
+//            $dirPath = public_path($uploadPath);
+//
+//            $this->mkdir_if_not_exists($dirPath);
+//
+//            if (file_exists($fullUploadedPath)) {
+//                $finalFileName = Carbon::now()->timestamp . "-{$fileName}";
+//
+//                $image->save($dirPath, $finalFileName);
+//
+//                $model->create([
+//                    'file_name' => $finalFileName,
+//                    'original_name' => $fileName,
+//                    'file_path' => url($uploadPath . $this->ds . $finalFileName),
+//                    'file_size' => $fileSize,
+//                    'mime_type' => $mimeType,
+//                    'file_ext' => $fileExt,
+//                    'width' => $image->width(),
+//                    'height' => $image->height(),
+//                ]);
+//
+//                return response()->json([
+//                    'data' => [
+//                        'url' => url($uploadPath . $this->ds . $finalFileName)
+//                    ]
+//                ]);
+//            }
+//
+//            $image->save($fullUploadedPath);
+//
+//            $model->create([
+//                'file_name' => $fileName,
+//                'original_name' => $fileName,
+//                'file_path' => url($uploadPath . $this->ds . $fileName),
+//                'file_size' => $fileSize,
+//                'mime_type' => $mimeType,
+//                'file_ext' => $fileExt,
+//                'width' => $image->width(),
+//                'height' => $image->height(),
+//            ]);
+//            // $uploadedFile->move(public_path($uploadPath), $fileName);
+//
+//            return response()->json([
+//                'data' => [
+//                    'url' => url($uploadPath . $this->ds . $fileName)
+//                ]
+//            ]);
+//        }
+//
+//        return response()->json([
+//            'data' => 'File is Broken Or Not Valid!'
+//        ]);
+//    }
+//
+//    // $path = $request->photo->storeAs('images', 'filename.jpg', 'disk');
+//
+//    public function uploadOneFile(UploadedFile $uploadedFile, $path = null, $disk = 'public')
+//    {
+//
+//        $path = $path ?? $this->defaultUploadFolderName;
+//
+//        if ($uploadedFile->isValid()) {
+//            $model = resolve($this->model);
+//
+//            $year = Carbon::now()->year;
+//            $month = Carbon::now()->month;
+//            $day = Carbon::now()->day;
+//
+//            $fileName = $uploadedFile->getClientOriginalName();
+//            $fileExt = $uploadedFile->getClientOriginalExtension();
+//            $mimeType = $uploadedFile->getClientMimeType();
+//            $fileSize = $uploadedFile->getSize();
+//
+//            $uploadPath = "{$path}{$this->ds}{$year}{$this->ds}{$month}{$this->ds}{$day}";
+//
+//            $fullUploadedPath = public_path($uploadPath . $this->ds . $fileName);
+//
+//            $dirPath = public_path($uploadPath);
+//
+//            $this->mkdir_if_not_exists($dirPath);
+//
+//            if (file_exists($fullUploadedPath)) {
+//                $finalFileName = Carbon::now()->timestamp . "-{$fileName}";
+//
+//                $uploadedFile->move($dirPath, $finalFileName);
+//
+//                $model->create([
+//                    'file_name' => $finalFileName,
+//                    'original_name' => $fileName,
+//                    'file_path' => url($uploadPath . $this->ds . $finalFileName),
+//                    'file_size' => $fileSize,
+//                    'mime_type' => $mimeType,
+//                    'file_ext' => $fileExt,
+//                ]);
+//
+//                return response()->json([
+//                    'data' => [
+//                        'url' => url($uploadPath . $this->ds . $finalFileName)
+//                    ]
+//                ]);
+//            }
+//
+//            $uploadedFile->move($dirPath, $fileName);
+//
+//            $model->create([
+//                'file_name' => $fileName,
+//                'original_name' => $fileName,
+//                'file_path' => url($uploadPath . $this->ds . $fileName),
+//                'file_size' => $fileSize,
+//                'mime_type' => $mimeType,
+//                'file_ext' => $fileExt,
+//            ]);
+//
+//            return response()->json([
+//                'data' => [
+//                    'url' => url($uploadPath . $this->ds . $fileName)
+//                ]
+//            ]);
+//        }
+//
+//        return response()->json([
+//            'data' => 'File is Broken Or Not Valid!'
+//        ]);
+//    }
+//
+//    function mkdir_if_not_exists($dirPath)
+//    {
+//        if (!file_exists($dirPath)) {
+//            mkdir($dirPath, 0777, true);
+//        }
+//    }
+
 
 //    /**
 //     * This method will take a collection of files that have been
@@ -184,8 +334,7 @@ class UploadService extends Service
 //
 //        return $this->handle($file);
 //    }
-//
-//
+
     public function uploadFile(UploadedFile $uploadedFile, string $file)
     {
         $storage = Storage::disk(config('upload.disk'));
