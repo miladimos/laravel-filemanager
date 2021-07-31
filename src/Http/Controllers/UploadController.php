@@ -16,10 +16,10 @@ class UploadController extends Controller
         $this->uploadService = $uploadService;
     }
 
-    public function uploadFile(Request $request)
+    public function upload(Request $request)
     {
         $file = $request->file('file');
-        return $this->uploadService->uploadFile($file, 1);
+        return $this->uploadService->uploadImage($file, 1);
     }
 
     public function uploadFiles(Request $request)

@@ -26,7 +26,7 @@ Route::group(['as' => 'files.'], function () {
 });
 
 Route::group(['as' => 'uploads.'], function () {
-    Route::post('upload', [UploadController::class, 'uploadFile'])->name('upload');
+    Route::post('upload', [UploadController::class, 'upload'])->name('upload');
 });
 
 Route::group(['as' => 'downloads.'], function () {

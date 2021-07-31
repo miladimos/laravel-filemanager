@@ -18,8 +18,6 @@ use Miladimos\FileManager\Models\File;
 // all of about uploads (upload files, ...)
 class UploadService extends Service
 {
-    private $fileService;
-
     private $directoryService;
 
     // default File model
@@ -31,8 +29,6 @@ class UploadService extends Service
     {
         parent::__construct();
 
-        $this->fileService = new FileService();
-
         $this->directoryService = new DirectoryService();
 
         $this->fileModel = new File();
@@ -42,12 +38,11 @@ class UploadService extends Service
 
     public function uploadFile(UploadedFile $uploadedFile, $directory_id = 0)
     {
-
 ///             ProcessUpload::dispatch($upload, $key);
 
         $path = $this->directoryModel->find($directory_id)->path;
 
-        if ($uploadedFile->isValid()) {
+        if ($uploadedFile->isValid() && $this->fileExtIsAllowed($uploadedFile->getExtension())) {
 
             $year = Carbon::now()->year;
             $month = Carbon::now()->month;
@@ -85,6 +80,58 @@ class UploadService extends Service
                 return true;
             } else
                 return false;
+        }
+
+        return false;
+    }
+
+    public function uploadImage(UploadedFile $uploadedFile, $directory_id = 0)
+    {
+        $path = $this->directoryModel->find($directory_id)->path;
+
+        if ($uploadedFile->isValid() && $this->fileExtIsAllowed($uploadedFile->getClientOriginalExtension())) {
+
+            $image = Image::make($uploadedFile->getRealPath());
+            $year = Carbon::now()->year;
+            $month = Carbon::now()->month;
+            $day = Carbon::now()->day;
+
+            $originalName = $uploadedFile->getClientOriginalName();
+            $fileExt = $uploadedFile->getClientOriginalExtension();
+            $mimeType = $uploadedFile->getClientMimeType();
+            $fileSize = $uploadedFile->getSize();
+
+            $uploadPath = "{$path}{$this->ds}{$year}{$this->ds}{$month}{$this->ds}{$day}";
+
+//            $uploadPath = "{$path}{$this->ds}{$year}{$this->ds}{$month}{$this->ds}{$day}";
+
+//            $this->mkdir_directory_if_not_exists($uploadPath);
+
+            $finalFileName = Carbon::now()->timestamp . "-{$originalName}";
+
+            $fullUploadedPath = $path . $this->ds . $finalFileName;
+
+            if ($this->disk->put($fullUploadedPath, $image->encode())) {
+                DB::transaction(function () use ($originalName, $finalFileName, $directory_id, $path, $fullUploadedPath, $fileSize, $mimeType, $fileExt, $image) {
+                    $this->fileModel->create([
+                        'original_name' => $originalName,
+                        'name' => $finalFileName,
+                        'disk' => $this->disk_name,
+                        'directory_id' => $directory_id,
+//                'user_id' => user()->id,
+                        'path' => $path,
+                        'url' => url('storage/' . $fullUploadedPath),
+                        'size' => $fileSize,
+                        'mime_type' => $mimeType,
+                        'extension' => $fileExt,
+                        'width' => $image->width(),
+                        'height' => $image->height(),
+                    ]);
+                });
+
+                return true;
+            } else
+                return false;
 
         }
 
@@ -100,90 +147,19 @@ class UploadService extends Service
     }
 
     // file extension is allowed from config
-    public function fileExtIsAllowed()
+    public function fileExtIsAllowed($ext)
     {
-        //
+        $exts = config('filemanager.allowed_extensions');
+        return in_array($ext, $exts);
     }
 
     // file mime is allowed from config
-    public function fileMimeIsAllowed()
+    public function fileMimeIsAllowed($mime)
     {
-        //
+        $mimes = config('filemanager.allowed_mimes');
+        return in_array($mime, $mimes);
     }
 
-//    public function uploadOneImage(UploadedFile $uploadedFile, $path = null)
-//    {
-//        $path = $path ?? $this->defaultUploadFolderName;
-//
-//        if ($uploadedFile->isValid()) {
-//            $model = resolve($this->model);
-//
-//            $image = Image::make($uploadedFile->getRealPath());
-//            $year = Carbon::now()->year;
-//            $month = Carbon::now()->month;
-//            $day = Carbon::now()->day;
-//
-//            $fileName = $uploadedFile->getClientOriginalName();
-//            $fileExt = $uploadedFile->getClientOriginalExtension();
-//            $mimeType = $uploadedFile->getClientMimeType();
-//            $fileSize = $uploadedFile->getSize();
-//
-//            $uploadPath = "{$path}{$this->ds}{$year}{$this->ds}{$month}{$this->ds}{$day}";
-//
-//            $fullUploadedPath = public_path($uploadPath . $this->ds . $fileName);
-//
-//            $dirPath = public_path($uploadPath);
-//
-//            $this->mkdir_if_not_exists($dirPath);
-//
-//            if (file_exists($fullUploadedPath)) {
-//                $finalFileName = Carbon::now()->timestamp . "-{$fileName}";
-//
-//                $image->save($dirPath, $finalFileName);
-//
-//                $model->create([
-//                    'file_name' => $finalFileName,
-//                    'original_name' => $fileName,
-//                    'file_path' => url($uploadPath . $this->ds . $finalFileName),
-//                    'file_size' => $fileSize,
-//                    'mime_type' => $mimeType,
-//                    'file_ext' => $fileExt,
-//                    'width' => $image->width(),
-//                    'height' => $image->height(),
-//                ]);
-//
-//                return response()->json([
-//                    'data' => [
-//                        'url' => url($uploadPath . $this->ds . $finalFileName)
-//                    ]
-//                ]);
-//            }
-//
-//            $image->save($fullUploadedPath);
-//
-//            $model->create([
-//                'file_name' => $fileName,
-//                'original_name' => $fileName,
-//                'file_path' => url($uploadPath . $this->ds . $fileName),
-//                'file_size' => $fileSize,
-//                'mime_type' => $mimeType,
-//                'file_ext' => $fileExt,
-//                'width' => $image->width(),
-//                'height' => $image->height(),
-//            ]);
-//            // $uploadedFile->move(public_path($uploadPath), $fileName);
-//
-//            return response()->json([
-//                'data' => [
-//                    'url' => url($uploadPath . $this->ds . $fileName)
-//                ]
-//            ]);
-//        }
-//
-//        return response()->json([
-//            'data' => 'File is Broken Or Not Valid!'
-//        ]);
-//    }
 //
 //    // $path = $request->photo->storeAs('images', 'filename.jpg', 'disk');
 //
@@ -215,7 +191,6 @@ class UploadService extends Service
     public function uploadFileByUrl(string $url, string $field, $fileName = null)
     {
         $uuid = Str::uuid();
-        $storage = \Storage::disk(config('upload.disk'));
         $file = file_get_contents($url);
         $url = strtok($url, '?');
         $config = config('upload.files.' . $field);
@@ -224,7 +199,7 @@ class UploadService extends Service
         $orignalName = str_replace(' ', '-', pathinfo($url, PATHINFO_FILENAME));
         $extension = pathinfo($url, PATHINFO_EXTENSION);
         $extension = ($extension) ? "." . $extension : $extension;
-        $storagePath = $storage->getDriver()->getAdapter()->getPathPrefix();
+        $storagePath = $this->disk->getDriver()->getAdapter()->getPathPrefix();
 
         if ($fileName) {
             $fileNameWithExtension = $fileName . $extension;
@@ -233,85 +208,36 @@ class UploadService extends Service
             $fileNameWithExtension = $orignalName . $extension;
         }
 
-        $storage->put('/uploads/' . $uuid . '/' . $fileNameWithExtension, $file);
+        $this->disk->put('/uploads/' . $uuid . '/' . $fileNameWithExtension, $file);
 
         $mimeType = mime_content_type($storagePath . '/uploads/' . $uuid . '/' . $fileNameWithExtension);
         $mimeFileType = $this->getFileType($mimeType);
 
-        $upload = new Upload();
-        $upload->private = array_get($config, 'private', false);
-        $upload->title = $orignalName;
-        $upload->file_field = $field;
-        $upload->file_name = $fileNameWithExtension;
-        $upload->mime_type = $mimeType;
-        $upload->file_type = $mimeFileType;
-        $upload->size = (filesize($storagePath . '/uploads/' . $uuid . '/' . $fileNameWithExtension) / 1024) / 1024;
-        $upload->uuid = $uuid;
-        $upload->save();
+        $file = $this->fileModel->create([
+            'private' => array_get($config, 'private', false),
+            'title' => $orignalName,
+            'file_field' => $field,
+            'file_name' => $fileNameWithExtension,
+            'mime_type' => $mimeType,
+            'file_type' => $mimeFileType,
+            'size' => (filesize($storagePath . '/uploads/' . $uuid . '/' . $fileNameWithExtension) / 1024) / 1024,
+            'uuid' => $uuid,
+        ]);
+
 
         if ($mimeFileType != 'image' || !array_get($config, 'resize')) {
-            return $upload;
+            return true;
         }
 
         foreach ($config['resize'] as $key => $value) {
             if (array_get($value, 'create_on_upload', false)) {
-                $this->resizeImage($upload, $key);
+                $this->resizeImage($file, $key);
                 continue;
             }
 
-            ProcessUpload::dispatch($upload, $key);
+            ProcessUpload::dispatch($file, $key);
         }
 
-        return $upload;
+        return $file;
     }
-
-    /**
-     * File upload trait used in controllers to upload files
-     */
-    public function saveFiles(Request $request)
-    {
-        if (!file_exists(public_path('uploads'))) {
-            mkdir(public_path('uploads'), 0777);
-            mkdir(public_path('uploads/thumb'), 0777);
-        }
-        $newRequest = null; // Variable to hold a new request created by above array merging
-        foreach ($request->all() as $key => $value) {
-            if ($request->hasFile($key)) {
-                if ($request->has($key . '_w') && $request->has($key . '_h')) {
-                    // Check file width
-                    $filename = time() . '-' . $request->file($key)->getClientOriginalName();
-                    $file = $request->file($key);
-                    $image = Image::make($file);
-                    Image::make($file)->resize(50, 50)->save(public_path('uploads/thumb') . '/' . $filename);
-                    $width = $image->width();
-                    $height = $image->height();
-                    if ($width > $request->{$key . '_w'} && $height > $request->{$key . '_h'}) {
-                        $image->resize($request->{$key . '_w'}, $request->{$key . '_h'});
-                    } elseif ($width > $request->{$key . '_w'}) {
-                        $image->resize($request->{$key . '_w'}, null, function ($constraint) {
-                            $constraint->aspectRatio();
-                        });
-                    } elseif ($height > $request->{$key . '_w'}) {
-                        $image->resize(null, $request->{$key . '_h'}, function ($constraint) {
-                            $constraint->aspectRatio();
-                        });
-                    }
-                    $image->save(public_path('uploads') . '/' . $filename);
-                    // Determine which request's data to use further
-                    $requestDataToMerge = $newRequest == null ? $request->all() : $newRequest->all();
-                    // Create new request without changing the original one (prevents removal of specific metadata which disables parsing of a second file)
-                    $newRequest = new Request(array_merge($requestDataToMerge, [$key => $filename]));
-                } else {
-                    $filename = time() . '-' . $request->file($key)->getClientOriginalName();
-                    $request->file($key)->move(public_path('uploads'), $filename);
-                    // Determine which request's data to use further
-                    $requestDataToMerge = $newRequest == null ? $request->all() : $newRequest->all();
-                    // Create new request without changing the original one (prevents removal of specific metadata which disables parsing of a second file)
-                    $newRequest = new Request(array_merge($requestDataToMerge, [$key => $filename]));
-                }
-            }
-        }
-        return $newRequest == null ? $request : $newRequest;
-    }
-
 }
