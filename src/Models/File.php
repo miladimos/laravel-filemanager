@@ -91,10 +91,6 @@ class File extends Model
         return $this->is_private ? false : true;
     }
 
-    public function getPathAttribute()
-    {
-        return $this->base_path . $this->file_name;
-    }
 
     public function getBasenameAttribute(): string
     {

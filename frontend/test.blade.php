@@ -17,7 +17,8 @@
     <div class="row">
         <div class="col-12">
             <div class="mt-5">
-                <form action="{{ route('filemanager.uploads.upload') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('filemanager.downloads.download') }}" method="post"
+                      enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="file">Choose file</label>

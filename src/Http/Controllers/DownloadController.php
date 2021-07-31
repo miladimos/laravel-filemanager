@@ -5,7 +5,7 @@ namespace Miladimos\FileManager\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Miladimos\FileManager\Models\File;
 use Symfony\Component\CssSelector\Exception\InternalErrorException;
 
@@ -19,9 +19,17 @@ class DownloadController extends Controller
         $this->fileModel = $file;
     }
 
-    public function download($uuid)
+    public function download(File $file)
     {
-        $file = $this->fileModel->where("uuid", $uuid)->firstOrFail();
+        $path = $file->path . DIRECTORY_SEPARATOR . $file->name;
+
+        return Storage::disk($file->disk)->download($path, $file->name);
+
+    }
+
+    public function downloadFile($uuid)
+    {
+        $file = $this->fileModel->where('uuid', $uuid)->first();
 
         $secret = env('APP_KEY');
 
@@ -33,12 +41,6 @@ class DownloadController extends Controller
         } else {
             throw new InternalErrorException("link not valid");
         }
-
-    }
-
-    public function downloadFile($uuid)
-    {
-        $file = $this->fileModel->where('uuid', $uuid)->first();
 
         return response()->download(storage_path("app/uploads/") . $file->file_hash, $file->file_name);
     }
