@@ -17,5 +17,4 @@ trait ErrorHandler
     {
         return $this->errors;
     }
-
 }

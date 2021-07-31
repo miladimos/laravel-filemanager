@@ -148,6 +148,11 @@ return [
         'files' => 15, //3 rows
     ],
 
+    'logger' => [
+        'active' => false,
+        'driver' => ''
+    ],
+
     /**
      * Image cache ( Intervention Image Cache )
      *

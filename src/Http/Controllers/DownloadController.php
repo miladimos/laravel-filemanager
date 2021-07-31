@@ -24,7 +24,6 @@ class DownloadController extends Controller
         $path = $file->path . DIRECTORY_SEPARATOR . $file->name;
 
         return Storage::disk($file->disk)->download($path, $file->name);
-
     }
 
     public function downloadFile($uuid)
