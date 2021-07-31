@@ -43,10 +43,6 @@ class UploadService extends Service
     public function uploadFile(UploadedFile $uploadedFile, $directory_id = 0)
     {
 
-        //        foreach ($request->file('files') as $key => $file) {
-////            $file->storeAs($path, $file->getClientOriginalName());
-////        }
-////
 ///             ProcessUpload::dispatch($upload, $key);
 
         $path = $this->directoryModel->find($directory_id)->path;
