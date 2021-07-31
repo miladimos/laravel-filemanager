@@ -27,12 +27,15 @@ abstract class Service
 
     protected $ds = DIRECTORY_SEPARATOR;
 
+    protected $loggerService;
+
     public function __construct()
     {
         $this->disk = Storage::disk(config('filemanager.disk'));
         $this->disk_name = config('filemanager.disk');
         $this->base_directory = config('filemanager.base_directory');
         $this->mimeDetect = new FinfoMimeTypeDetector();
+        $this->loggerService = new LoggerService();
     }
 
     /**

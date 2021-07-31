@@ -92,7 +92,6 @@ if (!function_exists('version')) {
 if (!function_exists('checkInstanceOf')) {
     function checkInstanceOf($varable, string $model): string
     {
-
         return !!($varable instanceof $model);
     }
 }
@@ -101,6 +100,13 @@ if (!function_exists('generateDownloadHash')) {
     function generateDownloadHash(): string
     {
         return '';
+    }
+}
+
+if (!function_exists('logActive')) {
+    function logActive(): bool
+    {
+        return config('filemanager.logger.active');
     }
 }
 

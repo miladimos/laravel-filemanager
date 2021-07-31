@@ -150,7 +150,8 @@ return [
 
     'logger' => [
         'active' => false,
-        'driver' => ''
+        'channel' => env("LOG_CHANNEL", "stack"),
+        'level' => 'debug', // default level
     ],
 
     /**

@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
+use Miladimos\FileManager\Events\AfterUpload;
+use Miladimos\FileManager\Events\BeforeUpload;
 use Miladimos\FileManager\Models\Directory;
 use Miladimos\FileManager\Models\File;
 
@@ -111,6 +113,8 @@ class UploadService extends Service
 
             $fullUploadedPath = $path . $this->ds . $finalFileName;
 
+            event(new BeforeUpload());
+
             if ($this->disk->put($fullUploadedPath, $image->encode())) {
                 DB::transaction(function () use ($originalName, $finalFileName, $directory_id, $path, $fullUploadedPath, $fileSize, $mimeType, $fileExt, $image) {
                     $this->fileModel->create([
@@ -129,10 +133,12 @@ class UploadService extends Service
                     ]);
                 });
 
-                return true;
-            } else
-                return false;
+                event(new AfterUpload());
 
+                return true;
+            } else {
+                return false;
+            }
         }
 
         return false;
