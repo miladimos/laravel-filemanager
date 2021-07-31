@@ -3,127 +3,190 @@
 namespace Miladimos\FileManager\Services;
 
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
+use Miladimos\FileManager\Models\Directory;
+use Miladimos\FileManager\Models\File;
 
 
-// all of about uploads (upload file, files, ...)
-
+// all of about uploads (upload files, ...)
 class UploadService extends Service
 {
+    // custom File model
+    private $model;
 
-    public function __construct()
+    private $fileService;
+
+    private $directoryService;
+
+    // default File model
+    private $fileModel;
+
+    private $directoryModel;
+
+    public function __construct(Model $model = null)
     {
         parent::__construct();
+
+        $this->model = $model;
+
+        $this->fileService = new FileService();
+
+        $this->directoryService = new DirectoryService();
+
+        $this->fileModel = new File();
+
+        $this->directoryModel = new Directory();
     }
 
-//    public function uploadFile(Request $request)
-//    {
-//        if ($request->hasFile('file')) {
-//
-//            $path = $request->file('file')->store('uploads');
-//
-//            $folder = $request->input('folder');
-//            //$folder = 0;
-//            $path = str_replace("uploads/", "", $path);
-//
-//            $size = $request->file('file')->getClientSize();
-//            $fileName = $request->file('file')->getClientOriginalName();
-//            $fileExt = $request->file('file')->getClientOriginalExtension();
-//
-//            // first check that the user has got some quota space
-//            $userQuota = QuotaHelper::getUserQuotaUsed(Auth::id());
-//
-//            $userQuota = json_decode($userQuota);
-//
-//            $diskQuota = $userQuota->{'disk_quota'};
-//            $diskUsed = $userQuota->{'disk_usage'};
-//
-//            if (($size / 1024 / 1024) + $diskUsed > $diskQuota) {
-//                return response()->json(['msg' => 'You do not have enough of you quota left to upload this file.', 'status' => '500'], 500);
-//            }
-//
-//            $file = new File();
-//            $file->user_id = Auth::id();
-//            $file->folder_id = $folder;
-//            $file->file_name = $fileName;
-//            $file->file_extension = $fileExt;
-//            $file->file_size = $size;
-//            $file->file_hash = $path;
-//            $file->save();
-//
-//            return response()->json(['msg' => 'File uploaded.', 'status' => '200'], 200);
-//        } else {
-//            return response()->json(['msg' => 'No file was specified.', 'status' => '500'], 500);
-//        }
-//    }
-//
-//
-//
-//    public function uploadFiles(Request $request)
-//    {
-//        $request->validate([
-//            'files.*' => 'mimetypes:image/png,image/jpeg'
-//        ]);
-//        $path = $request->path ? $request->path : '';
-//
-//        foreach ($request->file('files') as $key => $file) {
-//            $file->storeAs($path, $file->getClientOriginalName());
-//        }
-//
-//        return response()->json([
-//            'result' => true
-//        ]);
-//    }
-    //public function resizeImagePost(Request $request)
-    //{
-    //    $this->validate($request, [
-    //        'title' => 'required',
-    //        'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    //    ]);
-    //
-    //    $image = $request->file('image');
-    //    $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
-    //
-    //    $destinationPath = public_path('/thumbnail');
-    //    $img = Image::make($image->getRealPath());
-    //    $img->resize(100, 100, function ($constraint) {
-    //        $constraint->aspectRatio();
-    //    })->save($destinationPath.'/'.$input['imagename']);
-    //
-    //    $destinationPath = public_path('/images');
-    //    $image->move($destinationPath, $input['imagename']);
-    //
-    //    $this->postImage->add($input);
-    //
-    //    return back()
-    //        ->with('success','Image Upload successful')
-    //        ->with('imageName',$input['imagename']);
-    //}
-
-
-    public function uploadFiles(Request $request)
+    public function uploadOneFile(UploadedFile $uploadedFile, $path = null, $disk = 'public')
     {
-        $request->validate([
-            'files.*' => 'mimetypes:image/png,image/jpeg'
-        ]);
-        $path = $request->path ? $request->path : '';
 
-        foreach ($request->file('files') as $key => $file) {
-            $file->storeAs($path, $file->getClientOriginalName());
+        $path = $path ?? $this->defaultUploadFolderName;
+
+        if ($uploadedFile->isValid()) {
+
+            $model = $this->getFileModel();
+
+            $year = Carbon::now()->year;
+            $month = Carbon::now()->month;
+            $day = Carbon::now()->day;
+
+            $originalName = $uploadedFile->getClientOriginalName();
+            $fileExt = $uploadedFile->getClientOriginalExtension();
+            $mimeType = $uploadedFile->getClientMimeType();
+            $fileSize = $uploadedFile->getSize(); // in bytes
+
+            $uploadPath = "{$path}{$this->ds}{$year}{$this->ds}{$month}{$this->ds}{$day}";
+
+            $fullUploadedPath = public_path($uploadPath . $this->ds . $originalName);
+
+            $dirPath = public_path($uploadPath);
+
+            $this->mkdir_directory_if_not_exists($dirPath);
+
+            if (checkPath($fullUploadedPath, $this->disk_name)) {
+                $finalFileName = Carbon::now()->timestamp . "-{$originalName}";
+
+                $uploadedFile->move($dirPath, $finalFileName);
+
+                $model->create([
+                    'file_name' => $finalFileName,
+                    'original_name' => $originalName,
+                    'file_path' => url($uploadPath . $this->ds . $finalFileName),
+                    'file_size' => $fileSize,
+                    'mime_type' => $mimeType,
+                    'file_ext' => $fileExt,
+                ]);
+
+                return response()->json([
+                    'data' => [
+                        'url' => url($uploadPath . $this->ds . $finalFileName)
+                    ]
+                ]);
+            }
+
+            $uploadedFile->move($dirPath, $originalName);
+
+            $model->create([
+                'file_name' => $originalName,
+                'original_name' => $originalName,
+                'file_path' => url($uploadPath . $this->ds . $originalName),
+                'file_size' => $fileSize,
+                'mime_type' => $mimeType,
+                'file_ext' => $fileExt,
+            ]);
+
+            return response()->json([
+                'data' => [
+                    'url' => url($uploadPath . $this->ds . $originalName)
+                ]
+            ]);
         }
 
         return response()->json([
-            'result' => true
+            'data' => 'File is Broken Or Not Valid!'
         ]);
     }
-//
-//    public function uploadOneImage(\Symfony\Component\HttpFoundation\File\UploadedFile $uploadedFile, $path = null)
+
+    function mkdir_directory_if_not_exists($dirPath)
+    {
+        if (!checkPath($dirPath, $this->disk_name)) {
+            $this->directoryService->createDirectory([]);
+        }
+    }
+
+    private function getFileModel()
+    {
+        if (!$this->model === null) {
+            return resolve($this->model);
+        }
+        return $this->fileModel;
+    }
+
+    public function uploadFile2(UploadedFile $uploadedFile, string $file)
+    {
+
+//        foreach ($request->file('files') as $key => $file) {
+////            $file->storeAs($path, $file->getClientOriginalName());
+////        }
+////
+        $storage = Storage::disk(config('upload.disk'));
+        $config = config('upload.files.' . $file);
+
+        $originalName = str_replace('_', '-', $uploadedFile->getClientOriginalName());
+        $originalName = str_replace(' ', '-', $originalName);
+        $mimeType = $this->getFileType($uploadedFile->getClientMimeType());
+        $uuid = Str::uuid();
+
+        $upload = new File();
+        $upload->private = array_get($config, 'private', false);
+        $upload->title = str_replace('.' . $uploadedFile->getClientOriginalExtension(), '', $uploadedFile->getClientOriginalName());
+        $upload->file_field = $file;
+        $upload->file_name = $originalName;
+        $upload->mime_type = $uploadedFile->getClientMimeType();
+        $upload->file_type = $mimeType;
+        $upload->size = ($uploadedFile->getSize() / 1024) / 1024;
+        $upload->uuid = $uuid;
+        $upload->save();
+
+        if ($mimeType === 'image' && array_get($config, 'optimize')) {
+            //keep the original file
+            if (array_get($config, 'keep_original_file')) {
+                //TODO: think about this because it might take more time if uploaded to cloud
+                $storage->put('original-uploads/' . $uuid . '/' . $originalName, file_get_contents($uploadedFile));
+            }
+
+            //Optimize image from temp path and replace just over there
+            ImageOptimizer::optimize($uploadedFile->getRealPath());
+        }
+
+        //move uploaded file to storage
+        $storage->put('uploads/' . $uuid . '/' . $originalName, file_get_contents($uploadedFile));
+
+        if ($mimeType != 'image' || !array_get($config, 'resize')) {
+            return $upload;
+        }
+
+        foreach ($config['resize'] as $key => $value) {
+            if (array_get($value, 'create_on_upload', false)) {
+                $this->resizeImage($upload, $key);
+                continue;
+            }
+
+            ProcessUpload::dispatch($upload, $key);
+        }
+
+        return $upload;
+    }
+
+//    public function uploadOneImage(UploadedFile $uploadedFile, $path = null)
 //    {
-//
 //        $path = $path ?? $this->defaultUploadFolderName;
 //
 //        if ($uploadedFile->isValid()) {
@@ -198,93 +261,7 @@ class UploadService extends Service
 //
 //    // $path = $request->photo->storeAs('images', 'filename.jpg', 'disk');
 //
-//    public function uploadOneFile(UploadedFile $uploadedFile, $path = null, $disk = 'public')
-//    {
-//
-//        $path = $path ?? $this->defaultUploadFolderName;
-//
-//        if ($uploadedFile->isValid()) {
-//            $model = resolve($this->model);
-//
-//            $year = Carbon::now()->year;
-//            $month = Carbon::now()->month;
-//            $day = Carbon::now()->day;
-//
-//            $fileName = $uploadedFile->getClientOriginalName();
-//            $fileExt = $uploadedFile->getClientOriginalExtension();
-//            $mimeType = $uploadedFile->getClientMimeType();
-//            $fileSize = $uploadedFile->getSize();
-//
-//            $uploadPath = "{$path}{$this->ds}{$year}{$this->ds}{$month}{$this->ds}{$day}";
-//
-//            $fullUploadedPath = public_path($uploadPath . $this->ds . $fileName);
-//
-//            $dirPath = public_path($uploadPath);
-//
-//            $this->mkdir_if_not_exists($dirPath);
-//
-//            if (file_exists($fullUploadedPath)) {
-//                $finalFileName = Carbon::now()->timestamp . "-{$fileName}";
-//
-//                $uploadedFile->move($dirPath, $finalFileName);
-//
-//                $model->create([
-//                    'file_name' => $finalFileName,
-//                    'original_name' => $fileName,
-//                    'file_path' => url($uploadPath . $this->ds . $finalFileName),
-//                    'file_size' => $fileSize,
-//                    'mime_type' => $mimeType,
-//                    'file_ext' => $fileExt,
-//                ]);
-//
-//                return response()->json([
-//                    'data' => [
-//                        'url' => url($uploadPath . $this->ds . $finalFileName)
-//                    ]
-//                ]);
-//            }
-//
-//            $uploadedFile->move($dirPath, $fileName);
-//
-//            $model->create([
-//                'file_name' => $fileName,
-//                'original_name' => $fileName,
-//                'file_path' => url($uploadPath . $this->ds . $fileName),
-//                'file_size' => $fileSize,
-//                'mime_type' => $mimeType,
-//                'file_ext' => $fileExt,
-//            ]);
-//
-//            return response()->json([
-//                'data' => [
-//                    'url' => url($uploadPath . $this->ds . $fileName)
-//                ]
-//            ]);
-//        }
-//
-//        return response()->json([
-//            'data' => 'File is Broken Or Not Valid!'
-//        ]);
-//    }
-//
-//    function mkdir_if_not_exists($dirPath)
-//    {
-//        if (!file_exists($dirPath)) {
-//            mkdir($dirPath, 0777, true);
-//        }
-//    }
 
-
-//    /**
-//     * This method will take a collection of files that have been
-//     * uploaded during a request and then save those files to
-//     * the given path.
-//     *
-//     * @param UploadedFilesInterface $files
-//     * @param string $path
-//     *
-//     * @return int
-//     */
 //    public function saveUploadedFiles(UploadedFilesInterface $files, $path = '/')
 //    {
 //        return $files->getUploadedFiles()->reduce(function ($uploaded, UploadedFile $file) use ($path) {
@@ -334,102 +311,6 @@ class UploadService extends Service
 //
 //        return $this->handle($file);
 //    }
-
-    public function uploadFile(UploadedFile $uploadedFile, string $file)
-    {
-        $storage = Storage::disk(config('upload.disk'));
-        $config = config('upload.files.' . $file);
-
-        $originalName = str_replace('_', '-', $uploadedFile->getClientOriginalName());
-        $originalName = str_replace(' ', '-', $originalName);
-        $mimeType = $this->getFileType($uploadedFile->getClientMimeType());
-        $uuid = Str::uuid();
-
-        $upload = new File();
-        $upload->private = array_get($config, 'private', false);
-        $upload->title = str_replace('.' . $uploadedFile->getClientOriginalExtension(), '', $uploadedFile->getClientOriginalName());
-        $upload->file_field = $file;
-        $upload->file_name = $originalName;
-        $upload->mime_type = $uploadedFile->getClientMimeType();
-        $upload->file_type = $mimeType;
-        $upload->size = ($uploadedFile->getSize() / 1024) / 1024;
-        $upload->uuid = $uuid;
-        $upload->save();
-
-        if ($mimeType === 'image' && array_get($config, 'optimize')) {
-            //keep the original file
-            if (array_get($config, 'keep_original_file')) {
-                //TODO: think about this because it might take more time if uploaded to cloud
-                $storage->put('original-uploads/' . $uuid . '/' . $originalName, file_get_contents($uploadedFile));
-            }
-
-            //Optimize image from temp path and replace just over there
-            ImageOptimizer::optimize($uploadedFile->getRealPath());
-        }
-
-        //move uploaded file to storage
-        $storage->put('uploads/' . $uuid . '/' . $originalName, file_get_contents($uploadedFile));
-
-        if ($mimeType != 'image' || !array_get($config, 'resize')) {
-            return $upload;
-        }
-
-        foreach ($config['resize'] as $key => $value) {
-            if (array_get($value, 'create_on_upload', false)) {
-                $this->resizeImage($upload, $key);
-                continue;
-            }
-
-            ProcessUpload::dispatch($upload, $key);
-        }
-
-        return $upload;
-    }
-
-    /**
-     * Upload files
-     *
-     * @param void
-     * @return string
-     */
-    public function upload()
-    {
-        $uploaded_files = request()->file('upload');
-        $error_bag = [];
-        $new_filename = null;
-
-        foreach (is_array($uploaded_files) ? $uploaded_files : [$uploaded_files] as $file) {
-            try {
-                $new_filename = $this->lfm->upload($file);
-            } catch (\Exception $e) {
-                Log::error($e->getMessage(), [
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString()
-                ]);
-                array_push($error_bag, $e->getMessage());
-            }
-        }
-
-        if (is_array($uploaded_files)) {
-            $response = count($error_bag) > 0 ? $error_bag : parent::$success_response;
-        } else { // upload via ckeditor5 expects json responses
-            if (is_null($new_filename)) {
-                $response = [
-                    'error' => ['message' => $error_bag[0]]
-                ];
-            } else {
-                $url = $this->lfm->setName($new_filename)->url();
-
-                $response = [
-                    'url' => $url,
-                    'uploaded' => $url
-                ];
-            }
-        }
-
-        return response()->json($response);
-    }
 
     public function uploadFileByUrl(string $url, string $field, $fileName = null)
     {
@@ -484,182 +365,6 @@ class UploadService extends Service
         return $upload;
     }
 
-    public function getFileType(string $mime)
-    {
-        if (in_array($mime, $this->imageMimes)) {
-            return 'image';
-        }
-
-        return 'document';
-    }
-
-    public function makeImage(Image $image, array $sizeOption)
-    {
-        $sizeOption += [
-            'width' => null,
-            'height' => null,
-            'fit' => null,
-        ];
-
-        if (!$sizeOption['fit']) {
-            return $image->resize($sizeOption['width'], $sizeOption['height'], function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
-        }
-
-        if ($sizeOption['fit'] == 'crop') {
-            $cropX = isset($sizeOption['x']) ? $sizeOption['x'] : null;
-            $cropY = isset($sizeOption['y']) ? $sizeOption['y'] : null;
-
-            $image->crop($sizeOption['width'], $sizeOption['height'], $cropX, $cropY, function ($constraint) {
-                $constraint->upsize();
-            });
-        } elseif ($sizeOption['fit'] == 'max') {
-            $image->resize($sizeOption['width'], $sizeOption['height'], function ($constraint) {
-                $constraint->upsize();
-            });
-        } elseif ($sizeOption['fit'] == 'contain') {
-            $image->resizeCanvas($sizeOption['width'], $sizeOption['height']);
-        } elseif ($sizeOption['fit'] == 'stretch') {
-            $image->resize($sizeOption['width'], $sizeOption['height'], function ($constraint) {
-                $constraint->upsize();
-            });
-        } elseif ($sizeOption['fit'] == 'pad') {
-            $width = $image->width();
-            $height = $image->height();
-
-            $color = isset($sizeOption['color']) ? $sizeOption['color'] : '#fff';
-            if ($width < $height) {
-                $newHeight = $sizeOption['height'];
-                $newWidth = ($width * 100) / $sizeOption['width'];
-
-                $image->resize($newWidth, $newHeight, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-                $image->resizeCanvas($sizeOption['width'], $sizeOption['height'], 'center', false, $color);
-            } elseif ($width > $height) {
-                $newWidth = $sizeOption['width'];
-                $newHeight = ($height * 100) / $sizeOption['height'];
-
-                $image->resize($newWidth, $newHeight, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-                $image->resizeCanvas($sizeOption['width'], $sizeOption['height'], 'center', false, $color);
-            } elseif ($width == $height) {
-                $image->resize($sizeOption['width'], $sizeOption['height'], function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-                $image->resizeCanvas($sizeOption['width'], $sizeOption['height'], 'center', false, $color);
-            }
-        } else {
-            $image->fit($sizeOption['width'], $sizeOption['height'], function ($constraint) {
-                $constraint->upsize();
-            });
-        }
-
-        return $image;
-    }
-
-    public function resizeImage(Upload $upload, string $size)
-    {
-        $storage = \Storage::disk(config('upload.disk'));
-        $config = config('upload.files.' . $upload->file_field . '.resize.' . $size);
-        $path = $upload->uuid . '/';
-        $file = $storage->get('uploads/' . $path . $upload->file_name);
-
-        $extension = pathinfo($upload->file_name, PATHINFO_EXTENSION);
-        $name = str_replace('.' . $extension, '', $upload->file_name);
-
-        $image = \Image::make($file);
-        $image = $this->makeImage($image, $config);
-        $image->encode($extension);
-        $storage->put('cache/' . $path . $name . '-' . $size . '.' . $extension, $image->__toString());
-    }
-
-    public function deleteFiles()
-    {
-        $date = now()->subHour(24);
-        $uploadIds = [];
-        $storage = \Storage::disk(config('upload.disk'));
-        $uploads = Upload::query()
-            ->where('created_at', '<=', $date)
-            ->where('has_reference', false)
-            ->get();
-
-        foreach ($uploads as $upload) {
-            $uploadIds[] = $upload->id;
-            $storage->deleteDirectory('uploads/' . $upload->uuid);
-            $storage->deleteDirectory('cache/' . $upload->uuid);
-        }
-
-        Upload::destroy($uploadIds);
-    }
-
-    public function generateImages($fileField = null)
-    {
-        $uploads = Upload::query()
-            ->where('has_reference', true)
-            ->where('file_type', 'image')
-            ->where(function ($query) use ($fileField) {
-                if ($fileField) {
-                    $query->where('file_field', $fileField);
-                }
-            })
-            ->get();
-
-        foreach ($uploads as $upload) {
-            foreach (config('upload.files.' . $upload->file_field . '.resize') as $size => $options) {
-                $this->resizeImage($upload, $size);
-            }
-        }
-    }
-
-    public function optimizeUploadedImages($fileField = null)
-    {
-        $storage = \Storage::disk(config('upload.disk'));
-
-        $uploads = Upload::query()
-            ->where('file_type', 'image')
-            ->where(function ($query) use ($fileField) {
-                if ($fileField) {
-                    $query->where('file_field', $fileField);
-                }
-            })
-            ->get();
-
-        foreach ($uploads as $upload) {
-            foreach ($storage->allFiles('uploads/' . $upload->uuid) as $file) {
-                ImageOptimizer::optimize($storage->path($file));
-            }
-
-            foreach ($storage->allFiles('cache/' . $upload->uuid) as $file) {
-                ImageOptimizer::optimize($storage->path($file));
-            }
-        }
-    }
-
-    public function optimizeImages($path)
-    {
-        $images = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
-        $path = base_path($path);
-
-        if (!is_dir($path)) {
-            throw new \Exception('Directory Not found.');
-        }
-
-        $files = \File::allfiles($path);
-
-        foreach ($files as $file) {
-            //optimize images only
-            if (!in_array(strtolower($file->getExtension()), $images)) {
-                continue;
-            }
-
-            ImageOptimizer::optimize($file->getRealPath());
-        }
-    }
-
     /**
      * File upload trait used in controllers to upload files
      */
@@ -706,7 +411,6 @@ class UploadService extends Service
                 }
             }
         }
-
         return $newRequest == null ? $request : $newRequest;
     }
 

@@ -104,6 +104,184 @@ class ImageService extends Service
     }
 
 
+
+    //public function resizeImagePost(Request $request)
+    //{
+    //    $this->validate($request, [
+    //        'title' => 'required',
+    //        'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    //    ]);
+    //
+    //    $image = $request->file('image');
+    //    $input['imagename'] = time().'.'.$image->getClientOriginalExtension();
+    //
+    //    $destinationPath = public_path('/thumbnail');
+    //    $img = Image::make($image->getRealPath());
+    //    $img->resize(100, 100, function ($constraint) {
+    //        $constraint->aspectRatio();
+    //    })->save($destinationPath.'/'.$input['imagename']);
+    //
+    //    $destinationPath = public_path('/images');
+    //    $image->move($destinationPath, $input['imagename']);
+    //
+    //    $this->postImage->add($input);
+    //
+    //    return back()
+    //        ->with('success','Image Upload successful')
+    //        ->with('imageName',$input['imagename']);
+    //}
+
+
+    public function makeImage(Image $image, array $sizeOption)
+    {
+        $sizeOption += [
+            'width' => null,
+            'height' => null,
+            'fit' => null,
+        ];
+
+        if (!$sizeOption['fit']) {
+            return $image->resize($sizeOption['width'], $sizeOption['height'], function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+        }
+
+        if ($sizeOption['fit'] == 'crop') {
+            $cropX = isset($sizeOption['x']) ? $sizeOption['x'] : null;
+            $cropY = isset($sizeOption['y']) ? $sizeOption['y'] : null;
+
+            $image->crop($sizeOption['width'], $sizeOption['height'], $cropX, $cropY, function ($constraint) {
+                $constraint->upsize();
+            });
+        } elseif ($sizeOption['fit'] == 'max') {
+            $image->resize($sizeOption['width'], $sizeOption['height'], function ($constraint) {
+                $constraint->upsize();
+            });
+        } elseif ($sizeOption['fit'] == 'contain') {
+            $image->resizeCanvas($sizeOption['width'], $sizeOption['height']);
+        } elseif ($sizeOption['fit'] == 'stretch') {
+            $image->resize($sizeOption['width'], $sizeOption['height'], function ($constraint) {
+                $constraint->upsize();
+            });
+        } elseif ($sizeOption['fit'] == 'pad') {
+            $width = $image->width();
+            $height = $image->height();
+
+            $color = isset($sizeOption['color']) ? $sizeOption['color'] : '#fff';
+            if ($width < $height) {
+                $newHeight = $sizeOption['height'];
+                $newWidth = ($width * 100) / $sizeOption['width'];
+
+                $image->resize($newWidth, $newHeight, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image->resizeCanvas($sizeOption['width'], $sizeOption['height'], 'center', false, $color);
+            } elseif ($width > $height) {
+                $newWidth = $sizeOption['width'];
+                $newHeight = ($height * 100) / $sizeOption['height'];
+
+                $image->resize($newWidth, $newHeight, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image->resizeCanvas($sizeOption['width'], $sizeOption['height'], 'center', false, $color);
+            } elseif ($width == $height) {
+                $image->resize($sizeOption['width'], $sizeOption['height'], function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $image->resizeCanvas($sizeOption['width'], $sizeOption['height'], 'center', false, $color);
+            }
+        } else {
+            $image->fit($sizeOption['width'], $sizeOption['height'], function ($constraint) {
+                $constraint->upsize();
+            });
+        }
+
+        return $image;
+    }
+
+    public function resizeImage(Upload $upload, string $size)
+    {
+        $storage = \Storage::disk(config('upload.disk'));
+        $config = config('upload.files.' . $upload->file_field . '.resize.' . $size);
+        $path = $upload->uuid . '/';
+        $file = $storage->get('uploads/' . $path . $upload->file_name);
+
+        $extension = pathinfo($upload->file_name, PATHINFO_EXTENSION);
+        $name = str_replace('.' . $extension, '', $upload->file_name);
+
+        $image = \Image::make($file);
+        $image = $this->makeImage($image, $config);
+        $image->encode($extension);
+        $storage->put('cache/' . $path . $name . '-' . $size . '.' . $extension, $image->__toString());
+    }
+
+
+    public function generateImages($fileField = null)
+    {
+        $uploads = Upload::query()
+            ->where('has_reference', true)
+            ->where('file_type', 'image')
+            ->where(function ($query) use ($fileField) {
+                if ($fileField) {
+                    $query->where('file_field', $fileField);
+                }
+            })
+            ->get();
+
+        foreach ($uploads as $upload) {
+            foreach (config('upload.files.' . $upload->file_field . '.resize') as $size => $options) {
+                $this->resizeImage($upload, $size);
+            }
+        }
+    }
+
+    public function optimizeUploadedImages($fileField = null)
+    {
+        $storage = \Storage::disk(config('upload.disk'));
+
+        $uploads = Upload::query()
+            ->where('file_type', 'image')
+            ->where(function ($query) use ($fileField) {
+                if ($fileField) {
+                    $query->where('file_field', $fileField);
+                }
+            })
+            ->get();
+
+        foreach ($uploads as $upload) {
+            foreach ($storage->allFiles('uploads/' . $upload->uuid) as $file) {
+                ImageOptimizer::optimize($storage->path($file));
+            }
+
+            foreach ($storage->allFiles('cache/' . $upload->uuid) as $file) {
+                ImageOptimizer::optimize($storage->path($file));
+            }
+        }
+    }
+
+    public function optimizeImages($path)
+    {
+        $images = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
+        $path = base_path($path);
+
+        if (!is_dir($path)) {
+            throw new \Exception('Directory Not found.');
+        }
+
+        $files = \File::allfiles($path);
+
+        foreach ($files as $file) {
+            //optimize images only
+            if (!in_array(strtolower($file->getExtension()), $images)) {
+                continue;
+            }
+
+            ImageOptimizer::optimize($file->getRealPath());
+        }
+    }
+
+
     /**
      * resize image and return specific array of images
      *

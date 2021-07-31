@@ -107,6 +107,7 @@ return [
         ],
     ],
 
+    // for uploads
     'allowed_mimes' => [
         'image/gif',
         'image/jpeg',
@@ -119,9 +120,16 @@ return [
         'application/zip',
     ],
 
-    'allow_format' => ['jpeg', 'jpg', 'png', 'gif', 'webp', 'docx', 'pdf', 'ttf'],
+    // for uploads
+    'allowed_extensions' => [
+        'jpeg', 'jpg', 'png', 'gif', 'webp', 'docx',
+        'pdf', 'ttf', 'css', 'php', 'html', 'htm', 'js',
+        'xls', 'txt', 'xlsx', 'docx', 'pdf', 'rar', 'zip',
+        'mp4', 'mp3', 'csv', 'cv', 'tar', 'bz2',
+    ],
 
-    'disallow_format' => ['exe', 'asm', 'bin', 'o', 'jar'],
+    // for uploads
+    'disallow_extensions' => ['exe', 'asm', 'bin', 'o', 'jar'],
 
     'hide_files_extension' => true,
 

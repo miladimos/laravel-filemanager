@@ -17,13 +17,13 @@ class CreateFilemanagerTables extends Migration
             $table->id();
             $table->uuid('uuid')->uniuqe();
             $table->foreignID('parent_id')->nullable();
-//            $table->foreignID('group_id')->nullable();
             $table->foreignID('user_id')->nullable();
             $table->string('disk');
             $table->string('name')->unique();
             $table->string('path');
             $table->string('color_hex')->nullable();
             $table->string('description')->nullable();
+            $table->string('permission')->nullable();
             $table->char('status')->default('a');
             $table->timestamps();
         });
@@ -33,26 +33,26 @@ class CreateFilemanagerTables extends Migration
             $table->uuid('uuid')->uniuqe();
             $table->string("fileable_type")->nullable();
             $table->unsignedBigInteger("fileable_id")->nullable();
-            $table->foreignId('group_id')->nullable();
-            $table->unsignedBigInteger('directory_id');
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->string('file_original_name');
-            $table->string('file_name');
-            $table->string('file_path');
-            $table->string('file_description')->nullable();
-            $table->string('file_extension')->nullable();
-            $table->unsignedBigInteger('file_size')->nullable();
-            $table->char('file_type')->nullable();
+            $table->foreignId('directory_id');
+            $table->foreignId('user_id')->nullable()->comment('who made');
+            $table->string('original_name');
+            $table->string('disk');
+            $table->string('name');
+            $table->string('path');
+            $table->string('url');
+            $table->string('extension')->nullable();
             $table->string('mime_type')->nullable();
+            $table->unsignedBigInteger('size')->nullable()->comment('in bytes');
+            $table->char('type')->nullable();
             $table->char('status')->nullable();
             $table->string('width')->nullable();
             $table->string('height')->nullable();
-            $table->string('disk')->nullable();
+            $table->string('description')->nullable();
+            $table->string('permission')->nullable();
             $table->boolean('is_private')->default(false);
             $table->unsignedInteger('priority_column')->nullable();
             $table->timestamps();
         });
-
 
         Schema::create('file_groups', function (Blueprint $table) {
             $table->id();
@@ -62,7 +62,6 @@ class CreateFilemanagerTables extends Migration
             $table->boolean('active')->default(true);
             $table->timestamps();
         });
-
 
         Schema::create('file_group_pivot', function (Blueprint $table) {
             $table->id();

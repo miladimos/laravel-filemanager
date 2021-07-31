@@ -65,6 +65,24 @@ class FileService extends Service
         return true;
     }
 
+    public function copyFile($file, $newdir)
+    {
+
+        if ($this->disk->exists($newFile)) {
+//            $this->errors[] = 'File already exists.';
+
+            return false;
+        }
+
+        DB::transaction(function () use ($file, $newdir) {
+            $this->model->where('id', $file)->update([
+                'directory_id' => $newdir
+            ]);
+        });
+
+        return true;
+    }
+
     public function deleteFile(File $file)
     {
         if (!$this->disk->exists($file->path)) {
@@ -82,6 +100,25 @@ class FileService extends Service
         } catch (\Exception $ex) {
             return response()->json(['msg' => $ex->getMessage(), 'status' => '500'], 500);
         }
+    }
+
+    public function deleteFiles2()
+    {
+        $date = now()->subHour(24);
+        $uploadIds = [];
+        $storage = \Storage::disk(config('upload.disk'));
+        $uploads = Upload::query()
+            ->where('created_at', '<=', $date)
+            ->where('has_reference', false)
+            ->get();
+
+        foreach ($uploads as $upload) {
+            $uploadIds[] = $upload->id;
+            $storage->deleteDirectory('uploads/' . $upload->uuid);
+            $storage->deleteDirectory('cache/' . $upload->uuid);
+        }
+
+        Upload::destroy($uploadIds);
     }
 
     public function deleteFiles(array $files)

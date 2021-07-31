@@ -251,4 +251,10 @@ abstract class Service
         return Str::startsWith(last(explode(DIRECTORY_SEPARATOR, $item)), '.');
     }
 
+    public function generatePath($path)
+    {
+        return $path . DIRECTORY_SEPARATOR;
+    }
+
+
 }

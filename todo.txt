@@ -2,11 +2,13 @@ add logger / Log Service
 
 add error handler - error type and codes
 
-add ACL
+add ACL / advanced permissions ( maybe custom middleware or whatever )
 
 add breadcrumb manager
 
 add transfer service between storages
+
+add jobs for upload, image resize, optimizer and ...
 
 add change visibility : public / private
 
@@ -16,16 +18,26 @@ add search functionality
 
 add notification system to specific users ( send email/sms to admin users) for specific operations
 
-add zip / tar comperes algorithms and download file or dirs in zip / tar format
+add zip / tar comperes algorithms and download or store in current path file or dirs in zip / tar format
+Archives create/extract (zip, rar, 7z, tar, gzip, bzip2)
 
-add work with remote (ssh, ftp) storages
+add work with remote (ssh, ftp, sftp, dropbox) storages
 
 add pagination system
 
 add scheduled backup (store or send to ftp, email, ...)
 
-add advance filters
+add advance filters, search
 
 upload from url
 
+Chunked file upload for large file
+
+add statistics for all of activities
+
+Quicklook, preview for common file types
+
+Rich context menu and toolbar
+
+add auto watermark for images,videos
 
