@@ -41,3 +41,4 @@ Rich context menu and toolbar
 
 add auto watermark for images,videos
 
+add caching system

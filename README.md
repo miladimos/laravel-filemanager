@@ -56,6 +56,50 @@ php artisan migrate
 
 just it :)
 
+if you are set public disk run bellow command:
+
+```php
+php artisan storage:link
+```
+
+and if you want use ftp add these config in your config/filesystems.php:
+
+```php 
+'ftp' => [
+    'driver' => 'ftp',
+    'host' => 'ftp.example.com',
+    'username' => 'your-username',
+    'password' => 'your-password',
+
+    // Optional FTP Settings...
+    // 'port' => 21,
+    // 'root' => '',
+    // 'passive' => true,
+    // 'ssl' => true,
+    // 'timeout' => 30,
+],
+```
+
+and for sftp use this:
+
+```php 
+'sftp' => [
+    'driver' => 'sftp',
+    'host' => 'example.com',
+    'username' => 'your-username',
+    'password' => 'your-password',
+
+    // Settings for SSH key based authentication...
+    'privateKey' => '/path/to/privateKey',
+    'password' => 'encryption-password',
+
+    // Optional SFTP Settings...
+    // 'port' => 22,
+    // 'root' => '',
+    // 'timeout' => 30,
+],
+```
+
 [comment]: <> (### نحوه استفاده)
 
 [comment]: <> (برای اپلود فایل:)
@@ -169,7 +213,8 @@ $service = new UploadService();
 ```
 
 ### API over backend services:
-for all requests set these headers: 
+
+for all requests set these headers:
 
 Content-Type : application/x-www-form-urlencoded
 

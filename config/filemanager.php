@@ -44,7 +44,7 @@ return [
     /**
      * List of disk names that you want to use for upload
      *
-     * local, public, ftp
+     * local, public
      *
      */
     'disk' => env('FILEMANAGER_DISK', 'local'),
@@ -76,19 +76,23 @@ return [
      *
      * directory path template.
      * Variables:
-     *  - `Y`   Year, example: 2019
+     *  - `Y`   Year, example: 2021
      *  - `m`   Month, example: 04
      *  - `d`   Date, example: 08
      *  - `H`   Hour, example: 12
-     *  - `i`   Minute, example: 03
-     *  - `s`   Second, example: 12
+     *  - `i`   Minute, example: 15
      *
      * sizes in pixel
      */
 
     'strategies' => [
+        'file' => [
+            'path' => 'files/{Y}/{m}/{d}/timestamp-$originalFilename',
+            "date_time_prefix" => true, // before name : time_name.ext
+            'max_size' => '2m',
+        ],
         'thumbnail' => [
-            'path' => 'thumbnails/{Y}/{m}/{d}',
+            'path' => 'thumbnails/{Y}/{m}/{d}/timestamp-$originalFilename',
             "date_time_prefix" => false, // before name : time_name.ext
             'height' => 60,
             'width' => 60,
@@ -96,7 +100,7 @@ return [
             'max_size' => '2m',
         ],
         'avatar' => [
-            'path' => 'thumbnails/{Y}/{m}/{d}',
+            'path' => 'thumbnails/{Y}/{m}/{d}/timestamp-$originalFilename',
             "date_time_prefix" => false, // before name : time_name.ext
             'height' => 250,
             'width' => 250,

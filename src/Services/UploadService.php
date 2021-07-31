@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
@@ -17,9 +18,6 @@ use Miladimos\FileManager\Models\File;
 // all of about uploads (upload files, ...)
 class UploadService extends Service
 {
-    // custom File model
-    private $model;
-
     private $fileService;
 
     private $directoryService;
@@ -29,11 +27,9 @@ class UploadService extends Service
 
     private $directoryModel;
 
-    public function __construct(Model $model = null)
+    public function __construct()
     {
         parent::__construct();
-
-        $this->model = $model;
 
         $this->fileService = new FileService();
 
@@ -44,19 +40,18 @@ class UploadService extends Service
         $this->directoryModel = new Directory();
     }
 
-    public function uploadFile(UploadedFile $uploadedFile, $path = null, $directory = 0)
+    public function uploadFile(UploadedFile $uploadedFile, $directory_id = 0)
     {
 
         //        foreach ($request->file('files') as $key => $file) {
 ////            $file->storeAs($path, $file->getClientOriginalName());
 ////        }
 ////
+///             ProcessUpload::dispatch($upload, $key);
 
-        $path = $path ?? $this->defaultUploadFolderName;
+        $path = $this->directoryModel->find($directory_id)->path;
 
         if ($uploadedFile->isValid()) {
-
-            $model = $this->getFileModel();
 
             $year = Carbon::now()->year;
             $month = Carbon::now()->month;
@@ -67,72 +62,57 @@ class UploadService extends Service
             $mimeType = $uploadedFile->getClientMimeType();
             $fileSize = $uploadedFile->getSize(); // in bytes
 
-            $uploadPath = "{$path}{$this->ds}{$year}{$this->ds}{$month}{$this->ds}{$day}";
+//            $uploadPath = "{$path}{$this->ds}{$year}{$this->ds}{$month}{$this->ds}{$day}";
 
-            $fullUploadedPath = public_path($uploadPath . $this->ds . $originalName);
+//            $this->mkdir_directory_if_not_exists($uploadPath);
 
-            $dirPath = public_path($uploadPath);
+            $finalFileName = Carbon::now()->timestamp . "-{$originalName}";
 
-            $this->mkdir_directory_if_not_exists($dirPath);
+            $fullUploadedPath = $path . $this->ds . $finalFileName;
 
-            if (checkPath($fullUploadedPath, $this->disk_name)) {
-                $finalFileName = Carbon::now()->timestamp . "-{$originalName}";
+            if ($this->disk->put($fullUploadedPath, $uploadedFile->getContent())) {
+                DB::transaction(function () use ($originalName, $finalFileName, $directory_id, $path, $fullUploadedPath, $fileSize, $mimeType, $fileExt) {
+                    $this->fileModel->create([
+                        'original_name' => $originalName,
+                        'name' => $finalFileName,
+                        'disk' => $this->disk_name,
+                        'directory_id' => $directory_id,
+//                'user_id' => user()->id,
+                        'path' => $path,
+                        'url' => url('storage/' . $fullUploadedPath),
+                        'size' => $fileSize,
+                        'mime_type' => $mimeType,
+                        'extension' => $fileExt,
+                    ]);
+                });
 
-                $uploadedFile->move($dirPath, $finalFileName);
+                return true;
+            } else
+                return false;
 
-                $model->create([
-                    'file_name' => $finalFileName,
-                    'original_name' => $originalName,
-                    'file_path' => url($uploadPath . $this->ds . $finalFileName),
-                    'file_size' => $fileSize,
-                    'mime_type' => $mimeType,
-                    'file_ext' => $fileExt,
-                ]);
-
-                return response()->json([
-                    'data' => [
-                        'url' => url($uploadPath . $this->ds . $finalFileName)
-                    ]
-                ]);
-            }
-
-            $uploadedFile->move($dirPath, $originalName);
-
-            $model->create([
-                'file_name' => $originalName,
-                'original_name' => $originalName,
-                'file_path' => url($uploadPath . $this->ds . $originalName),
-                'file_size' => $fileSize,
-                'mime_type' => $mimeType,
-                'file_ext' => $fileExt,
-                'is_private' => false,
-            ]);
-
-            return response()->json([
-                'data' => [
-                    'url' => url($uploadPath . $this->ds . $originalName)
-                ]
-            ]);
         }
 
-        return response()->json([
-            'data' => 'File is Broken Or Not Valid!'
-        ]);
+        return false;
     }
 
     function mkdir_directory_if_not_exists($dirPath)
     {
+        dd(explode("/", $dirPath));
         if (!checkPath($dirPath, $this->disk_name)) {
             $this->directoryService->createDirectory([]);
         }
     }
 
-    private function getFileModel()
+    // file extension is allowed from config
+    public function fileExtIsAllowed()
     {
-        if (!$this->model === null) {
-            return resolve($this->model);
-        }
-        return $this->fileModel;
+        //
+    }
+
+    // file mime is allowed from config
+    public function fileMimeIsAllowed()
+    {
+        //
     }
 
 //    public function uploadOneImage(UploadedFile $uploadedFile, $path = null)

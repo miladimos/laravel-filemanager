@@ -62,15 +62,15 @@ class DirectoryService extends Service
     {
         $path = $this->base_directory . $this->ds . $data['name'];
 
-        if (!checkPath($path)) {
+        if (!checkPath($path, $this->disk_name)) {
             if ($this->disk->makeDirectory($path)) {
                 DB::transaction(function () use ($data, $path) {
                     $this->model->create([
 //                'user_id' => user()->id,
                         'name' => $data['name'],
-                        'description' => $data['description'],
+                        'description' => $data['description'] ?? '',
                         'path' => $path,
-                        'parent_id' => $data['parent_id'],
+                        'parent_id' => $data['parent_id'] ?? 0,
                         'disk' => $this->disk_name,
                     ]);
                 });
