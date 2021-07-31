@@ -44,8 +44,13 @@ class UploadService extends Service
         $this->directoryModel = new Directory();
     }
 
-    public function uploadOneFile(UploadedFile $uploadedFile, $path = null, $disk = 'public')
+    public function uploadFile(UploadedFile $uploadedFile, $path = null, $directory = 0)
     {
+
+        //        foreach ($request->file('files') as $key => $file) {
+////            $file->storeAs($path, $file->getClientOriginalName());
+////        }
+////
 
         $path = $path ?? $this->defaultUploadFolderName;
 
@@ -100,6 +105,7 @@ class UploadService extends Service
                 'file_size' => $fileSize,
                 'mime_type' => $mimeType,
                 'file_ext' => $fileExt,
+                'is_private' => false,
             ]);
 
             return response()->json([
@@ -127,62 +133,6 @@ class UploadService extends Service
             return resolve($this->model);
         }
         return $this->fileModel;
-    }
-
-    public function uploadFile2(UploadedFile $uploadedFile, string $file)
-    {
-
-//        foreach ($request->file('files') as $key => $file) {
-////            $file->storeAs($path, $file->getClientOriginalName());
-////        }
-////
-        $storage = Storage::disk(config('upload.disk'));
-        $config = config('upload.files.' . $file);
-
-        $originalName = str_replace('_', '-', $uploadedFile->getClientOriginalName());
-        $originalName = str_replace(' ', '-', $originalName);
-        $mimeType = $this->getFileType($uploadedFile->getClientMimeType());
-        $uuid = Str::uuid();
-
-        $upload = new File();
-        $upload->private = array_get($config, 'private', false);
-        $upload->title = str_replace('.' . $uploadedFile->getClientOriginalExtension(), '', $uploadedFile->getClientOriginalName());
-        $upload->file_field = $file;
-        $upload->file_name = $originalName;
-        $upload->mime_type = $uploadedFile->getClientMimeType();
-        $upload->file_type = $mimeType;
-        $upload->size = ($uploadedFile->getSize() / 1024) / 1024;
-        $upload->uuid = $uuid;
-        $upload->save();
-
-        if ($mimeType === 'image' && array_get($config, 'optimize')) {
-            //keep the original file
-            if (array_get($config, 'keep_original_file')) {
-                //TODO: think about this because it might take more time if uploaded to cloud
-                $storage->put('original-uploads/' . $uuid . '/' . $originalName, file_get_contents($uploadedFile));
-            }
-
-            //Optimize image from temp path and replace just over there
-            ImageOptimizer::optimize($uploadedFile->getRealPath());
-        }
-
-        //move uploaded file to storage
-        $storage->put('uploads/' . $uuid . '/' . $originalName, file_get_contents($uploadedFile));
-
-        if ($mimeType != 'image' || !array_get($config, 'resize')) {
-            return $upload;
-        }
-
-        foreach ($config['resize'] as $key => $value) {
-            if (array_get($value, 'create_on_upload', false)) {
-                $this->resizeImage($upload, $key);
-                continue;
-            }
-
-            ProcessUpload::dispatch($upload, $key);
-        }
-
-        return $upload;
     }
 
 //    public function uploadOneImage(UploadedFile $uploadedFile, $path = null)
@@ -262,7 +212,7 @@ class UploadService extends Service
 //    // $path = $request->photo->storeAs('images', 'filename.jpg', 'disk');
 //
 
-//    public function saveUploadedFiles(UploadedFilesInterface $files, $path = '/')
+//    public function saveUploadedFiles(UploadedFile $files, $path = '/')
 //    {
 //        return $files->getUploadedFiles()->reduce(function ($uploaded, UploadedFile $file) use ($path) {
 //            $fileName = $file->getClientOriginalName();
@@ -284,32 +234,6 @@ class UploadService extends Service
 //
 //            return $uploaded;
 //        }, 0);
-//    }
-//
-//    /**
-//     * first get passed file and fetch name and format from original name
-//     * and if not set these when set
-//     * then return handle method
-//     *
-//     * @param $file
-//     * @return mixed
-//     */
-//    public function upload($file)
-//    {
-//        $nameSplit = explode('.', $file->getClientOriginalName());
-//        $fileName = $nameSplit[0];
-//        $format = $nameSplit[1];
-//        if (!$this->getName()) {
-//            if ($this->useFileNameToUpload) {
-//                $this->setName($fileName);
-//            } else {
-//                $this->setName($this->generateRandomName());
-//            }
-//        }
-//
-//        if (is_null($this->getFormat())) $this->setFormat($format);
-//
-//        return $this->handle($file);
 //    }
 
     public function uploadFileByUrl(string $url, string $field, $fileName = null)

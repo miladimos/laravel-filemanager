@@ -18,7 +18,9 @@ class UploadController extends Controller
 
     public function uploadFile(Request $request)
     {
-        //
+        dd("d");
+        $file = $request->file('file');
+        $this->uploadService->uploadFile($file);
     }
 
     public function uploadFiles(Request $request)

@@ -97,4 +97,11 @@ if (!function_exists('checkInstanceOf')) {
     }
 }
 
+if (!function_exists('generateDownloadHash')) {
+    function generateDownloadHash(): string
+    {
+        return '';
+    }
+}
+
 

@@ -12,14 +12,16 @@ use Symfony\Component\CssSelector\Exception\InternalErrorException;
 class DownloadController extends Controller
 {
 
-    public function __construct()
+    private $fileModel;
+
+    public function __construct(File $file)
     {
-        //
+        $this->fileModel = $file;
     }
 
     public function download($uuid)
     {
-        $file = File::where("uuid", $uuid)->firstOrFail();
+        $file = $this->fileModel->where("uuid", $uuid)->firstOrFail();
 
         $secret = env('APP_KEY');
 
@@ -36,7 +38,7 @@ class DownloadController extends Controller
 
     public function downloadFile($uuid)
     {
-        $file = File::where('uuid', $uuid)->first();
+        $file = $this->fileModel->where('uuid', $uuid)->first();
 
         return response()->download(storage_path("app/uploads/") . $file->file_hash, $file->file_name);
     }

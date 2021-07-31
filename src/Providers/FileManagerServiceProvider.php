@@ -18,6 +18,8 @@ class FileManagerServiceProvider extends ServiceProvider
 
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
 
+        $this->registerViews();
+
         $this->registerFacades();
 
     }
@@ -52,6 +54,15 @@ class FileManagerServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../resources/lang' => resource_path('lang/miladimos/laravel-filemanager'),
+        ]);
+    }
+
+    private function registerViews()
+    {
+        $this->loadViewsFrom(__DIR__ . '/../../frontend', 'filemanager');
+
+        $this->publishes([
+            __DIR__ . '/../../frontend' => resource_path('views/miladimos/laravel-filemanager'),
         ]);
     }
 
