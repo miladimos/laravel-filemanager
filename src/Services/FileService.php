@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Miladimos\FileManager\Models\Directory;
 use Miladimos\FileManager\Models\File;
 use Symfony\Component\CssSelector\Exception\InternalErrorException;
 
@@ -25,19 +26,18 @@ class FileService extends Service
         $this->model = new File();
     }
 
-    public function rename($path, $originalFileName, $newFileName)
+    public function rename(File $file, $newFileName)
     {
-        $nameName = $path . DIRECTORY_SEPARATOR . $newFileName;
 
-        if (!checkPath($newFileName, $this->disk_name)) {
+        if (!checkPath($file->path, $this->disk_name)) {
             return false;
         }
 
-        if ($this->disk->rename(($path . DIRECTORY_SEPARATOR . $originalFileName), $nameName)) {
+        if ($this->disk->move(($file->path . $this->ds . $file->name), $file->path . $this->ds . $newFileName)) {
 
-            DB::transaction(function () use ($originalFileName, $newFileName) {
-                $this->model->where('name', $originalFileName)->update([
-                    'name' => $newFileName
+            DB::transaction(function () use ($file, $newFileName) {
+                $this->model->where('name', $file->name)->update([
+                    'name' => $newFileName,
                 ]);
             });
 
@@ -47,87 +47,59 @@ class FileService extends Service
         return false;
     }
 
-    public function moveFile($file, $newdir)
+    public function moveFile(File $file, Directory $newdir)
     {
 
-        if ($this->disk->exists($newFile)) {
-//            $this->errors[] = 'File already exists.';
-
+        if (!checkPath($file->path, $this->disk_name)) {
             return false;
         }
 
-        DB::transaction(function () use ($file, $newdir) {
-            $this->model->where('id', $file)->update([
-                'directory_id' => $newdir
-            ]);
-        });
+        if ($this->disk->move($file->path, $newdir->path)) {
+            DB::transaction(function () use ($file, $newdir) {
+                $this->model->where('id', $file)->update([
+                    'directory_id' => $newdir->id,
+                    'path' => $newdir->path
+                ]);
+            });
+        }
 
-        return true;
+        return false;
     }
 
-    public function copyFile($file, $newdir)
+    public function copyFile(File $file, Directory $new_dir)
     {
 
-        if ($this->disk->exists($newFile)) {
-//            $this->errors[] = 'File already exists.';
-
+        if (!checkPath($file->path, $this->disk_name)) {
             return false;
         }
 
-        DB::transaction(function () use ($file, $newdir) {
-            $this->model->where('id', $file)->update([
-                'directory_id' => $newdir
-            ]);
-        });
+        if ($this->disk->copy($file->path, $new_dir->path)) {
+            DB::transaction(function () use ($file, $new_dir) {
+                $this->model->where('id', $file)->update([
+                    'directory_id' => $new_dir,
+                    'path' => $new_dir->path
+                ]);
+            });
 
-        return true;
+            return true;
+        }
+
+        return false;
     }
 
     public function deleteFile(File $file)
     {
-        if (!$this->disk->exists($file->path)) {
-
+        if (!checkPath($file->path, $this->disk_name)) {
+            return false;
         }
 
-        try {
-            $file = $this->model->where('id', $file)->first();
-
-            Storage::delete("uploads/" . $file->file_hash);
-
+        if ($this->disk->delete($file->path)) {
             $file->forceDelete();
 
-            return response()->json(['msg' => 'File deleted.', 'status' => '200'], 200);
-        } catch (\Exception $ex) {
-            return response()->json(['msg' => $ex->getMessage(), 'status' => '500'], 500);
-        }
-    }
-
-    public function deleteFiles2()
-    {
-        $date = now()->subHour(24);
-        $uploadIds = [];
-        $storage = \Storage::disk(config('upload.disk'));
-        $uploads = Upload::query()
-            ->where('created_at', '<=', $date)
-            ->where('has_reference', false)
-            ->get();
-
-        foreach ($uploads as $upload) {
-            $uploadIds[] = $upload->id;
-            $storage->deleteDirectory('uploads/' . $upload->uuid);
-            $storage->deleteDirectory('cache/' . $upload->uuid);
+            return true;
         }
 
-        Upload::destroy($uploadIds);
-    }
-
-    public function deleteFiles(array $files)
-    {
-        foreach ($files as $key => $file) {
-            Storage::delete($file);
-        }
-
-        return true;
+        return false;
     }
 
     public function getUserFiles($user, $directory)
@@ -140,41 +112,6 @@ class FileService extends Service
         }
 
         return $files;
-    }
-
-
-    /**
-     * Return the mime type.
-     *
-     * @param $path
-     *
-     * @return string
-     */
-    public function getMimeType($path)
-    {
-        $type = $this->mimeDetect->detectMimeTypeFromPath(strtolower(pathinfo($path, PATHINFO_EXTENSION)));
-        if (!empty($type)) {
-            return $type;
-        }
-
-        return 'unknown/type';
-    }
-
-    /**
-     * Return the mime type.
-     *
-     * @param $path
-     *
-     * @return string
-     */
-    public function getExtention($path)
-    {
-        $type = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-        if (!empty($type)) {
-            return $type;
-        }
-
-        return false;
     }
 
     /**
@@ -196,56 +133,6 @@ class FileService extends Service
 
 //        return "/api/filemanager/download/$file->uuid?mac=$hash&t=$timestamp";
         return route('filemanager.download', [$file, $hash, $timestamp]);
-    }
-
-    ////////////////////////////////
-
-    public function listAllFiles(Request $request)
-    {
-        $path = $request->input('path', '');
-        $directoriesList = Storage::directories($path);
-        $filesList = Storage::files($path);
-
-        $directories = [];
-        $files = [];
-
-        foreach ($directoriesList as $key => $directory) {
-            $directories[] = [
-                'name' => last(explode("/", $directory)),
-                'path' => $directory,
-                'public_path' => Storage::url($directory),
-                'size' => Storage::size($directory),
-                'type' => 'directory',
-                'last_modified' => \Carbon\Carbon::createFromTimestamp(Storage::lastModified($directory))->diffForHumans()
-            ];
-        }
-
-        foreach ($filesList as $key => $file) {
-            $files[] = [
-                'name' => last(explode("/", $file)),
-                'path' => $file,
-                'public_path' => Storage::url($file),
-                'size' => Storage::size($file),
-                'type' => 'file',
-                'last_modified' => \Carbon\Carbon::createFromTimestamp(Storage::lastModified($file))->diffForHumans()
-            ];
-        }
-
-        return [
-            'path' => $path,
-            'directoriesAndFiles' => array_merge($directories, $files)
-        ];
-    }
-
-    public function getFile($name = null)
-    {
-        if (is_null($name) && $this->file instanceof File) return $this->file;
-
-        if (is_null($name)) throw new InternalErrorException("file name not valid!");
-
-        return File::query()
-            ->where("name", $name)
-            ->first();
     }
 
     /**

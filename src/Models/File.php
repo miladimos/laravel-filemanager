@@ -38,6 +38,11 @@ class File extends Model
         return $this->morphTo();
     }
 
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = now() . '-' . $value;
+    }
+
     public function getCreatedAtAttribute($value)
     {
         return Carbon::parse($value)->diffForHumans();

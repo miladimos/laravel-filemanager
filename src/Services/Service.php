@@ -262,13 +262,13 @@ abstract class Service
     public function getMime($path)
     {
         $path = $this->disk->path($path);
-        return $this->mimeDetect->detectMimeTypeFromFile($path);
+        return $this->mimeDetect->detectMimeTypeFromFile($path) ?? 'unknown/type';
     }
 
     public function getExtention($path)
     {
         $path = $this->disk->path($path);
-        return pathinfo($path)['extension'];
+        return pathinfo($path)['extension'] ?? 'unknown';
     }
 
     public function getOriginalNameFromPath($path)
