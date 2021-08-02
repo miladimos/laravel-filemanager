@@ -4,12 +4,8 @@ namespace Miladimos\FileManager\Services;
 
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use Miladimos\FileManager\Events\AfterUpload;
 use Miladimos\FileManager\Events\BeforeUpload;

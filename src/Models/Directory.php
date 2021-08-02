@@ -2,7 +2,6 @@
 
 namespace Miladimos\FileManager\Models;
 
-use App\Models\User;
 use Miladimos\FileManager\Traits\HasUUID;
 use Illuminate\Database\Eloquent\Model;
 use Miladimos\FileManager\Traits\RouteKeyNameUUID;
@@ -25,6 +24,6 @@ class Directory extends Model
     // who created ?
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(config('filemanager.database.user_model'), 'user_id');
     }
 }

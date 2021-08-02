@@ -33,7 +33,7 @@ class File extends Model
         return $this->belongsToMany(FileGroup::class, 'file_group_pivot');
     }
 
-    public function imageable()
+    public function fileable()
     {
         return $this->morphTo();
     }
@@ -91,12 +91,9 @@ class File extends Model
         return $this->is_private ? false : true;
     }
 
-
     public function getBasenameAttribute(): string
     {
-        return $this->filename . '.' . $this->extension;
+        return $this->name . '.' . $this->extension;
     }
-
-
 
 }
