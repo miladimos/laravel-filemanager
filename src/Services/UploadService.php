@@ -2,7 +2,6 @@
 
 namespace Miladimos\FileManager\Services;
 
-
 use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -76,8 +75,9 @@ class UploadService extends Service
                 });
 
                 return true;
-            } else
+            } else {
                 return false;
+            }
         }
 
         return false;

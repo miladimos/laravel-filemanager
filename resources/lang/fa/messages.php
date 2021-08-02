@@ -74,7 +74,6 @@ return [
     'nav-sort' => 'مرتب سازی',
     'nav-sort-alphabetic' => 'مرتب سازی الفبایی',
     'nav-sort-time' => 'مرتب سازی زمانی',
-
     'menu-rename' => 'تغییر نام',
     'menu-delete' => 'حذف',
     'menu-view' => 'مشاهده',

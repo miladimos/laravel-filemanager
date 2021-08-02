@@ -76,11 +76,8 @@ class DirectoryController extends Controller
         return $folders->toJson();
     }
 
-    public function getParentDirectoryId(Request $request)
+    public function getParentDirectory(Directory $directory)
     {
-        $folder = $request->input('folder');
-
-        return Directory::where('id', $folder)->select('parent_folder')->firstOrFail();
+        return $directory->parent();
     }
-
 }
