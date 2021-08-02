@@ -64,9 +64,9 @@ abstract class Service
      */
     protected function getStorageFolder($src)
     {
-        if ($this->storageFolder == "storage")
+        if ($this->disk_name == "storage")
             return storage_path($src);
-        if ($this->storageFolder == "public")
+        if ($this->disk_name == "public")
             return public_path($src);
         return public_path($src);
     }
@@ -228,7 +228,7 @@ abstract class Service
      */
     protected function fileProperties($disk, $path = null)
     {
-        $file = Storage::disk($disk)->getMetadata($path);
+        $file = $this->disk->getMetadata($path);
 
         $pathInfo = pathinfo($path);
 
@@ -259,5 +259,21 @@ abstract class Service
         return $path . DIRECTORY_SEPARATOR;
     }
 
+    public function getMime($path)
+    {
+        $path = $this->disk->path($path);
+        return $this->mimeDetect->detectMimeTypeFromFile($path);
+    }
+
+    public function getExtention($path)
+    {
+        $path = $this->disk->path($path);
+        return pathinfo($path)['extension'];
+    }
+
+    public function getOriginalNameFromPath($path)
+    {
+        return substr(basename($path), strpos(basename($path), "-") + 1);
+    }
 
 }

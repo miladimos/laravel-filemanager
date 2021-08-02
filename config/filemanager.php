@@ -138,6 +138,15 @@ return [
     'hide_files_extension' => true,
 
     /**
+     * date() format for file modifications date
+     * for created_at , updated_at, modified_at
+     * Doc - https://www.php.net/manual/en/function.date.php
+     * ex: d.m.y H:i
+     * and you can use "ago" for ago human readable time ex: 10 minutes ago
+     */
+    'datetime_format' => 'ago',
+
+    /**
      * Show / Hide system files and folders
      */
     'hiddenFiles' => false,

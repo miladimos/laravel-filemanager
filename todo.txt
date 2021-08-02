@@ -4,17 +4,11 @@ add error handler - error type and codes
 
 add ACL / advanced permissions ( maybe custom middleware or whatever )
 
-add breadcrumb manager
-
 add transfer service between storages
 
 add jobs for upload, image resize, optimizer and ...
 
 add change visibility : public / private
-
-add hide or visible items
-
-add search functionality
 
 add notification system to specific users ( send email/sms to admin users) for specific operations
 
@@ -27,18 +21,30 @@ add pagination system
 
 add scheduled backup (store or send to ftp, email, ...)
 
-add advance filters, search
-
 upload from url
 
 Chunked file upload for large file
 
 add statistics for all of activities
 
-Quicklook, preview for common file types
-
 Rich context menu and toolbar
 
 add auto watermark for images,videos
 
 add caching system
+
+///// Frontend
+
+add code highlight
+
+Quicklook, preview for common file types
+
+add advance filters, search
+
+add hide or visible items
+
+add breadcrumb manager
+
+multiple themes
+
+

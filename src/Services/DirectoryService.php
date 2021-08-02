@@ -21,39 +21,24 @@ class DirectoryService extends Service
         $this->model = new Directory();
     }
 
-    /**
-     * Show all directories that the selected item can be moved to.
-     *
-     * @return array
-     */
-    public function allDirectories()
+    public function listDirectories(Directory $directory, $recursive = false)
     {
-        $directories = $this->disk->allDirectories('/');
+        if ($recursive) {
+            $dirs = collect($this->disk->allDirectories($directory->path));
+        }
 
-        return collect($directories)->filter(function ($directory) {
-            return !(Str::startsWith($directory, '.'));
-        })->map(function ($directory) {
-            return DIRECTORY_SEPARATOR . $directory;
-        })->reduce(function ($allDirectories, $directory) {
-            $parts = explode('/', $directory);
-            $name = str_repeat('&nbsp;', (count($parts)) * 4) . basename($directory);
-
-            $allDirectories[$directory] = $name;
-
-            return $allDirectories;
-        }, collect())->prepend($this->breadcrumbRootLabel, '/');
-    }
-
-    public function listDirectories($path)
-    {
-        $dirs = collect($this->disk->directories($this->base_directory . $this->ds . $path));
+        $dirs = collect($this->disk->directories($directory->path));
 
         return $dirs;
     }
 
-    public function listDirectoriesRecursive($directory)
+    public function listFiles(Directory $directory, $recursive = false)
     {
-        $dirs = $this->disk->allDirectories($directory);
+        if ($recursive) {
+            $dirs = collect($this->disk->allFiles($directory->path));
+        }
+
+        $dirs = collect($this->disk->files($directory->path));
 
         return $dirs;
     }
@@ -86,10 +71,8 @@ class DirectoryService extends Service
         return false;
     }
 
-    public function renameDirectory($uuid, $newName)
+    public function renameDirectory(Directory $directory, $newName)
     {
-        $directory = $this->model->where('uuid', $uuid)->first();
-
         if ($directory->name == $newName) return false;
 
 
@@ -107,10 +90,8 @@ class DirectoryService extends Service
         return false;
     }
 
-    public function deleteDirectory($uuid)
+    public function deleteDirectory(Directory $directory)
     {
-        $directory = $this->model->where('uuid', $uuid)->first();
-
         $path = $directory->path;
 
         if (!checkPath($path, $this->disk_name)) {
@@ -132,32 +113,25 @@ class DirectoryService extends Service
     }
 
     /**
-     * Return files and directories within a folder.
+     * Return files and directories within a directory.
      *
-     * @param string $folder
+     * @param string $directory
      *
-     * @return array of [
-     *               'folder' => 'path to current folder',
-     *               'folderName' => 'name of just current folder',
-     *               'breadCrumbs' => breadcrumb array of [ $path => $foldername ],
-     *               'subfolders' => array of [ $path => $foldername] of each subfolder,
-     *               'files' => array of file details on each file in folder,
-     *               'itemsCount' => a combined count of the files and folders within the current folder
-     *               ]
+     * @return array
      */
-    public function folderInfo($folder = '/')
+    public function directoryInfo(Directory $directory)
     {
-        // Get the names of the sub folders within this folder
-        $subFolders = collect($this->disk->directories($folder))->reduce(function ($subFolders, $subFolder) {
+        // Get the names of the sub directorys within this directory
+        $subFolders = collect($this->disk->directories($directory->path))->reduce(function ($subFolders, $subFolder) {
             if (!$this->isItemHidden($subFolder)) {
-                $subFolders[] = $this->folderDetails($subFolder);
+                $subFolders[] = $this->directoryDetails($subFolder);
             }
 
             return $subFolders;
         }, collect([]));
 
-        // Get all files within this folder
-        $files = collect($this->disk->files($folder))->reduce(function ($files, $path) {
+        // Get all files within this directory
+        $files = collect($this->disk->files($directory->path))->reduce(function ($files, $path) {
             if (!$this->isItemHidden($path)) {
                 $files[] = $this->fileDetails($path);
             }
@@ -167,25 +141,25 @@ class DirectoryService extends Service
 
         $itemsCount = $subFolders->count() + $files->count();
 
-        return compact('folder', 'subFolders', 'files', 'itemsCount');
+        return compact('directory', 'subFolders', 'files', 'itemsCount');
     }
 
     /**
-     * Return an array of folder details for a given folder.
+     * Return an array of directory details for a given directory.
      *
      * @param $path
      *
      * @return array
      */
-    public function folderDetails($path)
+    public function directoryDetails($path)
     {
         $path = '/' . ltrim($path, '/');
 
         return [
             'name' => basename($path),
-            'mimeType' => 'folder',
-            'fullPath' => $path,
-            'modified' => $this->fileModified($path),
+            'mime_type' => 'directory',
+            'disk_path' => $path,
+            'modified' => $this->lastModified($path),
         ];
     }
 
@@ -201,13 +175,15 @@ class DirectoryService extends Service
         $path = '/' . ltrim($path, '/');
 
         return [
+            'original_name' => $this->getOriginalNameFromPath($path),
             'name' => basename($path),
-            'fullPath' => $path,
-            'webPath' => $this->fileWebpath($path),
-            'mimeType' => $this->fileMimeType($path),
-            'size' => $this->fileSize($path),
-            'modified' => $this->fileModified($path),
-            'relativePath' => $this->fileRelativePath($path),
+            'disk_path' => $path,
+            'url_path' => $this->disk->url($path),
+            'extension' => $this->getExtention($path),
+            'mime_type' => $this->getMime($path),
+            'size' => $this->disk->size($path),
+            'human_size' => $this->getHumanReadableSize($this->disk->size($path)),
+            'modified' => $this->lastModified($path),
         ];
     }
 }
