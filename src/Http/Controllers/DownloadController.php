@@ -35,7 +35,8 @@ class DownloadController extends Controller
         $hash = $secret . $file->uuid . getUserIP() . request('t');
 
         if ((Carbon::createFromTimestamp(request('t')) > Carbon::now()) &&
-            Hash::check($hash, request('mac'))) {
+            Hash::check($hash, request('mac'))
+        ) {
             return response()->download();
         } else {
             throw new InternalErrorException("link not valid");

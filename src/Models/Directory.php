@@ -8,7 +8,8 @@ use Miladimos\FileManager\Traits\RouteKeyNameUUID;
 
 class Directory extends Model
 {
-    use HasUUID, RouteKeyNameUUID;
+    use HasUUID,
+        RouteKeyNameUUID;
 
     protected $table = 'directories';
 

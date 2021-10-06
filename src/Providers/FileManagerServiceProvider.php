@@ -2,7 +2,6 @@
 
 namespace Miladimos\FileManager\Providers;
 
-use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Miladimos\FileManager\Console\Commands\InitializePackageCommand;
@@ -21,14 +20,13 @@ class FileManagerServiceProvider extends ServiceProvider
         $this->registerViews();
 
         $this->registerFacades();
-
     }
 
     public function boot()
     {
         if ($this->app->runningInConsole()) {
             $this->registerConfig();
-//            $this->registerPublishesMigrations();
+            //            $this->registerPublishesMigrations();
             $this->registerCommands();
             $this->registerTranslations();
         }
@@ -76,12 +74,12 @@ class FileManagerServiceProvider extends ServiceProvider
 
     private function registerPublishesMigrations()
     {
-//        if (!class_exists('CreateFilemanagerTables')) {
+        //        if (!class_exists('CreateFilemanagerTables')) {
         $this->publishes([
             __DIR__ . '/../../database/migrations/2021_07_25_232905_create_filemanager_tables.php' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_filemanger_tables.php'),
             // you can add any number of migrations here
         ], 'migrations');
-//        }
+        //        }
     }
 
     private function registerRoutes()

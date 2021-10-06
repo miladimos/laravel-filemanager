@@ -21,7 +21,7 @@ class UploadController extends Controller
     {
         $file = $request->file('file');
 
-//        UploadFileProcess::dispatch($file);
+        //        UploadFileProcess::dispatch($file);
 
         return $this->uploadService->uploadImage($file, 1);
     }

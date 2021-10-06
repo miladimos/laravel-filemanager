@@ -1,6 +1,6 @@
 <?php
 
-// for more than helper function see and start miladimos/laravel-toolkit
+// for more than helper function see miladimos/laravel-toolkit
 
 
 if (!function_exists('getDirectoryStatus')) {
@@ -109,5 +109,3 @@ if (!function_exists('logActive')) {
         return config('filemanager.logger.active');
     }
 }
-
-

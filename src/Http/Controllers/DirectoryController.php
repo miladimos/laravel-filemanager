@@ -4,6 +4,7 @@ namespace Miladimos\FileManager\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Miladimos\FileManager\Models\Directory;
 use Miladimos\FileManager\Services\DirectoryService;
 
@@ -48,7 +49,6 @@ class DirectoryController extends Controller
         }
 
         return $this->responseSuccess("Directories Deleted");
-
     }
 
     public function renameDirectory(Directory $directory, Request $request)
@@ -56,7 +56,6 @@ class DirectoryController extends Controller
         $name = $request->input('new_name');
 
         if (checkInstanceOf($directory, Directory::class)) {
-
         }
 
         return response()->json(['msg' => 'Directory renamed.', 'status' => '200'], 200);

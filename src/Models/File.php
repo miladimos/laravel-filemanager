@@ -11,7 +11,8 @@ use Miladimos\FileManager\Traits\RouteKeyNameUUID;
 
 class File extends Model
 {
-    use HasUUID, RouteKeyNameUUID;
+    use HasUUID,
+        RouteKeyNameUUID;
 
     protected $table = 'files';
 
@@ -68,7 +69,7 @@ class File extends Model
         $timestamp = Carbon::now()->addMinutes($expireTime)->timestamp;
         $hash = Hash::make($secret . $this->uuid . getUserIP() . $timestamp);
 
-//        return "/api/filemanager/download/$this->uuid?mac=$hash&t=$timestamp";
+        //        return "/api/filemanager/download/$this->uuid?mac=$hash&t=$timestamp";
         return route('filemanager.download', [$this, $hash, $timestamp]);
     }
 
@@ -100,5 +101,4 @@ class File extends Model
     {
         return $this->name . '.' . $this->extension;
     }
-
 }
