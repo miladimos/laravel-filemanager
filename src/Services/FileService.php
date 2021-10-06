@@ -3,14 +3,11 @@
 namespace Miladimos\FileManager\Services;
 
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Miladimos\FileManager\Models\Directory;
 use Miladimos\FileManager\Models\File;
-use Symfony\Component\CssSelector\Exception\InternalErrorException;
 
 
 // all of about files
@@ -131,7 +128,7 @@ class FileService extends Service
         $timestamp = Carbon::now()->addMinutes($expireTime)->timestamp;
         $hash = Hash::make($secret . $file->uuid . getUserIP() . $timestamp);
 
-//        return "/api/filemanager/download/$file->uuid?mac=$hash&t=$timestamp";
+        //        return "/api/filemanager/download/$file->uuid?mac=$hash&t=$timestamp";
         return route('filemanager.download', [$file, $hash, $timestamp]);
     }
 

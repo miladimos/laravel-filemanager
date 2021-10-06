@@ -4,7 +4,6 @@
 namespace Miladimos\FileManager\Services;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Miladimos\FileManager\Models\Directory;
 
 // all of about directories
@@ -51,7 +50,7 @@ class DirectoryService extends Service
             if ($this->disk->makeDirectory($path)) {
                 DB::transaction(function () use ($data, $path) {
                     $this->model->create([
-//                'user_id' => user()->id,
+                        //                'user_id' => user()->id,
                         'name' => $data['name'],
                         'description' => $data['description'] ?? '',
                         'path' => $path,
@@ -62,8 +61,8 @@ class DirectoryService extends Service
                 return true;
             } else {
 
-//                $this->error('Directory "' . $directory . '" already exists.');
-//                $this->error('Can not create directory.');
+                //                $this->error('Directory "' . $directory . '" already exists.');
+                //                $this->error('Can not create directory.');
                 return false;
             }
         }

@@ -6,8 +6,8 @@ namespace Miladimos\FileManager\Services;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use RecursiveIteratorIterator;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use ZipArchive;
 
 class ArchiveService extends Service
@@ -25,7 +25,7 @@ class ArchiveService extends Service
     public function __construct(ZipArchive $zip, Request $request)
     {
         parent::__construct();
-        
+
         $this->zip = $zip;
         $this->request = $request;
         $this->pathPrefix = Storage::disk($request->input('disk'))
@@ -94,7 +94,8 @@ class ArchiveService extends Service
         $elements = $this->request->input('elements');
 
         // create or overwrite archive
-        if ($this->zip->open(
+        if (
+            $this->zip->open(
                 $this->createName(),
                 ZIPARCHIVE::OVERWRITE | ZIPARCHIVE::CREATE
             ) === true
@@ -158,7 +159,7 @@ class ArchiveService extends Service
 
             // Create recursive directory iterator
             $files = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($this->pathPrefix . $directory),
+                new RecursiveDirectoryIterator($this->pathPrefix . $directory, false),
                 RecursiveIteratorIterator::LEAVES_ONLY
             );
 

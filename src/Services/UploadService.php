@@ -35,7 +35,7 @@ class UploadService extends Service
 
     public function uploadFile(UploadedFile $uploadedFile, $directory_id = 0)
     {
-///             ProcessUpload::dispatch($upload, $key);
+        ///             ProcessUpload::dispatch($upload, $key);
 
         $path = $this->directoryModel->find($directory_id)->path;
 
@@ -50,9 +50,9 @@ class UploadService extends Service
             $mimeType = $uploadedFile->getClientMimeType();
             $fileSize = $uploadedFile->getSize(); // in bytes
 
-//            $uploadPath = "{$path}{$this->ds}{$year}{$this->ds}{$month}{$this->ds}{$day}";
+            //            $uploadPath = "{$path}{$this->ds}{$year}{$this->ds}{$month}{$this->ds}{$day}";
 
-//            $this->mkdir_directory_if_not_exists($uploadPath);
+            //            $this->mkdir_directory_if_not_exists($uploadPath);
 
             $finalFileName = Carbon::now()->timestamp . "-{$originalName}";
 
@@ -65,7 +65,7 @@ class UploadService extends Service
                         'name' => $finalFileName,
                         'disk' => $this->disk_name,
                         'directory_id' => $directory_id,
-//                'user_id' => user()->id,
+                        //                'user_id' => user()->id,
                         'path' => $path,
                         'url' => url('storage/' . $fullUploadedPath),
                         'size' => $fileSize,
@@ -101,9 +101,9 @@ class UploadService extends Service
 
             $uploadPath = "{$path}{$this->ds}{$year}{$this->ds}{$month}{$this->ds}{$day}";
 
-//            $uploadPath = "{$path}{$this->ds}{$year}{$this->ds}{$month}{$this->ds}{$day}";
+            //            $uploadPath = "{$path}{$this->ds}{$year}{$this->ds}{$month}{$this->ds}{$day}";
 
-//            $this->mkdir_directory_if_not_exists($uploadPath);
+            //            $this->mkdir_directory_if_not_exists($uploadPath);
 
             $finalFileName = Carbon::now()->timestamp . "-{$originalName}";
 
@@ -118,7 +118,7 @@ class UploadService extends Service
                         'name' => $finalFileName,
                         'disk' => $this->disk_name,
                         'directory_id' => $directory_id,
-//                'user_id' => user()->id,
+                        //                'user_id' => user()->id,
                         'path' => $path,
                         'url' => url('storage/' . $fullUploadedPath),
                         'size' => $fileSize,
@@ -169,7 +169,7 @@ class UploadService extends Service
         return $files->getUploadedFiles()->reduce(function ($uploaded, UploadedFile $file) use ($path) {
             $fileName = $file->getClientOriginalName();
             if ($this->disk->exists($path . $fileName)) {
-//                $this->errors[] = 'File ' . $path . $fileName . ' already exists in this folder.';
+                //                $this->errors[] = 'File ' . $path . $fileName . ' already exists in this folder.';
 
                 return $uploaded;
             }
@@ -178,7 +178,7 @@ class UploadService extends Service
                 'disk' => $this->diskName,
                 'visibility' => $this->access,
             ])) {
-//                $this->errors[] = trans('media-manager::messages.upload_error', ['entity' => $fileName]);
+                //                $this->errors[] = trans('media-manager::messages.upload_error', ['entity' => $fileName]);
 
                 return $uploaded;
             }
@@ -188,56 +188,56 @@ class UploadService extends Service
         }, 0);
     }
 
-//    public function uploadFileByUrl(string $url, string $field, $fileName = null)
-//    {
-//        $uuid = Str::uuid();
-//        $file = file_get_contents($url);
-//        $url = strtok($url, '?');
-//        $config = config('upload.files.' . $field);
-//
-//        $orignalName = str_replace('_', '-', pathinfo($url, PATHINFO_FILENAME));
-//        $orignalName = str_replace(' ', '-', pathinfo($url, PATHINFO_FILENAME));
-//        $extension = pathinfo($url, PATHINFO_EXTENSION);
-//        $extension = ($extension) ? "." . $extension : $extension;
-//        $storagePath = $this->disk->getDriver()->getAdapter()->getPathPrefix();
-//
-//        if ($fileName) {
-//            $fileNameWithExtension = $fileName . $extension;
-//            $orignalName = $fileName;
-//        } else {
-//            $fileNameWithExtension = $orignalName . $extension;
-//        }
-//
-//        $this->disk->put('/uploads/' . $uuid . '/' . $fileNameWithExtension, $file);
-//
-//        $mimeType = mime_content_type($storagePath . '/uploads/' . $uuid . '/' . $fileNameWithExtension);
-//        $mimeFileType = $this->getFileType($mimeType);
-//
-//        $file = $this->fileModel->create([
-//            'private' => array_get($config, 'private', false),
-//            'title' => $orignalName,
-//            'file_field' => $field,
-//            'file_name' => $fileNameWithExtension,
-//            'mime_type' => $mimeType,
-//            'file_type' => $mimeFileType,
-//            'size' => (filesize($storagePath . '/uploads/' . $uuid . '/' . $fileNameWithExtension) / 1024) / 1024,
-//            'uuid' => $uuid,
-//        ]);
-//
-//
-//        if ($mimeFileType != 'image' || !array_get($config, 'resize')) {
-//            return true;
-//        }
-//
-//        foreach ($config['resize'] as $key => $value) {
-//            if (array_get($value, 'create_on_upload', false)) {
-//                $this->resizeImage($file, $key);
-//                continue;
-//            }
-//
-//            ProcessUpload::dispatch($file, $key);
-//        }
-//
-//        return $file;
-//    }
+    //    public function uploadFileByUrl(string $url, string $field, $fileName = null)
+    //    {
+    //        $uuid = Str::uuid();
+    //        $file = file_get_contents($url);
+    //        $url = strtok($url, '?');
+    //        $config = config('upload.files.' . $field);
+    //
+    //        $orignalName = str_replace('_', '-', pathinfo($url, PATHINFO_FILENAME));
+    //        $orignalName = str_replace(' ', '-', pathinfo($url, PATHINFO_FILENAME));
+    //        $extension = pathinfo($url, PATHINFO_EXTENSION);
+    //        $extension = ($extension) ? "." . $extension : $extension;
+    //        $storagePath = $this->disk->getDriver()->getAdapter()->getPathPrefix();
+    //
+    //        if ($fileName) {
+    //            $fileNameWithExtension = $fileName . $extension;
+    //            $orignalName = $fileName;
+    //        } else {
+    //            $fileNameWithExtension = $orignalName . $extension;
+    //        }
+    //
+    //        $this->disk->put('/uploads/' . $uuid . '/' . $fileNameWithExtension, $file);
+    //
+    //        $mimeType = mime_content_type($storagePath . '/uploads/' . $uuid . '/' . $fileNameWithExtension);
+    //        $mimeFileType = $this->getFileType($mimeType);
+    //
+    //        $file = $this->fileModel->create([
+    //            'private' => array_get($config, 'private', false),
+    //            'title' => $orignalName,
+    //            'file_field' => $field,
+    //            'file_name' => $fileNameWithExtension,
+    //            'mime_type' => $mimeType,
+    //            'file_type' => $mimeFileType,
+    //            'size' => (filesize($storagePath . '/uploads/' . $uuid . '/' . $fileNameWithExtension) / 1024) / 1024,
+    //            'uuid' => $uuid,
+    //        ]);
+    //
+    //
+    //        if ($mimeFileType != 'image' || !array_get($config, 'resize')) {
+    //            return true;
+    //        }
+    //
+    //        foreach ($config['resize'] as $key => $value) {
+    //            if (array_get($value, 'create_on_upload', false)) {
+    //                $this->resizeImage($file, $key);
+    //                continue;
+    //            }
+    //
+    //            ProcessUpload::dispatch($file, $key);
+    //        }
+    //
+    //        return $file;
+    //    }
 }
