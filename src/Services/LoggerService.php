@@ -3,7 +3,6 @@
 namespace Miladimos\FileManager\Services;
 
 use Illuminate\Support\Facades\Log;
-use function PHPUnit\Framework\throwException;
 
 class LoggerService
 {

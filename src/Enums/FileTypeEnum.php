@@ -2,12 +2,10 @@
 
 namespace Miladimos\FileManager\Enums;
 
-
-use App\Traits\GetConstantsEnum;
+use Miladimos\FileManager\Traits\GetConstantsEnum;
 
 class FileTypeEnum
 {
-
     use GetConstantsEnum;
 
     const TYPE_IMAGE = 1;
