@@ -17,7 +17,7 @@
     "authors": [
         {
             "name": "miladimos",
-            "email": "message.tome1331@gmail.com",
+            "email": "miladimos@outlook.com",
             "role": "maintaner",
             "homepage": "https://github.com/miladimos"
         }
@@ -41,12 +41,12 @@
         }
     },
     "require": {
-        "php": ">=7.4",
+        "php": ">=7.4|^8",
         "nesbot/carbon": "^2.50.0",
         "morilog/jalali": ">=v3.1.0",
         "intervention/image": "^2.6",
         "ramsey/uuid": "^4.1",
-        "webpatser/laravel-uuid": "^3",
+        "webpatser/laravel-uuid": "^4",
         "league/mime-type-detection": "^1.7"
     },
     "minimum-stability": "stable",
