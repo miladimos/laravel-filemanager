@@ -53,11 +53,25 @@ return [
      *
      * Default Locale
      * available locale : en - fa
-     * for display texts
+     * for display views
      */
-    'locale' => env("FILEMANAGER_LOCALE", 'en'),
+    'locales' => [
+        'default' => env("FILEMANAGER_LOCALE", 'en'),
 
-    'download_link_expire' => '5', // in minute
+        'en' => [
+            'title' => 'English',
+            'flag' => '',
+            'dir' => 'ltr',
+        ],
+
+        'fa' => [
+            'title' => 'فارسی',
+            'flag' => '',
+            'dir' => 'rtl',
+        ],
+    ],
+
+    'download_link_expire' => '10', // in minute
 
     /**
      * The maximum upload file size of an item in bytes.
@@ -84,7 +98,6 @@ return [
      *
      * sizes in pixel
      */
-
     'strategies' => [
         'file' => [
             'path' => 'files/{Y}/{m}/{d}/timestamp-$originalFilename',
@@ -135,8 +148,6 @@ return [
     // for uploads
     'disallow_extensions' => ['exe', 'asm', 'bin', 'o', 'jar'],
 
-    'hide_files_extension' => true,
-
     /**
      * date() format for file modifications date
      * for created_at , updated_at, modified_at
@@ -151,6 +162,9 @@ return [
      */
     'hiddenFiles' => false,
 
+    // in views
+    'hide_files_extension' => false,
+
     'pagination' => [
         'folders' => 12, //2 rows
 
@@ -160,7 +174,7 @@ return [
     'logger' => [
         'active' => false,
         'channel' => env("LOG_CHANNEL", "stack"),
-        'level' => 'debug', // default level
+        'level' => 'info', // default level
     ],
 
     /**

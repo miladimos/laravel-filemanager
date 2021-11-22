@@ -1,6 +1,8 @@
 <?php
 
-namespace Miladimos\FileManager\Events;
+namespace Miladimos\FileManager\Events\Upload;
+
+use Miladimos\FileManager\Events\Event;
 
 class BeforeUpload extends Event
 {

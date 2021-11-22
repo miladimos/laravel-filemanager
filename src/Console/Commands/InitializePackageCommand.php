@@ -30,7 +30,7 @@ class InitializePackageCommand extends Command
         $this->line("\n... Initialize package ...\n\n");
 
         if (!$this->disk->exists($this->base_directory)) {
-            $this->disk->makeDirectory($this->base_directory);
+            $this->disk->makeDirectory($this->base_directory, 755);
         }
 
         $this->line("Initialized ... \n");

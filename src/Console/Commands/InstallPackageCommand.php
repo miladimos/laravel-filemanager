@@ -5,7 +5,6 @@ namespace Miladimos\FileManager\Console\Commands;
 
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 
 class InstallPackageCommand extends Command
@@ -31,9 +30,9 @@ class InstallPackageCommand extends Command
             $this->publishConfig();
         }
 
-//        $this->publishMigration();
-//        $this->info("migrations published.");
-//
+        // publish migration
+        $this->publishMigration();
+
 
 
         $this->info("FileManager Package Successfully Installed. Star me on Github :) \n");
@@ -53,7 +52,7 @@ class InstallPackageCommand extends Command
     {
         $this->call('vendor:publish', [
             '--provider' => "Miladimos\FileManager\Providers\FileManagerServiceProvider",
-            '--tag' => 'migrations',
+            '--tag' => 'filemanager-migrations',
             '--force' => true
         ]);
     }
@@ -71,22 +70,6 @@ class InstallPackageCommand extends Command
     //         $this->publishAssets();
     //         $this->info("assets published");
     //     }
-
-    //     //migration
-    //     if (File::exists(database_path("migrations/$migrationFile"))) {
-    //         $confirm = $this->confirm("migration file already exist. Do you want to overwrite?");
-    //         if ($confirm) {
-    //             $this->publishMigration();
-    //             $this->info("migration overwrite finished");
-    //         } else {
-    //             $this->info("skipped migration publish");
-    //         }
-    //     } else {
-    //         $this->publishMigration();
-    //         $this->info("migration published");
-    //     }
-    //     $this->call('migrate');
-    // }
 
     // private function publishAssets()
     // {

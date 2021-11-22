@@ -13,7 +13,7 @@ class CreateFilemanagerTables extends Migration
      */
     public function up()
     {
-        Schema::create('directories', function (Blueprint $table) {
+        Schema::create('filemanager_directories', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->uniuqe();
             $table->foreignID('parent_id')->nullable();
@@ -28,7 +28,7 @@ class CreateFilemanagerTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create('files', function (Blueprint $table) {
+        Schema::create('filemanager_files', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->uniuqe();
             $table->string("fileable_type")->nullable();
@@ -54,7 +54,7 @@ class CreateFilemanagerTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create('file_groups', function (Blueprint $table) {
+        Schema::create('filemanager_file_groups', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->uniuqe();
             $table->string('title')->unique();
@@ -63,12 +63,11 @@ class CreateFilemanagerTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create('file_group_pivot', function (Blueprint $table) {
+        Schema::create('filemanager_file_group_pivot', function (Blueprint $table) {
             $table->id();
             $table->morphs('groupable');
             $table->foreignId('group_id');
         });
-
     }
 
     /**
@@ -78,13 +77,12 @@ class CreateFilemanagerTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('directories');
+        Schema::dropIfExists('filemanager_directories');
 
-        Schema::dropIfExists('files');
+        Schema::dropIfExists('filemanager_files');
 
-        Schema::dropIfExists('file_groups');
+        Schema::dropIfExists('filemanager_file_groups');
 
-        Schema::dropIfExists('file_group_pivot');
-
+        Schema::dropIfExists('filemanager_file_group_pivot');
     }
 }

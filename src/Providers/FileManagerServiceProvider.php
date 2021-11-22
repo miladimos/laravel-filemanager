@@ -26,7 +26,7 @@ class FileManagerServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->registerConfig();
-            //            $this->registerPublishesMigrations();
+            $this->registerMigrations();
             $this->registerCommands();
             $this->registerTranslations();
         }
@@ -72,13 +72,13 @@ class FileManagerServiceProvider extends ServiceProvider
         ]);
     }
 
-    private function registerPublishesMigrations()
+    private function registerMigrations()
     {
         //        if (!class_exists('CreateFilemanagerTables')) {
         $this->publishes([
-            __DIR__ . '/../../database/migrations/2021_07_25_232905_create_filemanager_tables.php' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_filemanger_tables.php'),
+            __DIR__ . '/../../database/migrations/create_filemanager_tables.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_filemanager_tables.php'),
             // you can add any number of migrations here
-        ], 'migrations');
+        ], 'filemanager-migrations');
         //        }
     }
 
@@ -91,7 +91,7 @@ class FileManagerServiceProvider extends ServiceProvider
 
     private function routeConfiguration()
     {
-        $filemanager_api_version = 'v1';
+        $filemanager_api_version = 'V1';
 
         return [
             'prefix' => config('filemanager.routes.api.api_prefix') . '/' . $filemanager_api_version . '/' . config('filemanager.routes.prefix'),
