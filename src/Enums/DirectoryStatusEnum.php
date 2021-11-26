@@ -4,7 +4,7 @@ namespace Miladimos\FileManager\Enums;
 
 use Miladimos\FileManager\Traits\GetConstantsEnum;
 
-class DirectoryStatusEnum
+final class DirectoryStatusEnum
 {
     use GetConstantsEnum;
 
