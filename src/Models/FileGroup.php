@@ -22,4 +22,9 @@ class FileGroup extends Model
     {
         return $this->belongsToMany(File::class, 'file_group_pivot');
     }
+
+    public function __toString()
+    {
+        return "name: {$this->name}, size: {$this->size}, mime: {$this->mimeType}";
+    }
 }

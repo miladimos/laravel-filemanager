@@ -27,4 +27,9 @@ class Directory extends Model
     {
         return $this->belongsTo(config('filemanager.database.user_model'), 'user_id');
     }
+
+    public function __toString()
+    {
+        return "name: {$this->name}, size: {$this->size}, mime: {$this->mimeType}";
+    }
 }
