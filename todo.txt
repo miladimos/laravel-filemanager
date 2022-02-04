@@ -37,7 +37,7 @@ add caching system
 
 add code highlight
 
-Quicklook, preview for common file types
+Quick look, preview for common file types
 
 add advance filters, search
 
@@ -47,4 +47,5 @@ add breadcrumb manager
 
 multiple themes
 
+add frontend with livewire or ...
 

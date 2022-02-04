@@ -3,6 +3,7 @@
     "description": "a powerful, flexible laravel file manager",
     "homepage": "https://github.com/miladimos/laravel-filemanager",
     "type": "library",
+    "version": "0.6.4",
     "keywords": [
         "laravel",
         "laravel-filemanager",
