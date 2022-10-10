@@ -49,3 +49,22 @@ multiple themes
 
 add frontend with livewire or ...
 
+https://www.bootdey.com/snippets/tagged/file-manager
+
+https://pixinvent.com/demo/vuexy-html-bootstrap-admin-template/html/rtl/vertical-menu-template/app-file-manager.html
+
+http://www.prepbootstrap.com/bootstrap-template/file-manager
+
+https://themeon.net/nifty/v2.9/app-file-manager.html
+
+https://demos.devexpress.com/MVCxFileManagerAndUploadDemos/FileManager/Templates
+
+https://dhtmlx.com/docs/products/demoApps/dhtmlxFileExplorerDemo/
+
+https://www.s-vfu.ru/stud/template/file-manager.html
+
+https://www.s-vfu.ru/stud/template/file-manager.html
+
+
+
+
