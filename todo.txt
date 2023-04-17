@@ -65,6 +65,6 @@ https://www.s-vfu.ru/stud/template/file-manager.html
 
 https://www.s-vfu.ru/stud/template/file-manager.html
 
-
+https://github.com/alexusmai/laravel-file-manager
 
 
